@@ -1,0 +1,615 @@
+%\tikzset{external/export next = false}
+
+\begin{tikzpicture}
+
+	\begin{pgfinterruptboundingbox} % somehow these plots add about 1.2pt of whitespace to their right ... no idea why
+
+		\setlength{\templength}{\threecolumnwidth}
+		\addtolength{\templength}{-.9cm}
+	
+		%%% synthetic promoter design
+		\coordinate (SynProDesign) at (0, 0);
+		
+		\node[anchor = north, shift = {(.5\threecolumnwidth, .25\columnsep)}, text width = .9\threecolumnwidth, align = center] (SynProText) at (SynProDesign) {synthetic promoters with\\nucleotide frequencies derived from:};
+		
+		\node[anchor = west, shift = {(0, -.5cm - .1\columnsep)}, align = center] (lAt) at (SynProText.south -| SynProDesign) {Arabidopsis\\promoters:};
+		
+		\coordinate[xshift = {.5cm + .25\columnsep}] (base freq At) at (lAt.east);
+		
+		\fill[baseAcol!66] (base freq At) -- ++(0, .5) arc (90:90-127:.5) coordinate (A) -- cycle;
+		\fill[baseCcol!66] (base freq At) -- (A) arc (90-127:90-127-60:.5) coordinate (C) -- cycle;
+		\fill[baseGcol!66] (base freq At) -- (C) arc (90-127-60:90-127-60-55:.5) coordinate (G) -- cycle;
+		\fill[baseTcol!66] (base freq At) -- (G) arc (90-127-60-55:90-360:.5) coordinate (T) -- cycle;
+		
+		\node at ($(base freq At) + (90-127/2:.33)$) {A};
+		\node at ($(base freq At) + (90-127-60/2:.33)$) {C};
+		\node at ($(base freq At) + (90-127-60-55/2:.33)$) {G};
+		\node at ($(base freq At) + (90+118/2:.33)$) {T};
+		
+		\node[anchor = base east, shift = {(-1cm -.25\columnsep - 0.3em, 0)}, align = center] (lZm) at (lAt.base -| \threecolumnwidth, 0) {\vphantom{A}maize\\promoters:};
+		
+		\coordinate[xshift = {.5cm + .25\columnsep}] (base freq Zm) at (lZm.east);
+		
+		\fill[baseAcol!66] (base freq Zm) -- ++(0, .5) arc (90:90-88:.5) coordinate (A) -- cycle;
+		\fill[baseCcol!66] (base freq Zm) -- (A) arc (90-88:90-88-104:.5) coordinate (C) -- cycle;
+		\fill[baseGcol!66] (base freq Zm) -- (C) arc (90-88-104:90-88-104-81:.5) coordinate (G) -- cycle;
+		\fill[baseTcol!66] (base freq Zm) -- (G) arc (90-88-104-81:90-360:.5) coordinate (T) -- cycle;
+		
+		\node at ($(base freq Zm) + (90-88/2:.33)$) {A};
+		\node at ($(base freq Zm) + (90-88-104/2:.33)$) {C};
+		\node at ($(base freq Zm) + (90-88-104-81/2:.33)$) {G};
+		\node at ($(base freq Zm) + (90+86/2:.33)$) {T};
+		
+		\node[xshift = {.5cm + .25\columnsep}] at ($(lAt.east)!.5!(lZm.west)$) {or};
+		
+		\coordinate[shift = {(.1cm, -.5cm - \columnsep)}] (combis) at (lAt.west);
+		
+		\draw[very thick, gray] (combis) ++(.7, 0) coordinate (combis1) -- ++(\templength, 0);
+		\draw[very thick, gray] (combis) ++(.6, -.2) coordinate (combis2) -- ++(\templength, 0);
+		\draw[very thick, gray] (combis) ++(.5, -.4) coordinate (combis3) -- ++(\templength, 0);
+		\draw[very thick, gray] (combis) ++(.4, -.6) coordinate (combis4) -- ++(\templength, 0);
+		\draw[very thick, gray] (combis) ++(.3, -.8) coordinate (combis5) -- ++(\templength, 0);
+		\draw[very thick, gray] (combis) ++(.2, -1) coordinate (combis6) -- ++(\templength, 0);
+		\draw[very thick, gray] (combis) ++(.1, -1.2) coordinate (combis7) -- ++(\templength, 0);
+		\draw[very thick, gray] (combis) ++(0, -1.4) coordinate (combis8) -- ++(\templength, 0);
+		
+	%	\node[anchor = east , align = right, xshift = .5cm] at ($(combis1 -| base freq Zm)!.5!(combis8 -| base freq Zm)$) {core\\promoter\\element\\combinations};
+		
+		\draw[line width = .1cm, MediumPurple2] (combis2) ++(\templength, 0) -- ++(-.06\templength, 0);
+		\draw[line width = .1cm, MediumPurple2] (combis5) ++(\templength, 0) -- ++(-.06\templength, 0);
+		\draw[line width = .1cm, MediumPurple2] (combis6) ++(\templength, 0) -- ++(-.06\templength, 0);
+		\draw[line width = .1cm, MediumPurple2] (combis8) ++(\templength, 0) -- ++(-.06\templength, 0) coordinate[pos = .5] (Inr);
+		
+		\draw[line width = .1cm, Goldenrod2] (combis3) ++(.885\templength, 0) -- ++(.05\templength, 0);
+		\draw[line width = .1cm, Goldenrod2] (combis5) ++(.885\templength, 0) -- ++(.05\templength, 0);
+		\draw[line width = .1cm, Goldenrod2] (combis7) ++(.885\templength, 0) -- ++(.05\templength, 0);
+		\draw[line width = .1cm, Goldenrod2] (combis8) ++(.885\templength, 0) -- ++(.05\templength, 0) coordinate[pos = .5] (Ypatch);
+		
+		\draw[line width = .1cm, 35S enhancer] (combis4) ++(.78\templength, 0) -- ++(.05\templength, 0);
+		\draw[line width = .1cm, 35S enhancer] (combis6) ++(.78\templength, 0) -- ++(.05\templength, 0);
+		\draw[line width = .1cm, 35S enhancer] (combis7) ++(.78\templength, 0) -- ++(.05\templength, 0);
+		\draw[line width = .1cm, 35S enhancer] (combis8) ++(.78\templength, 0) -- ++(.05\templength, 0) coordinate[pos = .5] (TATA);
+		
+		\setlength{\basewidth}{.25\threecolumnwidth/8}
+		
+		\coordinate[yshift = -.25cm] (motifTATA) at (combis8 -| .167\threecolumnwidth, 0);
+		\coordinate[yshift = -.25cm, xshift = -\basewidth] (motifYpatch) at (combis8 -| .5\threecolumnwidth, 0);
+		\coordinate[yshift = -.25cm, xshift = -\basewidth] (motifInr) at (combis8 -| .833\threecolumnwidth, 0);
+		
+		\foreach \motif/\col/\bases/\name in {Inr/MediumPurple2/10/Inr, Ypatch/Goldenrod2/8/Y patch, TATA/35S enhancer/8/TATA-box} {
+			\logoplot[
+				at = {(motif\motif)},
+				yshift = -\columnsep,
+				anchor = above north,
+				width = \bases*\basewidth,
+				height = 0.5cm,
+				logo axis = none,
+				title = \name,
+				title style = {draw = none, fill = \col!25, minimum width = \bases*\basewidth},
+				axis background/.style = {fill = \col!25},
+				name = logo\motif
+			]{rawData/motif_synPRO_\motif.tsv}
+					
+			\begin{pgfonlayer}{background}
+				\draw[thin, gray] (\motif) ++(0, -.1cm) -- (logo\motif.above north);
+			
+				\draw[very thick, \col] (logo\motif.above north west) rectangle (logo\motif.south east);
+			\end{pgfonlayer}
+		}
+	
+		
+		%%% promoter strength synthetic promoters (tobacco)
+		\coordinate (enrSynProLeaf) at (SynProDesign -| \twothirdcolumnwidth - \threecolumnwidth, 0);
+		
+		\leafsymbol{enrSynProLeaf}
+		
+		\begin{hgroupplot}[%
+			ylabel = {promoter strength},
+			ymin = -5,
+			ymax = 1,
+			ytick = {-10, -9, ..., 10},
+			xticklabel style = {name = xticklabel},
+			zero line = 35S enhancer,
+			group position = {anchor = above north west, at = {(enrSynProLeaf)}, xshift = \plotylabelwidth},
+			group/every plot/.append style = {
+				x grids = false,
+				typeset ticklabels with strut 
+			}
+		]{\threecolumnwidth}{2}{}
+	
+				
+			\nextgroupplot[
+				title = {Arabidosis\\promoters},
+				x tick table = {rawData/enrichment_syntheticPRO_At_leaf_boxplot.tsv}{Inr}
+			]
+			
+				% boxplot
+				\boxplots{%
+					box color = arabidopsis,
+					box shade,
+					fill opacity = 0.5%
+				}{rawData/enrichment_syntheticPRO_At_leaf_boxplot.tsv}{rawData/enrichment_syntheticPRO_At_leaf_boxplot_outliers.tsv}
+				
+				% save coordinates
+				\pgfplotstablegetrowsof{rawData/enrichment_syntheticPRO_At_leaf_boxplot.tsv}
+				\pgfplotsinvokeforeach{1, ..., \pgfplotsretval}{
+					\coordinate (A#1) at (#1, 0);
+				}
+			
+			
+			\nextgroupplot[
+				title = {\vphantom{A}maize\\promoters},
+				x tick table = {rawData/enrichment_syntheticPRO_Zm_leaf_boxplot.tsv}{Inr}
+			]
+			
+				% boxplot
+				\boxplots{%
+					box color = maize,
+					box shade,
+					fill opacity = 0.5%
+				}{rawData/enrichment_syntheticPRO_Zm_leaf_boxplot.tsv}{rawData/enrichment_syntheticPRO_Zm_leaf_boxplot_outliers.tsv}
+				
+				% save coordinates
+				\pgfplotstablegetrowsof{rawData/enrichment_syntheticPRO_Zm_leaf_boxplot.tsv}
+				\pgfplotsinvokeforeach{1, ..., \pgfplotsretval}{
+					\coordinate (Z#1) at (#1, 0);
+				}
+				
+		\end{hgroupplot}
+		
+		\node[anchor = base east, node font = \figsmall] (lInr) at (group c1r1.west |- xticklabel.base) {\strut Inr};
+		\node[anchor = north east, node font = \figsmall] (lYpatch) at (lInr.base east) {\strut Y patch};
+		\node[anchor = north east, node font = \figsmall] (lTATA) at (lYpatch.base east) {\strut TATA-box};
+		
+		\pgfplotstableforeachcolumnelement{Ypatch}\of{rawData/enrichment_syntheticPRO_At_leaf_boxplot.tsv}\as\xticklabel{
+			\pgfmathsetmacro{\i}{\pgfplotstablerow + 1}
+			\node[anchor = base, node font = \figsmall] at (lYpatch.base -| A\i) {\strut\xticklabel};
+		}
+		
+		\pgfplotstableforeachcolumnelement{Ypatch}\of{rawData/enrichment_syntheticPRO_Zm_leaf_boxplot.tsv}\as\xticklabel{
+			\pgfmathsetmacro{\i}{\pgfplotstablerow + 1}
+			\node[anchor = base, node font = \figsmall] at (lYpatch.base -| Z\i) {\strut\xticklabel};
+		}
+		
+		\pgfplotstableforeachcolumnelement{TATA}\of{rawData/enrichment_syntheticPRO_At_leaf_boxplot.tsv}\as\xticklabel{
+			\pgfmathsetmacro{\i}{\pgfplotstablerow + 1}
+			\node[anchor = base, node font = \figsmall] at (lTATA.base -| A\i) {\strut\xticklabel};
+		}
+		
+		\pgfplotstableforeachcolumnelement{TATA}\of{rawData/enrichment_syntheticPRO_Zm_leaf_boxplot.tsv}\as\xticklabel{
+			\pgfmathsetmacro{\i}{\pgfplotstablerow + 1}
+			\node[anchor = base, node font = \figsmall] at (lTATA.base -| Z\i) {\strut\xticklabel};
+		}
+		
+	
+		%%% promoter strength synthetic promoters (maize)
+		\coordinate (enrSynProProto) at (SynProDesign -| \textwidth - \threecolumnwidth, 0);
+		
+		\protosymbol{enrSynProProto}
+		
+		\begin{hgroupplot}[%
+			ylabel = {promoter strength},
+			ymin = -5,
+			ymax = 1,
+			ytick = {-10, -9, ..., 10},
+			xticklabel style = {name = xticklabel},
+			zero line = 35S enhancer,
+			group position = {anchor = above north west, at = {(enrSynProProto)}, xshift = \plotylabelwidth},
+			group/every plot/.append style = {
+				x grids = false,
+				typeset ticklabels with strut 
+			}
+		]{\threecolumnwidth}{2}{}
+	
+				
+			\nextgroupplot[
+				title = {Arabidosis\\promoters},
+				x tick table = {rawData/enrichment_syntheticPRO_At_proto_boxplot.tsv}{Inr}
+			]
+			
+				% boxplot
+				\boxplots{%
+					box color = arabidopsis,
+					box shade,
+					fill opacity = 0.5%
+				}{rawData/enrichment_syntheticPRO_At_proto_boxplot.tsv}{rawData/enrichment_syntheticPRO_At_proto_boxplot_outliers.tsv}
+				
+				% save coordinates
+				\pgfplotstablegetrowsof{rawData/enrichment_syntheticPRO_At_proto_boxplot.tsv}
+				\pgfplotsinvokeforeach{1, ..., \pgfplotsretval}{
+					\coordinate (A#1) at (#1, 0);
+				}
+			
+			
+			\nextgroupplot[
+				title = {\vphantom{A}maize\\promoters},
+				x tick table = {rawData/enrichment_syntheticPRO_Zm_proto_boxplot.tsv}{Inr}
+			]
+			
+				% boxplot
+				\boxplots{%
+					box color = maize,
+					box shade,
+					fill opacity = 0.5%
+				}{rawData/enrichment_syntheticPRO_Zm_proto_boxplot.tsv}{rawData/enrichment_syntheticPRO_Zm_proto_boxplot_outliers.tsv}
+				
+				% save coordinates
+				\pgfplotstablegetrowsof{rawData/enrichment_syntheticPRO_Zm_proto_boxplot.tsv}
+				\pgfplotsinvokeforeach{1, ..., \pgfplotsretval}{
+					\coordinate (Z#1) at (#1, 0);
+				}
+				
+		\end{hgroupplot}
+		
+		\node[anchor = base east, node font = \figsmall] (lInr) at (group c1r1.west |- xticklabel.base) {\strut Inr};
+		\node[anchor = north east, node font = \figsmall] (lYpatch) at (lInr.base east) {\strut Y patch};
+		\node[anchor = north east, node font = \figsmall] (lTATA) at (lYpatch.base east) {\strut TATA-box};
+		
+		\pgfplotstableforeachcolumnelement{Ypatch}\of{rawData/enrichment_syntheticPRO_At_proto_boxplot.tsv}\as\xticklabel{
+			\pgfmathsetmacro{\i}{\pgfplotstablerow + 1}
+			\node[anchor = base, node font = \figsmall] at (lYpatch.base -| A\i) {\strut\xticklabel};
+		}
+		
+		\pgfplotstableforeachcolumnelement{Ypatch}\of{rawData/enrichment_syntheticPRO_Zm_proto_boxplot.tsv}\as\xticklabel{
+			\pgfmathsetmacro{\i}{\pgfplotstablerow + 1}
+			\node[anchor = base, node font = \figsmall] at (lYpatch.base -| Z\i) {\strut\xticklabel};
+		}
+		
+		\pgfplotstableforeachcolumnelement{TATA}\of{rawData/enrichment_syntheticPRO_At_proto_boxplot.tsv}\as\xticklabel{
+			\pgfmathsetmacro{\i}{\pgfplotstablerow + 1}
+			\node[anchor = base, node font = \figsmall] at (lTATA.base -| A\i) {\strut\xticklabel};
+		}
+		
+		\pgfplotstableforeachcolumnelement{TATA}\of{rawData/enrichment_syntheticPRO_Zm_proto_boxplot.tsv}\as\xticklabel{
+			\pgfmathsetmacro{\i}{\pgfplotstablerow + 1}
+			\node[anchor = base, node font = \figsmall] at (lTATA.base -| Z\i) {\strut\xticklabel};
+		}
+		
+		
+		%%% TF combination test (design)
+		\coordinate[yshift = -\columnsep] (TFcomboDesign) at (SynProDesign |- lTATA.south);
+		
+		\draw[very thick, gray] (TFcomboDesign) ++(.1, -\columnsep) coordinate (TFcomboDesign1) -- ++(\templength, 0);
+		
+		\draw[line width = .1cm, 35S enhancer] ($(TFcomboDesign1) + (.78\templength, 0)$) -- ++(.05\templength, 0) node[pos = .5, anchor = south, node font = \figsmall] {TATA};
+		
+		\foreach \x in {35, 65, 95} {
+			\fill[SlateBlue4] ($(TFcomboDesign1) + (\x/170*\templength, -.025)$) -- ++(-.075, -.15) -- ++(.15, 0) node[pos = .5, anchor = north, node font = \figsmall, alias = last pos] (pos\x) {\x} -- cycle;
+		}
+		
+		\node[anchor = north, shift = {(.5\threecolumnwidth, -.75cm)}, align = center, text width = .67\threecolumnwidth] (text) at (TFcomboDesign |- last pos.south) {for each postion, no transcription factor binding site or one of:};
+		
+		\coordinate[yshift = -.5\columnsep] (TFlogos) at (TFcomboDesign |- text.south);
+		
+		\setlength{\basewidth}{\threecolumnwidth/27}
+		
+		\logoplot[
+			at = {(TFlogos)},
+			anchor = above north west,
+			width = 10\basewidth,
+			xshift = \basewidth,
+			height = 0.5cm,
+			logo axis = none,
+			title = TCP (cluster 15),
+			title style = {draw = none, fill = none},
+			name = logoTCP15
+		]{rawData/motif_TCP15.tsv}
+		
+		\logoplot[
+			at = {(logoTCP15.south west)},
+			yshift = -\columnsep,
+			anchor = above north west,
+			width = 8\basewidth,
+			height = 0.5cm,
+			logo axis = none,
+			title = TCP (cluster 22),
+			title style = {draw = none, fill = none, align = left},
+			name = logoTCP22
+		]{rawData/motif_TCP22.tsv}
+		
+		\logoplot[
+			at = {(logoTCP15.above north -| \threecolumnwidth, 0)},
+			anchor = above north east,
+			width = 13\basewidth,
+			height = 0.5cm,
+			logo axis = none,
+			title = NAC (cluster 1),
+			title style = {draw = none, fill = none},
+			name = logoNAC
+		]{rawData/motif_NAC.tsv}
+		
+		\logoplot[
+			at = {(logoTCP22.above north -| logoNAC.east)},
+			anchor = above north east,
+			width = 16\basewidth,
+			height = 0.5cm,
+			logo axis = none,
+			title = HSF/S1Fa-like (cluster 16),
+			title style = {draw = none, fill = none},
+			name = logoHSF
+		]{rawData/motif_HSF.tsv}
+		
+		\draw[thin, SlateBlue4!50] (pos35.base west) -- (text.north -| logoTCP15.west) (pos95.base east) -- (text.north -| logoNAC.east);
+		
+		
+		%%% single TF
+		\coordinate (singleTF) at (TFcomboDesign -| \twothirdcolumnwidth - \threecolumnwidth, 0);
+		
+		\begin{hgroupplot}[%
+			ylabel = {rel. promoter strength},
+			ymin = -2.75,
+			ymax = 4,
+			ytick = {-10, -9, ..., 10},
+			zero line,
+			group position = {anchor = above north west, at = {(singleTF)}, xshift = \plotylabelwidth},
+			group/every plot/.append style = {
+				x grids = false,
+				typeset ticklabels with strut 
+			}
+		]{\threecolumnwidth}{2}{TF binding site}
+	
+				
+			\nextgroupplot[
+				title = {\phantom{tobacco}\\\phantom{leaves}},
+				x tick table = {rawData/enrichment_TFcombo_single_leaf_boxplot.tsv}{sample}
+			]
+			
+				% boxplot
+				\boxplots{%
+					box color = leafCol,
+					box shade,
+					fill opacity = 0.5%
+				}{rawData/enrichment_TFcombo_single_leaf_boxplot.tsv}{rawData/enrichment_TFcombo_single_leaf_boxplot_outliers.tsv}
+				
+				% add sample size
+				\samplesize{rawData/enrichment_TFcombo_single_leaf_boxplot.tsv}{id}{n}
+				
+				% add significance
+				\signifallsimple*{rawData/enrichment_TFcombo_single_leaf_boxplot.tsv}{id}{p.value}
+			
+			
+			\nextgroupplot[
+				title = {\phantom{maize}\\\phantom{protoplasts}},
+				x tick table = {rawData/enrichment_TFcombo_single_proto_boxplot.tsv}{sample}
+			]
+			
+				% boxplot
+				\boxplots{%
+					box color = protoCol,
+					box shade,
+					fill opacity = 0.5%
+				}{rawData/enrichment_TFcombo_single_proto_boxplot.tsv}{rawData/enrichment_TFcombo_single_proto_boxplot_outliers.tsv}
+				
+				% add sample size
+				\samplesize{rawData/enrichment_TFcombo_single_proto_boxplot.tsv}{id}{n}
+				
+				% add significance
+				\signifallsimple*{rawData/enrichment_TFcombo_single_proto_boxplot.tsv}{id}{p.value}
+				
+		\end{hgroupplot}
+		
+		\distance{title.south}{title.north}
+		
+		\leafsymbol[(.5\ydistance, -.5\ydistance)]{group c1r1.west |- title.north}
+		\node[anchor = east, node font = \fignormal, text depth = .15\baselineskip, align = right] at (group c1r1.east |- title) {tobacco\\leaves};
+		\protosymbol[(-.5\ydistance, -.5\ydistance)]{group c2r1.east |- title.north}
+		\node[anchor = west, node font = \fignormal, text depth = .15\baselineskip, align = left] at (group c2r1.west |- title) {maize\\protoplasts};
+		
+		
+		%%% TF number
+		\coordinate (TFnumber) at (TFcomboDesign -| \textwidth - \threecolumnwidth, 0);
+		
+		\begin{hgroupplot}[%
+			ylabel = {rel. promoter strength},
+			ymin = -3,
+			ymax = 6.75,
+			ytick = {-10, -9, ..., 10},
+			zero line,
+			group position = {anchor = above north west, at = {(TFnumber)}, xshift = \plotylabelwidth},
+			group/every plot/.append style = {
+				x grids = false,
+				typeset ticklabels with strut 
+			}
+		]{\threecolumnwidth}{2}{number of TF binding sites}
+	
+				
+			\nextgroupplot[
+				title = {\phantom{tobacco}\\\phantom{leaves}},
+				x tick table = {rawData/enrichment_TFcombo_number_leaf_boxplot.tsv}{sample}
+			]
+			
+				% boxplot
+				\boxplots{%
+					box color = leafCol,
+					box shade,
+					fill opacity = 0.5%
+				}{rawData/enrichment_TFcombo_number_leaf_boxplot.tsv}{rawData/enrichment_TFcombo_number_leaf_boxplot_outliers.tsv}
+				
+				% add sample size
+				\samplesize{rawData/enrichment_TFcombo_number_leaf_boxplot.tsv}{id}{n}
+				
+				% add significance
+				\signifallsimple*{rawData/enrichment_TFcombo_number_leaf_boxplot.tsv}{id}{p.value}
+			
+			
+			\nextgroupplot[
+				title = {\phantom{maize}\\\phantom{protoplasts}},
+				x tick table = {rawData/enrichment_TFcombo_number_proto_boxplot.tsv}{sample}
+			]
+			
+				% boxplot
+				\boxplots{%
+					box color = protoCol,
+					box shade,
+					fill opacity = 0.5%
+				}{rawData/enrichment_TFcombo_number_proto_boxplot.tsv}{rawData/enrichment_TFcombo_number_proto_boxplot_outliers.tsv}
+				
+				% add sample size
+				\samplesize{rawData/enrichment_TFcombo_number_proto_boxplot.tsv}{id}{n}
+				
+				% add significance
+				\signifallsimple*{rawData/enrichment_TFcombo_number_proto_boxplot.tsv}{id}{p.value}
+				
+		\end{hgroupplot}
+		
+		\distance{title.south}{title.north}
+		
+		\leafsymbol[(.5\ydistance, -.5\ydistance)]{group c1r1.west |- title.north}
+		\node[anchor = east, node font = \fignormal, text depth = .15\baselineskip, align = right] at (group c1r1.east |- title) {tobacco\\leaves};
+		\protosymbol[(-.5\ydistance, -.5\ydistance)]{group c2r1.east |- title.north}
+		\node[anchor = west, node font = \fignormal, text depth = .15\baselineskip, align = left] at (group c2r1.west |- title) {maize\\protoplasts};
+		
+	
+		%%% TCP positions
+		\coordinate[yshift = -\columnsep] (TCPscanPos) at (SynProDesign |- plot xlabel.south);
+		
+		\setlength{\templength}{\twocolumnwidth - \plotylabelwidth}
+		
+		\draw[very thick, gray] (TCPscanPos) ++(\plotylabelwidth, -.5\columnsep) coordinate (TF pos1) -- ++(\templength, 0) coordinate (TF pos4end);
+		
+		\draw[line width = .1cm, 35S enhancer] ($(TF pos1) + (.78\templength, 0)$) -- ++(.05\templength, 0) node[anchor = south, pos = .5, node font = \figsmall] {TATA};
+		
+		\pgfplotstableforeachcolumnelement{sample}\of{rawData/enrichment_TFscan_TCP_leaf_boxplot.tsv}\as\position{
+			\fill[SlateBlue4] ($(TF pos1) + (\position/170*\templength, -.025)$) -- ++(-.075, -.15) -- ++(.15, 0) node[pos = .5, anchor = east, rotate = 90, node font = \figsmall, alias = last pos] (pos\position) {\position} -- cycle;
+		}
+		
+		\node[anchor = east, SlateBlue4, align = right, node font = \figsmall, xshift = \plotylabelwidth] at (TCPscanPos |- last pos) {TCP\\[-.25\baselineskip]position};
+	
+	
+		%%% TCP position scan (tobacco)
+		\coordinate[yshift = -.5\columnsep] (TCPscan) at (TCPscanPos |- last pos.west);
+		
+		\leafsymbol{TCPscan};
+		
+		\begin{axis}[%
+			anchor = north west,
+			at = {(TCPscan)},
+			xshift = \plotylabelwidth,
+			width = \twocolumnwidth - \plotylabelwidth,
+			xlabel = TCP binding site position,
+			ylabel = rel. promoter strength,
+			ylabel style = {xshift = -\baselineskip},
+			xmin = 0,
+			xmax = 170,
+			xtick = {10, 30, ..., 160},
+			ymin = -3,
+			ymax = 4,
+			ytick = {-10, -9, ..., 10},
+			zero line,
+			x grids = false
+		]
+		
+			% TATA-box
+			\fill[35S enhancer, fill opacity = .1] (132.5, \ymin) rectangle (140.5, \ymax) node[pos = .5, opacity = 1, node font = \figsmall] {TATA};
+		
+			% boxplots
+			\pgfplotstableforeachcolumnelement{sample}\of{rawData/enrichment_TFscan_TCP_leaf_boxplot.tsv}\as\sample{
+				\ifthenelse{\pgfplotstablerow<0}{}{
+					\pgfmathparse{50 + (50 * \sample / 170)}
+					\edef\colpct{\pgfmathresult}
+					\pgfmathparse{int(\pgfplotstablerow + 1)}
+					\edef\thisboxplot{
+						\noexpand\boxplot[%
+							boxplot/draw position = \sample,
+							box color = leafCol,
+							fill opacity = .5,
+							fill = boxcol!\colpct!boxshade,
+							boxplot/box extend = 4%
+						]{rawData/enrichment_TFscan_TCP_leaf_boxplot.tsv}{\pgfmathresult};
+						\noexpand\addplot [black, only marks, mark = solido] table [x expr = \sample, y = outlier.\pgfmathresult] {rawData/enrichment_TFscan_TCP_leaf_boxplot_outliers.tsv};
+					}
+					\thisboxplot
+				}
+			}
+			
+	%		% add sample size
+	%		\samplesize{rawData/enrichment_TFscan_TCP_leaf_boxplot.tsv}{sample}{n}
+	%
+	%		% add significance
+	%		\signifallsimple*{rawData/enrichment_TFscan_TCP_leaf_boxplot.tsv}{sample}{p.value}
+				
+		\end{axis}
+		
+		
+		%%% HSF positions
+		\coordinate (HSFscanPos) at (TCPscanPos -| \textwidth - \twocolumnwidth, 0);
+		
+		\setlength{\templength}{\twocolumnwidth - \plotylabelwidth}
+		
+		\draw[very thick, gray] (HSFscanPos) ++(\plotylabelwidth, -.5\columnsep) coordinate (TF pos1) -- ++(\templength, 0) coordinate (TF pos4end);
+		
+		\draw[line width = .1cm, 35S enhancer] ($(TF pos1) + (.78\templength, 0)$) -- ++(.05\templength, 0) node[anchor = south, pos = .5, node font = \figsmall] {TATA};
+		
+		\pgfplotstableforeachcolumnelement{sample}\of{rawData/enrichment_TFscan_HSF_proto_boxplot.tsv}\as\position{
+			\fill[SlateBlue4] ($(TF pos1) + (\position/170*\templength, -.025)$) -- ++(-.075, -.15) -- ++(.15, 0) node[pos = .5, anchor = east, rotate = 90, node font = \figsmall, alias = last pos] (pos\position) {\position} -- cycle;
+		}
+		
+		\node[anchor = east, SlateBlue4, align = right, node font = \figsmall, xshift = \plotylabelwidth] at (HSFscanPos |- last pos) {HSF\\[-.25\baselineskip]position};
+		
+		
+		%%% HSF position scan (protoplasts)
+		\coordinate (HSFscan) at (HSFscanPos |- TCPscan);
+		
+		\protosymbol{HSFscan};
+		
+		\begin{axis}[%
+			anchor = north west,
+			at = {(HSFscan)},
+			xshift = \plotylabelwidth,
+			width = \twocolumnwidth - \plotylabelwidth,
+			xlabel = HSF binding site position (rel. to TSS),
+			xlabel style = {name = plot xlabel},
+			ylabel = rel. promoter strength,
+			ylabel style = {xshift = -\baselineskip},
+			xmin = 0,
+			xmax = 170,
+			xtick = {10, 30, ..., 160},
+			ymin = -3,
+			ymax = 4,
+			ytick = {-10, -9, ..., 10},
+			zero line,
+			x grids = false
+		]
+		
+			% TATA-box
+			\fill[35S enhancer, fill opacity = .1] (132.5, \ymin) rectangle (140.5, \ymax) node[pos = .5, opacity = 1, node font = \figsmall] {TATA};
+		
+			% boxplots
+			\pgfplotstableforeachcolumnelement{sample}\of{rawData/enrichment_TFscan_HSF_proto_boxplot.tsv}\as\sample{
+				\ifthenelse{\pgfplotstablerow<0}{}{
+					\pgfmathparse{50 + (50 * \sample / 170)}
+					\edef\colpct{\pgfmathresult}
+					\pgfmathparse{int(\pgfplotstablerow + 1)}
+					\edef\thisboxplot{
+						\noexpand\boxplot[boxplot/draw position = \sample, box color = protoCol, fill opacity = .5, fill = boxcol!\colpct!boxshade, boxplot/box extend = 4]{rawData/enrichment_TFscan_HSF_proto_boxplot.tsv}{\pgfmathresult};
+						\noexpand\addplot [black, only marks, mark = solido] table [x expr = \sample, y = outlier.\pgfmathresult] {rawData/enrichment_TFscan_HSF_proto_boxplot_outliers.tsv};
+					}
+					\thisboxplot
+				}
+			}
+			
+	%		% add sample size
+	%		\samplesize{rawData/enrichment_TFscan_HSF_proto_boxplot.tsv}{sample}{n}
+	%
+	%		% add significance
+	%		\signifallsimple*{rawData/enrichment_TFscan_HSF_proto_boxplot.tsv}{sample}{p.value}
+				
+		\end{axis}
+		
+		
+		%%% subfigure labels
+		\subfiglabel[yshift = .5\columnsep]{SynProDesign}
+		\subfiglabel[yshift = .5\columnsep]{enrSynProLeaf}
+		\subfiglabel[yshift = .5\columnsep]{enrSynProProto}
+		\subfiglabel[yshift = .5\columnsep]{TFcomboDesign}
+		\subfiglabel[yshift = .5\columnsep]{singleTF}
+		\subfiglabel[yshift = .5\columnsep]{TFnumber}
+		\subfiglabel[yshift = .5\columnsep]{TCPscanPos}
+		\subfiglabel[yshift = .5\columnsep]{HSFscanPos}
+	
+	\end{pgfinterruptboundingbox}
+	
+	% manually add the correct bounding box
+	\path (SynProDesign) ++(.2pt, .5\columnsep) rectangle (\textwidth + .2pt, 0 |- plot xlabel.south);
+	
+\end{tikzpicture}

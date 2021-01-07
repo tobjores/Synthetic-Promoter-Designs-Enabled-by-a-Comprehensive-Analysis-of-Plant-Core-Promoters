@@ -1,0 +1,287 @@
+%\tikzset{external/export next = false}
+
+\begin{tikzpicture}
+
+	%%% enrichment by Inr (tobacco)
+	\coordinate (enrInrLeaf) at (0, 0);
+	
+	\leafsymbol{enrInrLeaf}; 
+	
+	\begin{hgroupplot}[%
+		ylabel = promoter strength,
+		ymin = -9.5,
+		ymax = 8,
+		ytick = {-10, -8, ..., 10},
+		group position = {anchor = above north west, at = {(enrInrLeaf)}, xshift = \plotylabelwidth, yshift = -1.25\baselineskip},
+		group/every plot/.append style = {x grids = false}
+	]{\twocolumnwidth}{3}{GC content}
+	
+			
+		\nextgroupplot[
+			title = Arabidopsis,
+			x tick table half = {rawData/enrichment_Inr+GC_At_leaf_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% half violin and box plot
+		\halfviolinbox[violin color half = arabidopsis]{rawData/enrichment_Inr+GC_At_leaf_boxplot.tsv}{rawData/enrichment_Inr+GC_At_leaf_violin.tsv}
+			
+		% add sample size
+		\samplesizehalf[violin color half = arabidopsis]{rawData/enrichment_Inr+GC_At_leaf_boxplot.tsv}{id}{n}
+		
+		% add pvalues
+		\signifall*{rawData/enrichment_Inr+GC_At_leaf_pvalues.tsv}	
+		
+		
+		\nextgroupplot[
+			title = Maize,
+			x tick table half = {rawData/enrichment_Inr+GC_Zm_leaf_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% half violin and box plot
+		\halfviolinbox[violin color half = maize]{rawData/enrichment_Inr+GC_Zm_leaf_boxplot.tsv}{rawData/enrichment_Inr+GC_Zm_leaf_violin.tsv}
+			
+		% add sample size
+		\samplesizehalf[violin color half = maize]{rawData/enrichment_Inr+GC_Zm_leaf_boxplot.tsv}{id}{n}
+		
+		% add pvalues
+		\signifall*{rawData/enrichment_Inr+GC_Zm_leaf_pvalues.tsv}
+		
+		
+		\nextgroupplot[
+			title = Sorghum,
+			x tick table half = {rawData/enrichment_Inr+GC_Sb_leaf_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% half violin and box plot
+		\halfviolinbox[violin color half = sorghum]{rawData/enrichment_Inr+GC_Sb_leaf_boxplot.tsv}{rawData/enrichment_Inr+GC_Sb_leaf_violin.tsv}
+			
+		% add sample size
+		\samplesizehalf[violin color half = sorghum]{rawData/enrichment_Inr+GC_Sb_leaf_boxplot.tsv}{id}{n}
+		
+		% add pvalues
+		\signifall*{rawData/enrichment_Inr+GC_Sb_leaf_pvalues.tsv}	
+
+	\end{hgroupplot}
+	
+	\node[anchor = south west] (legend) at (group c1r1.above north west) {\textbf{Inr} element:\vphantom{g} $-$};
+	\coordinate (legend symbol) at ($(legend.south east) + (.25em, .2em)$);
+	\node[anchor = base west] at ($(legend.base east) + (.6em, 0)$) {$+$};
+	
+	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolleft, fill opacity = .5, x = .25em, y = .1em, rotate = 90, shift = {(legend symbol)}] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
+	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolright, fill opacity = .5, x = .25em, y = -.1em, rotate = 90, shift = {(legend symbol)}, yshift = -.1em] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
+	
+	
+	%%% enrichment by Inr (protoplasts)
+	\coordinate (enrInrProto) at (\textwidth - \twocolumnwidth, 0 |- enrInrLeaf);
+	
+	\protosymbol{enrInrProto}; 
+	
+	\begin{hgroupplot}[%
+		ylabel = promoter strength,
+		ymin = -9.5,
+		ymax = 8,
+		ytick = {-10, -8, ..., 10},
+		group position = {anchor = above north west, at = {(enrInrProto)}, xshift = \plotylabelwidth, yshift = -1.25\baselineskip},
+		group/every plot/.append style = {x grids = false}
+	]{\twocolumnwidth}{3}{GC content}
+	
+			
+		\nextgroupplot[
+			title = Arabidopsis,
+			x tick table half = {rawData/enrichment_Inr+GC_At_proto_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% half violin and box plot
+		\halfviolinbox[violin color half = arabidopsis]{rawData/enrichment_Inr+GC_At_proto_boxplot.tsv}{rawData/enrichment_Inr+GC_At_proto_violin.tsv}
+			
+		% add sample size
+		\samplesizehalf[violin color half = arabidopsis]{rawData/enrichment_Inr+GC_At_proto_boxplot.tsv}{id}{n}
+		
+		% add pvalues
+		\signifall*{rawData/enrichment_Inr+GC_At_proto_pvalues.tsv}	
+		
+		
+		\nextgroupplot[
+			title = Maize,
+			x tick table half = {rawData/enrichment_Inr+GC_Zm_proto_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% half violin and box plot
+		\halfviolinbox[violin color half = maize]{rawData/enrichment_Inr+GC_Zm_proto_boxplot.tsv}{rawData/enrichment_Inr+GC_Zm_proto_violin.tsv}
+			
+		% add sample size
+		\samplesizehalf[violin color half = maize]{rawData/enrichment_Inr+GC_Zm_proto_boxplot.tsv}{id}{n}
+		
+		% add pvalues
+		\signifall*{rawData/enrichment_Inr+GC_Zm_proto_pvalues.tsv}
+		
+		
+		\nextgroupplot[
+			title = Sorghum,
+			x tick table half = {rawData/enrichment_Inr+GC_Sb_proto_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% half violin and box plot
+		\halfviolinbox[violin color half = sorghum]{rawData/enrichment_Inr+GC_Sb_proto_boxplot.tsv}{rawData/enrichment_Inr+GC_Sb_proto_violin.tsv}
+			
+		% add sample size
+		\samplesizehalf[violin color half = sorghum]{rawData/enrichment_Inr+GC_Sb_proto_boxplot.tsv}{id}{n}
+		
+		% add pvalues
+		\signifall*{rawData/enrichment_Inr+GC_Sb_proto_pvalues.tsv}	
+
+	\end{hgroupplot}
+	
+	\node[anchor = south west] (legend) at (group c1r1.above north west) {\textbf{Inr} element:\vphantom{g} $-$};
+	\coordinate (legend symbol) at ($(legend.south east) + (.25em, .2em)$);
+	\node[anchor = base west] at ($(legend.base east) + (.6em, 0)$) {$+$};
+	
+	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolleft, fill opacity = .5, x = .25em, y = .1em, rotate = 90, shift = {(legend symbol)}] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
+	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolright, fill opacity = .5, x = .25em, y = -.1em, rotate = 90, shift = {(legend symbol)}, yshift = -.1em] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
+	
+
+	%%% enrichment by TCT (tobacco)
+	\coordinate[yshift = -\columnsep] (enrTCTLeaf) at (enrInrLeaf |- plot xlabel.south);
+	
+	\leafsymbol{enrTCTLeaf}; 
+	
+	\begin{hgroupplot}[%
+		ylabel = promoter strength,
+		ymin = -9.5,
+		ymax = 8,
+		ytick = {-10, -8, ..., 10},
+		group position = {anchor = above north west, at = {(enrTCTLeaf)}, xshift = \plotylabelwidth, yshift = -1.25\baselineskip},
+		group/every plot/.append style = {x grids = false}
+	]{\twocolumnwidth}{3}{GC content}
+	
+			
+		\nextgroupplot[
+			title = Arabidopsis,
+			x tick table half = {rawData/enrichment_TCT+GC_At_leaf_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% half violin and box plot
+		\halfviolinbox[violin color half = arabidopsis]{rawData/enrichment_TCT+GC_At_leaf_boxplot.tsv}{rawData/enrichment_TCT+GC_At_leaf_violin.tsv}
+			
+		% add sample size
+		\samplesizehalf[violin color half = arabidopsis]{rawData/enrichment_TCT+GC_At_leaf_boxplot.tsv}{id}{n}
+		
+		% add pvalues
+		\signifall*{rawData/enrichment_TCT+GC_At_leaf_pvalues.tsv}	
+		
+		
+		\nextgroupplot[
+			title = Maize,
+			x tick table half = {rawData/enrichment_TCT+GC_Zm_leaf_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% half violin and box plot
+		\halfviolinbox[violin color half = maize]{rawData/enrichment_TCT+GC_Zm_leaf_boxplot.tsv}{rawData/enrichment_TCT+GC_Zm_leaf_violin.tsv}
+			
+		% add sample size
+		\samplesizehalf[violin color half = maize]{rawData/enrichment_TCT+GC_Zm_leaf_boxplot.tsv}{id}{n}
+		
+		% add pvalues
+		\signifall*{rawData/enrichment_TCT+GC_Zm_leaf_pvalues.tsv}
+		
+		
+		\nextgroupplot[
+			title = Sorghum,
+			x tick table half = {rawData/enrichment_TCT+GC_Sb_leaf_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% half violin and box plot
+		\halfviolinbox[violin color half = sorghum]{rawData/enrichment_TCT+GC_Sb_leaf_boxplot.tsv}{rawData/enrichment_TCT+GC_Sb_leaf_violin.tsv}
+			
+		% add sample size
+		\samplesizehalf[violin color half = sorghum]{rawData/enrichment_TCT+GC_Sb_leaf_boxplot.tsv}{id}{n}
+		
+		% add pvalues
+		\signifall*{rawData/enrichment_TCT+GC_Sb_leaf_pvalues.tsv}	
+
+	\end{hgroupplot}
+	
+	\node[anchor = south west] (legend) at (group c1r1.above north west) {\textbf{TCT} element:\vphantom{g} $-$};
+	\coordinate (legend symbol) at ($(legend.south east) + (.25em, .2em)$);
+	\node[anchor = base west] at ($(legend.base east) + (.6em, 0)$) {$+$};
+	
+	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolleft, fill opacity = .5, x = .25em, y = .1em, rotate = 90, shift = {(legend symbol)}] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
+	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolright, fill opacity = .5, x = .25em, y = -.1em, rotate = 90, shift = {(legend symbol)}, yshift = -.1em] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
+	
+	
+	%%% enrichment by TCT+GC binding site (protoplasts)
+	\coordinate (enrTCTProto) at (\textwidth - \twocolumnwidth, 0 |- enrTCTLeaf);
+	
+	\protosymbol{enrTCTProto}; 
+	
+	\begin{hgroupplot}[%
+		ylabel = promoter strength,
+		ymin = -9.5,
+		ymax = 8,
+		ytick = {-10, -8, ..., 10},
+		group position = {anchor = above north west, at = {(enrTCTProto)}, xshift = \plotylabelwidth, yshift = -1.25\baselineskip},
+		group/every plot/.append style = {x grids = false}
+	]{\twocolumnwidth}{3}{GC content}
+	
+			
+		\nextgroupplot[
+			title = Arabidopsis,
+			x tick table half = {rawData/enrichment_TCT+GC_At_proto_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% half violin and box plot
+		\halfviolinbox[violin color half = arabidopsis]{rawData/enrichment_TCT+GC_At_proto_boxplot.tsv}{rawData/enrichment_TCT+GC_At_proto_violin.tsv}
+			
+		% add sample size
+		\samplesizehalf[violin color half = arabidopsis]{rawData/enrichment_TCT+GC_At_proto_boxplot.tsv}{id}{n}
+		
+		% add pvalues
+		\signifall*{rawData/enrichment_TCT+GC_At_proto_pvalues.tsv}	
+		
+		
+		\nextgroupplot[
+			title = Maize,
+			x tick table half = {rawData/enrichment_TCT+GC_Zm_proto_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% half violin and box plot
+		\halfviolinbox[violin color half = maize]{rawData/enrichment_TCT+GC_Zm_proto_boxplot.tsv}{rawData/enrichment_TCT+GC_Zm_proto_violin.tsv}
+			
+		% add sample size
+		\samplesizehalf[violin color half = maize]{rawData/enrichment_TCT+GC_Zm_proto_boxplot.tsv}{id}{n}
+		
+		% add pvalues
+		\signifall*{rawData/enrichment_TCT+GC_Zm_proto_pvalues.tsv}
+		
+		
+		\nextgroupplot[
+			title = Sorghum,
+			x tick table half = {rawData/enrichment_TCT+GC_Sb_proto_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% half violin and box plot
+		\halfviolinbox[violin color half = sorghum]{rawData/enrichment_TCT+GC_Sb_proto_boxplot.tsv}{rawData/enrichment_TCT+GC_Sb_proto_violin.tsv}
+			
+		% add sample size
+		\samplesizehalf[violin color half = sorghum]{rawData/enrichment_TCT+GC_Sb_proto_boxplot.tsv}{id}{n}
+		
+		% add pvalues
+		\signifall*{rawData/enrichment_TCT+GC_Sb_proto_pvalues.tsv}	
+
+	\end{hgroupplot}
+	
+	\node[anchor = south west] (legend) at (group c1r1.above north west) {\textbf{TCT} element:\vphantom{g} $-$};
+	\coordinate (legend symbol) at ($(legend.south east) + (.25em, .2em)$);
+	\node[anchor = base west] at ($(legend.base east) + (.6em, 0)$) {$+$};
+	
+	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolleft, fill opacity = .5, x = .25em, y = .1em, rotate = 90, shift = {(legend symbol)}] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
+	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolright, fill opacity = .5, x = .25em, y = -.1em, rotate = 90, shift = {(legend symbol)}, yshift = -.1em] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
+	
+	
+	%%% subfigure labels
+	\subfiglabel[yshift = .5\columnsep]{enrInrLeaf}
+	\subfiglabel[yshift = .5\columnsep]{enrInrProto}
+	\subfiglabel[yshift = .5\columnsep]{enrTCTLeaf}
+	\subfiglabel[yshift = .5\columnsep]{enrTCTProto}
+
+\end{tikzpicture}

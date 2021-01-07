@@ -1,0 +1,459 @@
+%\tikzset{external/export next = false}
+
+\begin{tikzpicture}
+		
+	%%% correlation plot (arabidopsis library in tobacco)
+	\coordinate (corLeafAt) at (0, 0);
+	
+	\begin{axis}[
+		width = \threecolumnwidth - \plotylabelwidth,
+		height = \threecolumnwidth - \plotylabelwidth,
+		at = {(corLeafAt)},
+		anchor = north west,
+		xshift = \plotylabelwidth,
+		xymin = -7.95,
+		xymax = 6.75,
+		xytick = {-10, -8, ..., 10},
+		xlabel = {promoter strength (rep 1)},
+		ylabel = {promoter strength (rep 2)},
+		xlabel style = {name = plot xlabel},
+		scatter/classes = {
+			noENH={black},
+			withENH={35S enhancer}
+		}
+	]
+	
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = solido,
+			mark size = 0.25,
+			fill opacity = 0.1
+		] table[x = rep1,y = rep2, meta = sample.name] {rawData/enrichment_correlation_At_dark.tsv};
+		
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = text,
+			text mark as node = true,
+			text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -2\baselineskip * \coordindex},
+			text mark = {\spearman\\[-.25\baselineskip]\rsquare},
+			visualization depends on = value \thisrow{spearman}\as\spearman,
+			visualization depends on = value \thisrow{rsquare}\as\rsquare
+		] table [x expr = \xmin, y expr = \ymax, meta = sample.name] {rawData/enrichment_correlation_At_dark_stats.tsv};
+		
+		\node[anchor = south east, thin, draw, fill = white, align = center, node font = \figsmall] at (rel axis cs: 0.97, 0.03) {enhancer\\\tikz\path[fill = black] (-.3em -1pt, 0) (0, 0) circle (1pt) node[anchor = west] {$-$\vphantom{A}}; ~ \tikz\path[fill = DodgerBlue1] (0, 0) circle (1pt) node[anchor = west] {$+$\vphantom{A}};};
+		
+	\end{axis}
+	
+	\leafsymbol[(-.3, -.3)]{last plot.south west};
+	
+
+	%%% correlation plot (arabidopsis library in protoplasts)
+	\coordinate (corProtoAt) at (corLeafAt -| \twothirdcolumnwidth - \threecolumnwidth, 0);
+	
+	\begin{axis}[
+		width = \threecolumnwidth - \plotylabelwidth,
+		height = \threecolumnwidth - \plotylabelwidth,
+		at = {(corProtoAt)},
+		anchor = north west,
+		xshift = \plotylabelwidth,
+		xymin = -7.95,
+		xymax = 6.75,
+		xytick = {-10, -8, ..., 10},
+		xlabel = {promoter strength (rep 1)},
+		ylabel = {promoter strength (rep 2)},
+		scatter/classes = {
+			noENH={black},
+			withENH={35S enhancer}
+		}
+	]
+	
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = solido,
+			mark size = 0.25,
+			fill opacity = 0.1
+		] table[x = rep1,y = rep2, meta = sample.name] {rawData/enrichment_correlation_At_proto.tsv};
+		
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = text,
+			text mark as node = true,
+			text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -2\baselineskip * \coordindex},
+			text mark = {\spearman\\[-.25\baselineskip]\rsquare},
+			visualization depends on = value \thisrow{spearman}\as\spearman,
+			visualization depends on = value \thisrow{rsquare}\as\rsquare
+		] table [x expr = \xmin, y expr = \ymax, meta = sample.name] {rawData/enrichment_correlation_At_proto_stats.tsv};
+		
+		\node[anchor = south east, thin, draw, fill = white, align = center, node font = \figsmall] at (rel axis cs: 0.97, 0.03) {enhancer\\\tikz\path[fill = black] (-.3em -1pt, 0) (0, 0) circle (1pt) node[anchor = west] {$-$\vphantom{A}}; ~ \tikz\path[fill = DodgerBlue1] (0, 0) circle (1pt) node[anchor = west] {$+$\vphantom{A}};};
+		
+	\end{axis}
+	
+	\protosymbol[(-.3, -.3)]{last plot.south west};
+	
+	
+	%%% comparison tobacco leaves and maize protoplasts (arabidopsis library)
+	\coordinate (leafVprotoAt) at (corLeafAt -| \textwidth - \threecolumnwidth, 0);
+	
+	\begin{axis}[
+		width = \threecolumnwidth - \plotylabelwidth,
+		height = \threecolumnwidth - \plotylabelwidth,
+		at = {(leafVprotoAt)},
+		anchor = north west,
+		xshift = \plotylabelwidth,
+		xymin = -7.95,
+		xymax = 6.75,
+		xytick = {-10, -8, ..., 10},
+		ylabel = {tobacco leaves},
+		xlabel = {maize protoplasts},
+		xlabel style = {align = center},
+		ylabel style = {align = center},
+		scatter/classes = {
+			noENH={black},
+			withENH={35S enhancer}
+		}
+	]
+	
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = solido,
+			mark size = 0.25,
+			fill opacity = 0.1
+		] table[x = proto,y = leaf, meta = sample.name] {rawData/enrichment_leaf-vs-proto_At.tsv};
+		
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = text,
+			text mark as node = true,
+			text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -2\baselineskip * \coordindex},
+			text mark = {\spearman\\[-.25\baselineskip]\rsquare},
+			visualization depends on = value \thisrow{spearman}\as\spearman,
+			visualization depends on = value \thisrow{rsquare}\as\rsquare
+		] table [x expr = \xmin, y expr = \ymax, meta = sample.name] {rawData/enrichment_leaf-vs-proto_At_stats.tsv};
+		
+		\node[anchor = south east, thin, draw, fill = white, align = center, node font = \figsmall] at (rel axis cs: 0.97, 0.03) {enhancer\\\tikz\path[fill = black] (-.3em -1pt, 0) (0, 0) circle (1pt) node[anchor = west] {$-$\vphantom{A}}; ~ \tikz\path[fill = DodgerBlue1] (0, 0) circle (1pt) node[anchor = west] {$+$\vphantom{A}};};
+		
+	\end{axis}
+	
+	\leafsymbol[(-.4, 0)]{last plot.south west};
+	\protosymbol[(0, -.4)]{last plot.south west};
+	\node[node font = \figsmall, shift = {(-.4, -.4)}] at (last plot.south west) {vs.};
+	
+	
+	%%% correlation plot (sorghum library in tobacco)
+	\coordinate[yshift = -\columnsep] (corLeafSb) at (plot xlabel.south -| corLeafAt);
+	
+	\begin{axis}[
+		width = \threecolumnwidth - \plotylabelwidth,
+		height = \threecolumnwidth - \plotylabelwidth,
+		at = {(corLeafSb)},
+		anchor = north west,
+		xshift = \plotylabelwidth,
+		xymin = -7.95,
+		xymax = 6.75,
+		xytick = {-10, -8, ..., 10},
+		xlabel = {promoter strength (rep 1)},
+		ylabel = {promoter strength (rep 2)},
+		xlabel style = {name = plot xlabel},
+		scatter/classes = {
+			noENH={black},
+			withENH={35S enhancer}
+		}
+	]
+	
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = solido,
+			mark size = 0.25,
+			fill opacity = 0.1
+		] table[x = rep1,y = rep2, meta = sample.name] {rawData/enrichment_correlation_Sb_dark.tsv};
+		
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = text,
+			text mark as node = true,
+			text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -2\baselineskip * \coordindex},
+			text mark = {\spearman\\[-.25\baselineskip]\rsquare},
+			visualization depends on = value \thisrow{spearman}\as\spearman,
+			visualization depends on = value \thisrow{rsquare}\as\rsquare
+		] table [x expr = \xmin, y expr = \ymax, meta = sample.name] {rawData/enrichment_correlation_Sb_dark_stats.tsv};
+		
+		\node[anchor = south east, thin, draw, fill = white, align = center, node font = \figsmall] at (rel axis cs: 0.97, 0.03) {enhancer\\\tikz\path[fill = black] (-.3em -1pt, 0) (0, 0) circle (1pt) node[anchor = west] {$-$\vphantom{A}}; ~ \tikz\path[fill = DodgerBlue1] (0, 0) circle (1pt) node[anchor = west] {$+$\vphantom{A}};};
+		
+	\end{axis}
+	
+	\leafsymbol[(-.3, -.3)]{last plot.south west};
+	
+
+	%%% correlation plot (sorghum library in protoplasts)
+	\coordinate (corProtoSb) at (corLeafSb -| corProtoAt);
+	
+	\begin{axis}[
+		width = \threecolumnwidth - \plotylabelwidth,
+		height = \threecolumnwidth - \plotylabelwidth,
+		at = {(corProtoSb)},
+		anchor = north west,
+		xshift = \plotylabelwidth,
+		xymin = -7.95,
+		xymax = 6.75,
+		xytick = {-10, -8, ..., 10},
+		xlabel = {promoter strength (rep 1)},
+		ylabel = {promoter strength (rep 2)},
+		scatter/classes = {
+			noENH={black},
+			withENH={35S enhancer}
+		}
+	]
+	
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = solido,
+			mark size = 0.25,
+			fill opacity = 0.1
+		] table[x = rep1,y = rep2, meta = sample.name] {rawData/enrichment_correlation_Sb_proto.tsv};
+		
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = text,
+			text mark as node = true,
+			text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -2\baselineskip * \coordindex},
+			text mark = {\spearman\\[-.25\baselineskip]\rsquare},
+			visualization depends on = value \thisrow{spearman}\as\spearman,
+			visualization depends on = value \thisrow{rsquare}\as\rsquare
+		] table [x expr = \xmin, y expr = \ymax, meta = sample.name] {rawData/enrichment_correlation_Sb_proto_stats.tsv};
+		
+		\node[anchor = south east, thin, draw, fill = white, align = center, node font = \figsmall] at (rel axis cs: 0.97, 0.03) {enhancer\\\tikz\path[fill = black] (-.3em -1pt, 0) (0, 0) circle (1pt) node[anchor = west] {$-$\vphantom{A}}; ~ \tikz\path[fill = DodgerBlue1] (0, 0) circle (1pt) node[anchor = west] {$+$\vphantom{A}};};
+		
+	\end{axis}
+	
+	\protosymbol[(-.3, -.3)]{last plot.south west};
+	
+	
+	%%% comparison tobacco leaves and maize protoplasts (sorghum library)
+	\coordinate (leafVprotoSb) at (corLeafSb -| leafVprotoAt);
+	
+	\begin{axis}[
+		width = \threecolumnwidth - \plotylabelwidth,
+		height = \threecolumnwidth - \plotylabelwidth,
+		at = {(leafVprotoSb)},
+		anchor = north west,
+		xshift = \plotylabelwidth,
+		xymin = -7.95,
+		xymax = 6.75,
+		xytick = {-10, -8, ..., 10},
+		ylabel = {tobacco leaves},
+		xlabel = {maize protoplasts},
+		xlabel style = {align = center},
+		ylabel style = {align = center},
+		scatter/classes = {
+			noENH={black},
+			withENH={35S enhancer}
+		}
+	]
+	
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = solido,
+			mark size = 0.25,
+			fill opacity = 0.1
+		] table[x = proto,y = leaf, meta = sample.name] {rawData/enrichment_leaf-vs-proto_Sb.tsv};
+		
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = text,
+			text mark as node = true,
+			text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -2\baselineskip * \coordindex},
+			text mark = {\spearman\\[-.25\baselineskip]\rsquare},
+			visualization depends on = value \thisrow{spearman}\as\spearman,
+			visualization depends on = value \thisrow{rsquare}\as\rsquare
+		] table [x expr = \xmin, y expr = \ymax, meta = sample.name] {rawData/enrichment_leaf-vs-proto_Sb_stats.tsv};
+		
+		\node[anchor = south east, thin, draw, fill = white, align = center, node font = \figsmall] at (rel axis cs: 0.97, 0.03) {enhancer\\\tikz\path[fill = black] (-.3em -1pt, 0) (0, 0) circle (1pt) node[anchor = west] {$-$\vphantom{A}}; ~ \tikz\path[fill = DodgerBlue1] (0, 0) circle (1pt) node[anchor = west] {$+$\vphantom{A}};};
+		
+	\end{axis}
+	
+	\leafsymbol[(-.4, 0)]{last plot.south west};
+	\protosymbol[(0, -.4)]{last plot.south west};
+	\node[node font = \figsmall, shift = {(-.4, -.4)}] at (last plot.south west) {vs.};
+	
+	
+	%%% correlation plot (arabidopsis library in tobacco, light condition)
+	\coordinate[yshift = -\columnsep] (corLightAt) at (corLeafAt |- plot xlabel.south);
+	
+	\begin{axis}[
+		width = \threecolumnwidth - \plotylabelwidth,
+		height = \threecolumnwidth - \plotylabelwidth,
+		at = {(corLightAt)},
+		anchor = north west,
+		xshift = \plotylabelwidth,
+		xymin = -7.95,
+		xymax = 6.75,
+		xytick = {-10, -8, ..., 10},
+		xlabel = {promoter strength (rep 1)},
+		ylabel = {promoter strength (rep 2)},
+		xlabel style = {name = plot xlabel},
+		scatter/classes = {
+			noENH={black},
+			withENH={35S enhancer}
+		}
+	]
+	
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = solido,
+			mark size = 0.25,
+			fill opacity = 0.1
+		] table[x = rep1,y = rep2, meta = sample.name] {rawData/enrichment_correlation_At_light.tsv};
+		
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = text,
+			text mark as node = true,
+			text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -2\baselineskip * \coordindex},
+			text mark = {\spearman\\[-.25\baselineskip]\rsquare},
+			visualization depends on = value \thisrow{spearman}\as\spearman,
+			visualization depends on = value \thisrow{rsquare}\as\rsquare
+		] table [x expr = \xmin, y expr = \ymax, meta = sample.name] {rawData/enrichment_correlation_At_light_stats.tsv};
+		
+		\node[anchor = south east, thin, draw, fill = white, align = center, node font = \figsmall] at (rel axis cs: 0.97, 0.03) {enhancer\\\tikz\path[fill = black] (-.3em -1pt, 0) (0, 0) circle (1pt) node[anchor = west] {$-$\vphantom{A}}; ~ \tikz\path[fill = DodgerBlue1] (0, 0) circle (1pt) node[anchor = west] {$+$\vphantom{A}};};
+		
+	\end{axis}
+	
+	\lightsymbol[(-.3, -.3)]{last plot.south west};
+	
+
+	%%% correlation plot (maize library in tobacco, light condition)
+	\coordinate (corLightZm) at (corLightAt -| corProtoAt);
+	
+	\begin{axis}[
+		width = \threecolumnwidth - \plotylabelwidth,
+		height = \threecolumnwidth - \plotylabelwidth,
+		at = {(corLightZm)},
+		anchor = north west,
+		xshift = \plotylabelwidth,
+		xymin = -7.95,
+		xymax = 6.75,
+		xytick = {-10, -8, ..., 10},
+		xlabel = {promoter strength (rep 1)},
+		ylabel = {promoter strength (rep 2)},
+		scatter/classes = {
+			noENH={black},
+			withENH={35S enhancer}
+		}
+	]
+	
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = solido,
+			mark size = 0.25,
+			fill opacity = 0.1
+		] table[x = rep1,y = rep2, meta = sample.name] {rawData/enrichment_correlation_Zm_light.tsv};
+		
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = text,
+			text mark as node = true,
+			text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -2\baselineskip * \coordindex},
+			text mark = {\spearman\\[-.25\baselineskip]\rsquare},
+			visualization depends on = value \thisrow{spearman}\as\spearman,
+			visualization depends on = value \thisrow{rsquare}\as\rsquare
+		] table [x expr = \xmin, y expr = \ymax, meta = sample.name] {rawData/enrichment_correlation_Zm_light_stats.tsv};
+		
+		\node[anchor = south east, thin, draw, fill = white, align = center, node font = \figsmall] at (rel axis cs: 0.97, 0.03) {enhancer\\\tikz\path[fill = black] (-.3em -1pt, 0) (0, 0) circle (1pt) node[anchor = west] {$-$\vphantom{A}}; ~ \tikz\path[fill = DodgerBlue1] (0, 0) circle (1pt) node[anchor = west] {$+$\vphantom{A}};};
+		
+	\end{axis}
+	
+	\lightsymbol[(-.3, -.3)]{last plot.south west};
+	
+	
+	%%% correlation plot (sorghum library in tobacco, light condition)
+	\coordinate (corLightSb) at (corLightAt -| leafVprotoAt);
+	
+	\begin{axis}[
+		width = \threecolumnwidth - \plotylabelwidth,
+		height = \threecolumnwidth - \plotylabelwidth,
+		at = {(corLightSb)},
+		anchor = north west,
+		xshift = \plotylabelwidth,
+		xymin = -7.95,
+		xymax = 6.75,
+		xytick = {-10, -8, ..., 10},
+		xlabel = {promoter strength (rep 1)},
+		ylabel = {promoter strength (rep 2)},
+		scatter/classes = {
+			noENH={black},
+			withENH={35S enhancer}
+		}
+	]
+	
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = solido,
+			mark size = 0.25,
+			fill opacity = 0.1
+		] table[x = rep1,y = rep2, meta = sample.name] {rawData/enrichment_correlation_Sb_light.tsv};
+		
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = text,
+			text mark as node = true,
+			text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -2\baselineskip * \coordindex},
+			text mark = {\spearman\\[-.25\baselineskip]\rsquare},
+			visualization depends on = value \thisrow{spearman}\as\spearman,
+			visualization depends on = value \thisrow{rsquare}\as\rsquare
+		] table [x expr = \xmin, y expr = \ymax, meta = sample.name] {rawData/enrichment_correlation_Sb_light_stats.tsv};
+		
+		\node[anchor = south east, thin, draw, fill = white, align = center, node font = \figsmall] at (rel axis cs: 0.97, 0.03) {enhancer\\\tikz\path[fill = black] (-.3em -1pt, 0) (0, 0) circle (1pt) node[anchor = west] {$-$\vphantom{A}}; ~ \tikz\path[fill = DodgerBlue1] (0, 0) circle (1pt) node[anchor = west] {$+$\vphantom{A}};};
+		
+	\end{axis}
+	
+	\lightsymbol[(-.3, -.3)]{last plot.south west};
+	
+	
+	%%% subfigure labels
+	\subfiglabel[yshift = .5\columnsep]{corLeafAt}
+	\subfiglabel[yshift = .5\columnsep]{corProtoAt}
+	\subfiglabel[yshift = .5\columnsep]{leafVprotoAt}
+	\subfiglabel[yshift = .5\columnsep]{corLeafSb}
+	\subfiglabel[yshift = .5\columnsep]{corProtoSb}
+	\subfiglabel[yshift = .5\columnsep]{leafVprotoSb}
+	\subfiglabel[yshift = .5\columnsep]{corLightAt}
+	\subfiglabel[yshift = .5\columnsep]{corLightZm}
+	\subfiglabel[yshift = .5\columnsep]{corLightSb}
+
+\end{tikzpicture}

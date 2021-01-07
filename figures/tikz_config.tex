@@ -1,0 +1,255 @@
+%%% general
+\usetikzlibrary{calc, positioning, arrows.meta, arrows, bending, external, backgrounds, topaths}
+
+\tikzexternalize[prefix=extFigures/, only named=true]
+
+%%% layers
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background, main, foreground}
+
+
+%%% colors
+\colorlet{arabidopsis}{OrangeRed1}
+\colorlet{Arabidopsis}{arabidopsis}
+\colorlet{maize}{Chartreuse3}
+\colorlet{Maize}{maize}
+\colorlet{sorghum}{SteelBlue1}
+\colorlet{Sorghum}{sorghum}
+\colorlet{35S enhancer}{DodgerBlue1}
+\colorlet{leafCol}{Green4}
+\colorlet{protoCol}{Goldenrod1}
+
+
+%%% save and use png for externalization
+\tikzset{
+	% Defines a custom style which generates BOTH, .pdf and .png export
+	% but prefers the .png on inclusion.
+	png export/.style = {
+		external/system call/.add = {}{%
+			&& pdftocairo -png -r 300 -transp -singlefile "\image.pdf" "\image" %
+		},
+		/pgf/images/external info,
+		/pgf/images/include external/.code = {%
+			\includegraphics[width=\pgfexternalwidth,height=\pgfexternalheight]{##1.png}%
+		},
+	}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+%%% drawing commands %%%
+%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+\tikzset{
+	jitter/.style = {shift = {(rand * #1, rand * #1)}},
+	jitter/.default = 0.1cm,
+	arrow/.style = {very thick, -Latex},
+	chloroplast/.style = {Chartreuse3, fill opacity = .25 + rnd * .25, draw opacity = 0.5 + rnd * .5, rotate = rand * 360, x radius = .1 + rand * .03, y radius = .06 + rand * 0.02},
+	barcodeStyle/.style = {Orchid1},
+	barcode/.code = {\pgfkeysalso{barcodeStyle/.style = {#1}}},
+	promoterStyle/.style = {DarkSeaGreen3},
+	promoter/.code = {\pgfkeysalso{promoterStyle/.style = {#1}}},
+	enhancerStyle/.style = {Dodgerblue1},
+	enhancer/.code = {\pgfkeysalso{enhancerStyle/.style = {#1}}},
+	promoterStrength/.style = {semithick},
+	promoter strength/.is choice,
+	promoter strength/very weak/.code = {\pgfkeysalso{promoterStrength/.style = {very thin}}},
+	promoter strength/weak/.code = {\pgfkeysalso{promoterStrength/.style = {thin}}},
+	promoter strength/normal/.code = {\pgfkeysalso{promoterStrength/.style = {semithick}}},
+	promoter strength/strong/.code = {\pgfkeysalso{promoterStrength/.style = {thick}}},
+	promoter strength/very strong/.code = {\pgfkeysalso{promoterStrength/.style = {very thick}}}
+}
+\makeatother
+
+%%% STARR-seq construct
+% use:	\STARRconstruct[promoter = ..., enhancer = ..., promoter strength = ..., barcode = ...]{<position>}
+\newcommand{\STARRconstruct}[2][]{
+	\begin{scope}[#1]
+		\draw[dashed, thick] (#2) -- ++(.5, 0) coordinate (c1) {};
+		\path (c1) ++(4, 0) coordinate (c2) {};
+		\draw[dashed, thick] (c2) -- ++(.5, 0) coordinate (construct end);
+		
+		\fill[promoterStyle] (c1) ++(1, -.1) rectangle ++(.3, .2) ++(0, -.1) coordinate (c3);
+		\draw[-{Stealth[round]}, promoterStrength] (c3) ++(.5\pgflinewidth, 0) |- ++(.4,.3);
+		
+		\node[draw = black, thin, anchor = west, minimum width = 1cm] (ORF) at ($(c3) + (.4, 0)$) {GFP};
+		
+		\begin{pgfonlayer} {background}
+			\fill[barcodeStyle] (ORF.north west) ++(.15, 0) rectangle ($(ORF.south west) + (.05, 0)$);
+		\end{pgfonlayer}
+		
+		\node[draw = black, thin, anchor = west, text depth = 0pt] (polyA) at ($(ORF.east) + (.2, 0)$) {pA site};
+		
+		\draw[line width = .2cm, -Triangle Cap, enhancerStyle]  (c1) ++(.2, 0) -- ++(.6, 0);
+		
+		\begin{pgfonlayer} {background}
+			\draw[thick] (c1) -- (ORF.west) (ORF.east) -- (polyA.west) (polyA.east) -- (c2);
+		\end{pgfonlayer}
+	
+		\end{scope}
+}
+
+\newcommand{\STARRconstructShort}[2][]{
+	\begin{scope}[#1]
+		\draw[dashed, thick] (#2) -- ++(.5, 0) coordinate (c1) {};
+		\path (c1) ++(2.7, 0) coordinate (c2) {};
+		\draw[dashed, thick] (c2) -- ++(.5, 0) coordinate (construct end);
+		
+		\fill[promoterStyle] (c1) ++(.2, -.1) rectangle ++(.3, .2) ++(0, -.1) coordinate (c3);
+		\draw[-{Stealth[round]}, promoterStrength] (c3) ++(.5\pgflinewidth, 0) |- ++(.4,.3);
+		
+		\node[draw = black, thin, anchor = west, minimum width = 1cm] (ORF) at ($(c3) + (.4, 0)$) {GFP};
+		
+		\begin{pgfonlayer} {background}
+			\fill[barcodeStyle] (ORF.north west) ++(.15, 0) rectangle ($(ORF.south west) + (.05, 0)$);
+		\end{pgfonlayer}
+		
+		\node[draw = black, thin, anchor = west, text depth = 0pt] (polyA) at ($(ORF.east) + (.2, 0)$) {pA};
+		
+		\draw[line width = .2cm, -Triangle Cap, enhancerStyle]  (c1) ++(.2, 0) -- ++(.6, 0);
+		
+		\begin{pgfonlayer} {background}
+			\draw[thick] (c1) -- (ORF.west) (ORF.east) -- (polyA.west) (polyA.east) -- (c2);
+		\end{pgfonlayer}
+	
+		\end{scope}
+}
+
+
+%%% mRNA transcript
+% use:	\transcript[barcode = ...]{<position>}
+\newcommand{\transcript}[2][]{%
+	\begin{scope}[#1]
+		
+		\draw[thick] (#2) -- ++(.4, 0) node[fill = white, anchor = west, minimum width = 1cm, outer sep = 0pt] (ORF) {GFP};
+		
+		\node[anchor = west, inner sep = .15em] (polyA) at ($(ORF.east) + (.2, 0)$) {AAAAAA};
+		
+		\draw[thick] (ORF.east) -- (polyA.west);
+	
+		\fill[barcodeStyle] (ORF.north west) ++(.15, 0) rectangle ($(ORF.south west) + (.05, 0)$);
+		\draw[thin] (ORF.north west) rectangle (ORF.south east);
+	\end{scope}
+}
+
+
+%%% infiltrated leaf
+% use:	\leaf[<scale factor>]{<position>}
+\newcommand{\leaf}[2][1]{%
+	\coordinate (leaf center) at (#2);
+	\begin{scope}[scale = #1, rotate = -45]
+	
+		\path (leaf center) + (-.28, 2.122) coordinate (tip);
+	
+		\path (tip) ++(-1.512, -2.036) coordinate (c1) ++(1.495, -1.482) coordinate (c2) ++(0.115, -0.077) coordinate (c3) ++(0.091, -0.648) coordinate (c4) ++(0.197, 0) coordinate (c5) ++(-0.088, 0.624) coordinate (c6) ++(0.144, 0.107) coordinate (c7) ++(1.58, 1.514) coordinate (c8);
+		
+		\filldraw[draw = Chartreuse4, fill = Chartreuse3] (c5)
+			.. controls +(-0.052, 0.182) and ($(c5) + (-0.088, 0.354)$) .. (c6)
+			.. controls +(0, 0.076) and ($(c6) + (0.028, 0.149)$) .. (c7)
+			.. controls +(0.508, -0.162) and ($(c7) + (1.957, -0.273)$) .. (c8)
+			.. controls +(-0.424, 2.007) and ($(c8) + (-1.637, 1.595)$) .. (tip)
+			.. controls +(-0.255, -0.410) and ($(tip) + (-1.446, -0.729)$) .. (c1) 
+			.. controls +(-0.064, -1.265) and ($(c1) + (0.359, -1.908)$) .. (c2)
+			.. controls +(0.057, 0.022) and ($(c2) + (0.115, 0.012)$) .. (c3)
+			.. controls +(0, -0.203) and ($(c3) + (0.025, -0.458)$) .. (c4)
+		;
+		
+		\coordinate (stem) at ($(c4)!.5!(c5)$);
+			
+		\path (stem) ++(-0.079, 0.78) coordinate (c9) ++(0.014, 0.148) coordinate (c10) ++(0.017, 0.548) coordinate (c11) ++(0, 0.15) coordinate (c12) ++(-0.036, 0.942) coordinate (c13) ++(-0.015, 0.21) coordinate (c14) ++(-0.13, 1.023) coordinate (c15);
+		
+		\draw[Chartreuse2, thin, line cap = round] (c15) .. controls +(0.071, -0.366) and ($(c15) + (0.106, -0.707)$) .. (c14);
+		\draw[Chartreuse2] (c14) .. controls +(0.005, -0.072)  and ($(c14) + (0.01, -0.142)$) .. (c13);
+		\draw[Chartreuse2] (c13) .. controls +(0.02, -0.315) and ($(c13) + (0.034, -0.632)$) .. (c12);
+		\draw[Chartreuse2, thick] (c12) .. controls +(0, -0.051) and ($(c12) + (0, -0.101)$) .. (c11);
+		\draw[Chartreuse2, thick] (c11) .. controls +(-0.002, -0.185) and ($(c11) + (-0.006, -0.378)$) .. (c10);
+		\draw[Chartreuse2, very thick] (c10) .. controls +(-0.003, -0.05) and ($(c10) + (-0.009, -0.099)$) .. (c9);
+		\draw[Chartreuse2, very thick, line cap = round] (c9) .. controls +(-0.025, -0.249) and ($(c9) + (0.013, -0.542)$) .. (stem);
+		
+		\draw[Chartreuse2, line cap = round, thick] (stem) ++(1.462, 2.097) coordinate (c16) .. controls +(-0.2, -1.143) and ($(c16) + (-1.525, -0.933)$) .. ++(-1.527, -1.169) ++(1.064, 1.937) coordinate (c17);
+		\draw[Chartreuse2, line cap = round] (c17) .. controls +(-0.312, -1.002) and ($(c17) + (-1.047, -0.998)$) .. ++(-1.047, -1.239) ++(0.4807, 1.856) coordinate (c18);
+		\draw[Chartreuse2, line cap = round, thin] (c18) .. controls +(-0.242, -0.562) and ($(c18) + (-0.544, -0.553)$) .. ++(-0.531, -0.704) ++(-0.563, 0.624) coordinate (c19);
+		\draw[Chartreuse2, line cap = round, thin] (c19) .. controls +(0.082, -0.422) and ($(c19) + (0.564, -0.624)$) .. ++(0.578, -0.834) ++(-0.975, 0.286) coordinate (c20);
+		\draw[Chartreuse2, line cap = round] (c20) .. controls +(0.019, -0.88) and ($(c20) + (1.006, -1.128)$) .. ++(1.011, -1.378) ++(-1.487, 0.529) coordinate (c21);
+		\draw[Chartreuse2, line cap = round, thick] (c21) .. controls +(0.034, -1.107) and ($(c21) + (1.484, -0.824)$) .. ++(1.456, -1.225);
+		
+		
+		\fill[Chartreuse4, opacity = .5, decoration={random steps, segment length = #1 * 0.075cm, amplitude = #1 * 0.075cm}, decorate] (tip)  ++(-0.2, -2) circle (0.8);
+		
+	\end{scope}
+}
+
+% save in a box
+\newsavebox{\leafbox}
+\savebox{\leafbox}{%
+	\tikzset{external/optimize=false}%
+	\begin{tikzpicture}%
+		\path[use as bounding box] (-.5175, .485) rectangle ++(1, -1);%
+		\leaf[0.25]{0, 0}%
+	\end{tikzpicture}%
+}
+
+\newcommand{\leafsymbol}[2][(.35, -.35)]{
+	\node[inner sep = 0pt, shift = {#1}] at (#2) {\scalebox{0.5}{\usebox{\leafbox}}}; 
+}
+
+
+%%% protoplast
+% use:	\protoplast[<scale factor>]{<position>}
+\newcommand{\protoplast}[2][1]{%
+	\coordinate (protoplast) at (#2);
+	\begin{scope}[scale = #1]
+		\shadedraw[Chartreuse4, outer color = Chartreuse2, inner color = white] (protoplast) circle (.4);
+		
+		\begin{scope}
+			\clip (protoplast) circle (.4);	
+			\foreach \i in {1, ..., 20} {
+				\coordinate[jitter = .4cm] (cp\i) at (protoplast);
+				\filldraw[chloroplast] (cp\i) ellipse;
+			}
+		\end{scope}
+	\end{scope}
+}
+
+% save in a box
+\newsavebox{\protobox}
+\savebox{\protobox}{%
+	\tikzset{external/optimize=false}%
+	\begin{tikzpicture}%
+		\path[use as bounding box] (-.5, .5) rectangle ++(1, -1);
+		\protoplast[1.15]{0, 0}%
+	\end{tikzpicture}%
+}
+
+\newcommand{\protosymbol}[2][(.35, -.35)]{
+	\node[inner sep = 0pt, shift = {#1}] at (#2) {\scalebox{0.5}{\usebox{\protobox}}}; 
+}
+
+
+%%% sun
+% use: \sun[<scale factor>]{<position>}
+\newcommand{\sun}[2][1]{%
+	\coordinate (sun) at (#2);
+	\begin{scope}[scale = #1]
+		\fill[Gold1] (sun) circle (.2);
+		\foreach \x in {1, ..., 6} {
+			\draw[very thick, Gold1] (sun) ++(\x * 60: .25) -- ++(\x * 60: .125);
+			\draw[very thick, Gold1] (sun) ++(\x * 60 + 30: .25) -- ++(\x * 60 + 30: .15);
+		}
+	\end{scope}
+}
+
+% save in a box
+\newsavebox{\lightbox}
+\savebox{\lightbox}{%
+	\tikzset{external/optimize=false}%
+	\begin{tikzpicture}%
+		\path[use as bounding box] (-.5, .5) rectangle ++(1, -1);
+		\sun[1.15]{0, 0}%
+	\end{tikzpicture}%
+}
+
+\newcommand{\lightsymbol}[2][(.35, -.35)]{
+	\node[inner sep = 0pt, shift = {#1}] at (#2) {\scalebox{0.5}{\usebox{\lightbox}}}; 
+}
+

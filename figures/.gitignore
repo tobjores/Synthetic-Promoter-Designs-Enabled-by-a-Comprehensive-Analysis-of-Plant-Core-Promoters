@@ -1,0 +1,7 @@
+*.dep
+*.dpth
+*.log
+*.aux
+*.auxlock
+*.out
+*.synctex.gz

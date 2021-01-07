@@ -1,0 +1,6 @@
+term_id	term_name	p_Zm	p_Sb	p_At	ns_Zm	ns_Sb	ns_At
+GO:0005576	extracellular region	8.078758126640409	5.444362791742749	NaN	NaN	NaN	1.1824408472828438
+GO:0000786	nucleosome	5.5560108151142416	NaN	NaN	NaN	-0	-0
+GO:0006950	response to stress	NaN	NaN	8.856614796715599	0.05911132168888353	-0	NaN
+GO:0016491	oxidoreductase activity	NaN	NaN	NaN	0.7468119399425485	0.9511399285391939	-0
+GO:0051082	unfolded protein binding	NaN	NaN	NaN	-0	-0	-0

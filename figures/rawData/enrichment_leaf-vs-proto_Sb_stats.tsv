@@ -1,0 +1,3 @@
+sample.name	spearman	rsquare
+noENH	$\rho=0.37$	$R^2=0.17$
+withENH	$\rho=0.57$	$R^2=0.34$

@@ -1,0 +1,302 @@
+%\tikzset{external/export next = false}
+
+\begin{tikzpicture}
+		
+	%%% correlation plot (first validation set in tobacco, dark)
+	\coordinate (PROvalLeaf) at (0, 0);
+	
+	\begin{axis}[
+		width = \threecolumnwidth - \plotylabelwidth,
+		height = \threecolumnwidth - \plotylabelwidth,
+		at = {(PROvalLeaf)},
+		anchor = north west,
+		xshift = \plotylabelwidth,
+		xymin = -6.25,
+		xymax = 6.25,
+		xytick = {-10, -8, ..., 10},
+		xlabel = {promoter strength (validation set 1)},
+		ylabel = {promoter strength (main data)},
+		xlabel style = {name = plot xlabel},
+		scatter/classes = {
+			noENH={black},
+			withENH={35S enhancer}
+		}
+	]
+	
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = solido,
+			mark size = 0.5
+		] table[x = enrichment.val, y = enrichment.pro, meta = sample.name] {rawData/enrichment_correlation_PROval_dark.tsv};
+		
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = text,
+			text mark as node = true,
+			text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -2\baselineskip * \coordindex},
+			text mark = {\spearman\\[-.25\baselineskip]\rsquare},
+			visualization depends on = value \thisrow{spearman}\as\spearman,
+			visualization depends on = value \thisrow{rsquare}\as\rsquare
+		] table [x expr = \xmin, y expr = \ymax, meta = sample.name] {rawData/enrichment_correlation_PROval_dark_stats.tsv};
+		
+		\node[anchor = south east, thin, draw, fill = white, align = center, node font = \figsmall] at (rel axis cs: 0.97, 0.03) {enhancer\\\tikz\path[fill = black] (-.3em -1pt, 0) (0, 0) circle (1pt) node[anchor = west] {$-$\vphantom{A}}; ~ \tikz\path[fill = DodgerBlue1] (0, 0) circle (1pt) node[anchor = west] {$+$\vphantom{A}};};
+		
+	\end{axis}
+	
+	\leafsymbol[(-.4, -.4)]{last plot.south west};
+	
+
+	%%% correlation plot (first validation set in protoplasts, dark)
+	\coordinate (PROvalProto) at (PROvalLeaf -| \twothirdcolumnwidth - \threecolumnwidth, 0);
+	
+	\begin{axis}[
+		width = \threecolumnwidth - \plotylabelwidth,
+		height = \threecolumnwidth - \plotylabelwidth,
+		at = {(PROvalProto)},
+		anchor = north west,
+		xshift = \plotylabelwidth,
+		xymin = -6.25,
+		xymax = 6.25,
+		xytick = {-10, -8, ..., 10},
+		xlabel = {promoter strength (validation set 1)},
+		ylabel = {promoter strength (main data)},
+		xlabel style = {name = plot xlabel},
+		scatter/classes = {
+			noENH={black},
+			withENH={35S enhancer}
+		}
+	]
+	
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = solido,
+			mark size = 0.5
+		] table[x = enrichment.val, y = enrichment.pro, meta = sample.name] {rawData/enrichment_correlation_PROval_proto.tsv};
+		
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = text,
+			text mark as node = true,
+			text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -2\baselineskip * \coordindex},
+			text mark = {\spearman\\[-.25\baselineskip]\rsquare},
+			visualization depends on = value \thisrow{spearman}\as\spearman,
+			visualization depends on = value \thisrow{rsquare}\as\rsquare
+		] table [x expr = \xmin, y expr = \ymax, meta = sample.name] {rawData/enrichment_correlation_PROval_proto_stats.tsv};
+		
+		\node[anchor = south east, thin, draw, fill = white, align = center, node font = \figsmall] at (rel axis cs: 0.97, 0.03) {enhancer\\\tikz\path[fill = black] (-.3em -1pt, 0) (0, 0) circle (1pt) node[anchor = west] {$-$\vphantom{A}}; ~ \tikz\path[fill = DodgerBlue1] (0, 0) circle (1pt) node[anchor = west] {$+$\vphantom{A}};};
+		
+	\end{axis}
+	
+	\protosymbol[(-.4, -.4)]{last plot.south west};
+	
+	
+	%%% correlation plot (first validation set in tobacco, light)
+	\coordinate (PROvalLight) at (PROvalLeaf -| \textwidth - \threecolumnwidth, 0);
+	
+	\begin{axis}[
+		width = \threecolumnwidth - \plotylabelwidth,
+		height = \threecolumnwidth - \plotylabelwidth,
+		at = {(PROvalLight)},
+		anchor = north west,
+		xshift = \plotylabelwidth,
+		xymin = -6.25,
+		xymax = 6.25,
+		xytick = {-10, -8, ..., 10},
+		xlabel = {promoter strength (validation set 1)},
+		ylabel = {promoter strength (main data)},
+		xlabel style = {name = plot xlabel},
+		scatter/classes = {
+			noENH={black},
+			withENH={35S enhancer}
+		}
+	]
+	
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = solido,
+			mark size = 0.5
+		] table[x = enrichment.val, y = enrichment.pro, meta = sample.name] {rawData/enrichment_correlation_PROval_light.tsv};
+		
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = text,
+			text mark as node = true,
+			text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -2\baselineskip * \coordindex},
+			text mark = {\spearman\\[-.25\baselineskip]\rsquare},
+			visualization depends on = value \thisrow{spearman}\as\spearman,
+			visualization depends on = value \thisrow{rsquare}\as\rsquare
+		] table [x expr = \xmin, y expr = \ymax, meta = sample.name] {rawData/enrichment_correlation_PROval_light_stats.tsv};
+		
+		\node[anchor = south east, thin, draw, fill = white, align = center, node font = \figsmall] at (rel axis cs: 0.97, 0.03) {enhancer\\\tikz\path[fill = black] (-.3em -1pt, 0) (0, 0) circle (1pt) node[anchor = west] {$-$\vphantom{A}}; ~ \tikz\path[fill = DodgerBlue1] (0, 0) circle (1pt) node[anchor = west] {$+$\vphantom{A}};};
+		
+	\end{axis}
+	
+	\lightsymbol[(-.4, -.4)]{last plot.south west};
+	
+	
+	%%% correlation plot (second validation set in tobacco, dark)
+	\coordinate[yshift = -\columnsep] (PROevoLeaf) at (plot xlabel.south -| PROvalLeaf);
+	
+	\begin{axis}[
+		width = \threecolumnwidth - \plotylabelwidth,
+		height = \threecolumnwidth - \plotylabelwidth,
+		at = {(PROevoLeaf)},
+		anchor = north west,
+		xshift = \plotylabelwidth,
+		xymin = -6.25,
+		xymax = 6.25,
+		xytick = {-10, -8, ..., 10},
+		xlabel = {promoter strength (validation set 2)},
+		ylabel = {promoter strength (main data)},
+		xlabel style = {name = plot xlabel},
+		scatter/classes = {
+			noENH={black},
+			withENH={35S enhancer}
+		}
+	]
+	
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = solido,
+			mark size = 0.5
+		] table[x = enrichment.val, y = enrichment.pro, meta = sample.name] {rawData/enrichment_correlation_PROevo_dark.tsv};
+		
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = text,
+			text mark as node = true,
+			text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -2\baselineskip * \coordindex},
+			text mark = {\spearman\\[-.25\baselineskip]\rsquare},
+			visualization depends on = value \thisrow{spearman}\as\spearman,
+			visualization depends on = value \thisrow{rsquare}\as\rsquare
+		] table [x expr = \xmin, y expr = \ymax, meta = sample.name] {rawData/enrichment_correlation_PROevo_dark_stats.tsv};
+		
+		\node[anchor = south east, thin, draw, fill = white, align = center, node font = \figsmall] at (rel axis cs: 0.97, 0.03) {enhancer\\\tikz\path[fill = black] (-.3em -1pt, 0) (0, 0) circle (1pt) node[anchor = west] {$-$\vphantom{A}}; ~ \tikz\path[fill = DodgerBlue1] (0, 0) circle (1pt) node[anchor = west] {$+$\vphantom{A}};};
+		
+	\end{axis}
+	
+	\leafsymbol[(-.4, -.4)]{last plot.south west};
+	
+
+	%%% correlation plot (second validation set in protoplasts, dark)
+	\coordinate (PROevoProto) at (PROevoLeaf -| PROvalProto);
+	
+	\begin{axis}[
+		width = \threecolumnwidth - \plotylabelwidth,
+		height = \threecolumnwidth - \plotylabelwidth,
+		at = {(PROevoProto)},
+		anchor = north west,
+		xshift = \plotylabelwidth,
+		xymin = -6.25,
+		xymax = 6.25,
+		xytick = {-10, -8, ..., 10},
+		xlabel = {promoter strength (validation set 2)},
+		ylabel = {promoter strength (main data)},
+		xlabel style = {name = plot xlabel},
+		scatter/classes = {
+			noENH={black},
+			withENH={35S enhancer}
+		}
+	]
+	
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = solido,
+			mark size = 0.5
+		] table[x = enrichment.val, y = enrichment.pro, meta = sample.name] {rawData/enrichment_correlation_PROevo_proto.tsv};
+		
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = text,
+			text mark as node = true,
+			text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -2\baselineskip * \coordindex},
+			text mark = {\spearman\\[-.25\baselineskip]\rsquare},
+			visualization depends on = value \thisrow{spearman}\as\spearman,
+			visualization depends on = value \thisrow{rsquare}\as\rsquare
+		] table [x expr = \xmin, y expr = \ymax, meta = sample.name] {rawData/enrichment_correlation_PROevo_proto_stats.tsv};
+		
+		\node[anchor = south east, thin, draw, fill = white, align = center, node font = \figsmall] at (rel axis cs: 0.97, 0.03) {enhancer\\\tikz\path[fill = black] (-.3em -1pt, 0) (0, 0) circle (1pt) node[anchor = west] {$-$\vphantom{A}}; ~ \tikz\path[fill = DodgerBlue1] (0, 0) circle (1pt) node[anchor = west] {$+$\vphantom{A}};};
+		
+	\end{axis}
+	
+	\protosymbol[(-.4, -.4)]{last plot.south west};
+	
+	
+	%%% correlation plot (second validation set in tobacco, light)
+	\coordinate (PROevoLight) at (PROevoLeaf -| PROvalLight);
+	
+	\begin{axis}[
+		width = \threecolumnwidth - \plotylabelwidth,
+		height = \threecolumnwidth - \plotylabelwidth,
+		at = {(PROevoLight)},
+		anchor = north west,
+		xshift = \plotylabelwidth,
+		xymin = -6.25,
+		xymax = 6.25,
+		xytick = {-10, -8, ..., 10},
+		xlabel = {promoter strength (validation set 2)},
+		ylabel = {promoter strength (main data)},
+		xlabel style = {name = plot xlabel},
+		scatter/classes = {
+			noENH={black},
+			withENH={35S enhancer}
+		}
+	]
+	
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = solido,
+			mark size = 0.5
+		] table[x = enrichment.val, y = enrichment.pro, meta = sample.name] {rawData/enrichment_correlation_PROevo_light.tsv};
+		
+		\addplot [
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark = text,
+			text mark as node = true,
+			text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -2\baselineskip * \coordindex},
+			text mark = {\spearman\\[-.25\baselineskip]\rsquare},
+			visualization depends on = value \thisrow{spearman}\as\spearman,
+			visualization depends on = value \thisrow{rsquare}\as\rsquare
+		] table [x expr = \xmin, y expr = \ymax, meta = sample.name] {rawData/enrichment_correlation_PROevo_light_stats.tsv};
+		
+		\node[anchor = south east, thin, draw, fill = white, align = center, node font = \figsmall] at (rel axis cs: 0.97, 0.03) {enhancer\\\tikz\path[fill = black] (-.3em -1pt, 0) (0, 0) circle (1pt) node[anchor = west] {$-$\vphantom{A}}; ~ \tikz\path[fill = DodgerBlue1] (0, 0) circle (1pt) node[anchor = west] {$+$\vphantom{A}};};
+		
+	\end{axis}
+	
+	\lightsymbol[(-.4, -.4)]{last plot.south west};
+	
+	
+	
+	%%% subfigure labels
+	\subfiglabel[yshift = .5\columnsep]{PROvalLeaf}
+	\subfiglabel[yshift = .5\columnsep]{PROvalProto}
+	\subfiglabel[yshift = .5\columnsep]{PROvalLight}
+	\subfiglabel[yshift = .5\columnsep]{PROevoLeaf}
+	\subfiglabel[yshift = .5\columnsep]{PROevoProto}
+	\subfiglabel[yshift = .5\columnsep]{PROevoLight}
+
+\end{tikzpicture}

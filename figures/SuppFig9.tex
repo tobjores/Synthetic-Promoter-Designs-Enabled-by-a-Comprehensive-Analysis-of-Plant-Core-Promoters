@@ -1,0 +1,239 @@
+%\tikzset{external/export next = false}
+
+\begin{tikzpicture}
+
+	\begin{pgfinterruptboundingbox} % somehow these plots add about 25pt of whitespace to their right ... no idea why
+
+		%%% TCP position
+		\coordinate (TCPpos) at (0, 0);
+		
+		\begin{vgroupplot}[%
+			width = \twocolumnwidth - \plotylabelwidth,
+			xlabel = {TCP binding site position (rel. to TSS)},
+			xlabel style = {name = plot xlabel},
+			xmin = 0,
+			xmax = 170,
+			ymin = 0,
+			ymax = 115,
+			xtick = {6, 26, ..., 166},
+			xticklabel = {$\pgfmathparse{\tick < 166 ? \tick - 166 : \tick -165}\pgfmathprintnumber[print sign]{\pgfmathresult}$},
+			ytick = {0, 20, ..., 140}, 
+			group position = {at = {(TCPpos)}, anchor = north west, xshift = \plotylabelwidth},
+			ybar = 0pt,
+			legend pos = north west,
+			legend columns = 3
+		]{\twocolumnwidth}{3}{promoters}
+		
+				\nextgroupplot[
+					bar width = 1
+				]
+	
+				\addplot [arabidopsis, fill, fill opacity = .5] table [x = pos, y = At] {rawData/TCP_position.tsv};
+				
+				\addlegendimage{maize, fill, fill opacity = .5}
+				\addlegendimage{sorghum, fill, fill opacity = .5}
+				
+				\legend{Arabidopsis\phantom{A}, Maize\phantom{A}, Sorghum}
+				
+				
+				\nextgroupplot[
+					bar width = 1
+				]
+				
+				\addplot [maize, fill, fill opacity = .5] table [x = pos, y = Zm] {rawData/TCP_position.tsv};
+				
+				
+				\nextgroupplot[
+					bar width = 1
+				]
+				
+				\addplot [sorghum, fill, fill opacity = .5] table [x = pos, y = Sb] {rawData/TCP_position.tsv};
+		
+		\end{vgroupplot}
+		
+		
+		%%% HSF position
+		\coordinate (HSFpos) at (TCPpos -| \textwidth - \twocolumnwidth, 0);
+		
+		\begin{vgroupplot}[%
+			width = \twocolumnwidth - \plotylabelwidth,
+			xlabel = {HSF binding site position (rel. to TSS)},
+			xlabel style = {name = plot xlabel},
+			xmin = 0,
+			xmax = 170,
+			ymin = 0,
+			ymax = 13,
+			xtick = {6, 26, ..., 166},
+			xticklabel = {$\pgfmathparse{\tick < 166 ? \tick - 166 : \tick -165}\pgfmathprintnumber[print sign]{\pgfmathresult}$},
+			ytick = {0, 2, ..., 14}, 
+			group position = {at = {(HSFpos)}, anchor = north west, xshift = \plotylabelwidth},
+			ybar = 0pt,
+			legend pos = north west,
+			legend columns = 3
+		]{\twocolumnwidth}{3}{promoters}
+		
+				\nextgroupplot[
+					bar width = 1
+				]
+	
+				\addplot [arabidopsis, fill, fill opacity = .5] table [x = pos, y = At] {rawData/HSF_position.tsv};
+				
+				\addlegendimage{maize, fill, fill opacity = .5}
+				\addlegendimage{sorghum, fill, fill opacity = .5}
+				
+				\legend{Arabidopsis\phantom{A}, Maize\phantom{A}, Sorghum}
+				
+				
+				\nextgroupplot[
+					bar width = 1
+				]
+				
+				\addplot [maize, fill, fill opacity = .5] table [x = pos, y = Zm] {rawData/HSF_position.tsv};
+				
+				
+				\nextgroupplot[
+					bar width = 1
+				]
+				
+				\addplot [sorghum, fill, fill opacity = .5] table [x = pos, y = Sb] {rawData/HSF_position.tsv};
+		
+		\end{vgroupplot}
+		
+		
+		%%% enrichment by TCP position (tobacco)
+		\coordinate[yshift = -\columnsep] (enrTCPposLeaf) at (TCPpos |- plot xlabel.south);
+		
+		\leafsymbol{enrTCPposLeaf};
+		
+		\begin{hgroupplot}[%
+			ylabel = promoter strength,
+			ymin = -8,
+			ymax = 7,
+			ytick = {-10, -8, ..., 10},
+			group position = {anchor = above north west, at = {(enrTCPposLeaf)}, xshift = \plotylabelwidth},
+			group/every plot/.append style = {x grids = false}
+		]{\twocolumnwidth}{3}{TCP binding site position (rel. to TATA-box)}
+	
+				
+			\nextgroupplot[
+				title = Arabidopsis,
+				x tick table = {rawData/enrichment_TCPpos_At_leaf_boxplot.tsv}{LaTeX.label}
+			]
+				
+			% violin and box plot
+			\violinbox[violin color = arabidopsis]{rawData/enrichment_TCPpos_At_leaf_boxplot.tsv}{rawData/enrichment_TCPpos_At_leaf_violin.tsv}
+				
+			% add sample size
+			\samplesize{rawData/enrichment_TCPpos_At_leaf_boxplot.tsv}{id}{n}
+			
+			% add significance level
+			\signif*{rawData/enrichment_TCPpos_At_leaf_pvalues.tsv}{1}{2}
+			
+			
+			\nextgroupplot[
+				title = Maize,
+				x tick table = {rawData/enrichment_TCPpos_Zm_leaf_boxplot.tsv}{LaTeX.label}
+			]
+			
+			% violin and box plot
+			\violinbox[violin color = maize]{rawData/enrichment_TCPpos_Zm_leaf_boxplot.tsv}{rawData/enrichment_TCPpos_Zm_leaf_violin.tsv}
+				
+			% add sample size
+			\samplesize{rawData/enrichment_TCPpos_Zm_leaf_boxplot.tsv}{id}{n}
+			
+			% add significance level
+			\signif*{rawData/enrichment_TCPpos_Zm_leaf_pvalues.tsv}{1}{2}
+			
+			
+			\nextgroupplot[
+				title = Sorghum,
+				x tick table = {rawData/enrichment_TCPpos_Sb_leaf_boxplot.tsv}{LaTeX.label}
+			]
+				
+			% violin and box plot
+			\violinbox[violin color = sorghum]{rawData/enrichment_TCPpos_Sb_leaf_boxplot.tsv}{rawData/enrichment_TCPpos_Sb_leaf_violin.tsv}
+			
+			% add sample size
+			\samplesize{rawData/enrichment_TCPpos_Sb_leaf_boxplot.tsv}{id}{n}
+			
+			% add significance level
+			\signif*{rawData/enrichment_TCPpos_Sb_leaf_pvalues.tsv}{1}{2}
+				
+		\end{hgroupplot}
+		
+		
+		%%% enrichment by HSF position (protoplasts)
+	
+		\coordinate (enrHSFposLeaf) at (HSFpos |- enrTCPposLeaf);
+		
+		\protosymbol{enrHSFposLeaf};
+		
+		\begin{hgroupplot}[%
+			ylabel = promoter strength,
+			ymin = -8,
+			ymax = 7,
+			ytick = {-10, -8, ..., 10},
+			group position = {anchor = above north west, at = {(enrHSFposLeaf)}, xshift = \plotylabelwidth},
+			group/every plot/.append style = {x grids = false}
+		]{\twocolumnwidth}{3}{HSF binding site position (rel. to TATA-box)}
+	
+				
+			\nextgroupplot[
+				title = Arabidopsis,
+				x tick table = {rawData/enrichment_HSFpos_At_proto_boxplot.tsv}{LaTeX.label}
+			]
+				
+			% violin and box plot
+			\violinbox[violin color = arabidopsis]{rawData/enrichment_HSFpos_At_proto_boxplot.tsv}{rawData/enrichment_HSFpos_At_proto_violin.tsv}
+				
+			% add sample size
+			\samplesize{rawData/enrichment_HSFpos_At_proto_boxplot.tsv}{id}{n}
+			
+			% add significance level
+			\signif*{rawData/enrichment_HSFpos_At_proto_pvalues.tsv}{1}{2}
+			
+			
+			\nextgroupplot[
+				title = Maize,
+				x tick table = {rawData/enrichment_HSFpos_Zm_proto_boxplot.tsv}{LaTeX.label}
+			]
+			
+			% violin and box plot
+			\violinbox[violin color = maize]{rawData/enrichment_HSFpos_Zm_proto_boxplot.tsv}{rawData/enrichment_HSFpos_Zm_proto_violin.tsv}
+				
+			% add sample size
+			\samplesize{rawData/enrichment_HSFpos_Zm_proto_boxplot.tsv}{id}{n}
+			
+			% add significance level
+			\signif*{rawData/enrichment_HSFpos_Zm_proto_pvalues.tsv}{1}{2}
+			
+			
+			\nextgroupplot[
+				title = Sorghum,
+				x tick table = {rawData/enrichment_HSFpos_Sb_proto_boxplot.tsv}{LaTeX.label}
+			]
+				
+			% violin and box plot
+			\violinbox[violin color = sorghum]{rawData/enrichment_HSFpos_Sb_proto_boxplot.tsv}{rawData/enrichment_HSFpos_Sb_proto_violin.tsv}
+			
+			% add sample size
+			\samplesize{rawData/enrichment_HSFpos_Sb_proto_boxplot.tsv}{id}{n}
+			
+			% add significance level
+			\signif*{rawData/enrichment_HSFpos_Sb_proto_pvalues.tsv}{1}{2}
+				
+		\end{hgroupplot}
+		
+		
+		%%% subfigure labels
+		\subfiglabel[yshift = .5\columnsep]{TCPpos}
+		\subfiglabel[yshift = .5\columnsep]{HSFpos}
+		\subfiglabel[yshift = .5\columnsep]{enrTCPposLeaf}
+		\subfiglabel[yshift = .5\columnsep]{enrHSFposLeaf}
+	
+	\end{pgfinterruptboundingbox}
+	
+	% manually add the correct bounding box
+	\path (TCPpos) ++(.2pt, .5\columnsep) rectangle (\textwidth + .2pt, 0 |- plot xlabel.south);
+
+\end{tikzpicture}

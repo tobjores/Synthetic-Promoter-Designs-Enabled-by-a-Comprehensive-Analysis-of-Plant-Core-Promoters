@@ -1,0 +1,209 @@
+%\tikzset{external/export next = false}
+
+\begin{tikzpicture}
+
+	%%% promoter strength TF combinations (tobacco)
+	\coordinate (TFcomboLeaf) at (0, 0);
+	
+	\leafsymbol{TFcomboLeaf}
+	
+	\begin{hgroupplot}[%
+		ylabel = {rel. promoter strength},
+		ymin = -2,
+		ymax = 7,
+		ytick = {-10, -8, ..., 10},
+		xticklabel style = {name = xticklabel},
+		zero line,
+		group position = {anchor = above north west, at = {(TFcomboLeaf)}, xshift = \plotylabelwidth},
+		group/every plot/.append style = {
+			x grids = false,
+			typeset ticklabels with strut 
+		}
+	]{\twocolumnwidth}{2}{}
+
+			
+		\nextgroupplot[
+			width = 6.2 / 8.2 * \plotwidth,
+			title style = {minimum width = 6.2 / 8.2 * \plotwidth},
+			title = {two trancription factors},
+			x tick table = {rawData/enrichment_TFcombo_double_leaf_boxplot.tsv}{TCP}
+		]
+		
+			% boxplot
+			\boxplots{%
+				box color = leafCol,
+				box shade,
+				fill opacity = 0.5%
+			}{rawData/enrichment_TFcombo_double_leaf_boxplot.tsv}{rawData/enrichment_TFcombo_double_leaf_boxplot_outliers.tsv}
+			
+			% add sample size
+			\samplesize{rawData/enrichment_TFcombo_double_leaf_boxplot.tsv}{id}{n}
+			
+			% add significance
+			\signifallsimple*{rawData/enrichment_TFcombo_double_leaf_boxplot.tsv}{id}{p.value}
+				
+			% save coordinates
+			\pgfplotstablegetrowsof{rawData/enrichment_TFcombo_double_leaf_boxplot.tsv}
+			\pgfplotsinvokeforeach{1, ..., \pgfplotsretval}{
+				\coordinate (d#1) at (#1, 0);
+			}
+		
+		
+		\nextgroupplot[
+			width = 10.2 / 8.2 * \plotwidth,
+			title style = {minimum width = 10.2 / 8.2 * \plotwidth},
+			title = {three transcription factors},
+			x tick table = {rawData/enrichment_TFcombo_triple_leaf_boxplot.tsv}{TCP}
+		]
+		
+			% boxplot
+			\boxplots{%
+				box color = leafCol,
+				box shade,
+				fill opacity = 0.5%
+			}{rawData/enrichment_TFcombo_triple_leaf_boxplot.tsv}{rawData/enrichment_TFcombo_triple_leaf_boxplot_outliers.tsv}
+			
+			% add sample size
+			\samplesize{rawData/enrichment_TFcombo_triple_leaf_boxplot.tsv}{id}{n}
+			
+			% add significance
+			\signifallsimple*{rawData/enrichment_TFcombo_triple_leaf_boxplot.tsv}{id}{p.value}
+				
+			% save coordinates
+			\pgfplotstablegetrowsof{rawData/enrichment_TFcombo_triple_leaf_boxplot.tsv}
+			\pgfplotsinvokeforeach{1, ..., \pgfplotsretval}{
+				\coordinate (t#1) at (#1, 0);
+			}
+			
+	\end{hgroupplot}
+	
+	\node[anchor = base east, node font = \figsmall] (lTCP) at (group c1r1.west |- xticklabel.base) {\strut TCP};
+	\node[anchor = north east, node font = \figsmall] (lNAC) at (lTCP.base east) {\strut NAC};
+	\node[anchor = north east, node font = \figsmall] (lHSF) at (lNAC.base east) {\strut HSF};
+	
+	\pgfplotstableforeachcolumnelement{NAC}\of{rawData/enrichment_TFcombo_double_leaf_boxplot.tsv}\as\NAC{
+		\pgfmathsetmacro{\i}{\pgfplotstablerow + 1}
+		\node[anchor = base, node font = \figsmall] at (lNAC.base -| d\i) {\strut\NAC};
+	}
+	
+	\pgfplotstableforeachcolumnelement{NAC}\of{rawData/enrichment_TFcombo_triple_leaf_boxplot.tsv}\as\NAC{
+		\pgfmathsetmacro{\i}{\pgfplotstablerow + 1}
+		\node[anchor = base, node font = \figsmall] at (lNAC.base -| t\i) {\strut\NAC};
+	}
+	
+	\pgfplotstableforeachcolumnelement{HSF}\of{rawData/enrichment_TFcombo_double_leaf_boxplot.tsv}\as\HSF{
+		\pgfmathsetmacro{\i}{\pgfplotstablerow + 1}
+		\node[anchor = base, node font = \figsmall] at (lHSF.base -| d\i) {\strut\HSF};
+	}
+	
+	\pgfplotstableforeachcolumnelement{HSF}\of{rawData/enrichment_TFcombo_triple_leaf_boxplot.tsv}\as\HSF{
+		\pgfmathsetmacro{\i}{\pgfplotstablerow + 1}
+		\node[anchor = base, node font = \figsmall] at (lHSF.base -| t\i) {\strut\HSF};
+	}
+	
+	
+	%%% promoter strength TF combinations (protoplasts)
+	\coordinate (TFcomboProto) at (TFcomboLeaf -| \textwidth - \twocolumnwidth, 0);
+	
+	\protosymbol{TFcomboProto}
+	
+	\begin{hgroupplot}[%
+		ylabel = {rel. promoter strength},
+		ymin = -2,
+		ymax = 5,
+		ytick = {-10, -9, ..., 10},
+		xticklabel style = {name = xticklabel},
+		zero line,
+		group position = {anchor = above north west, at = {(TFcomboProto)}, xshift = \plotylabelwidth},
+		group/every plot/.append style = {
+			x grids = false,
+			typeset ticklabels with strut 
+		}
+	]{\twocolumnwidth}{2}{}
+
+			
+		\nextgroupplot[
+			width = 6.2 / 8.2 * \plotwidth,
+			title style = {minimum width = 6.2 / 8.2 * \plotwidth},
+			title = {two trancription factors},
+			x tick table = {rawData/enrichment_TFcombo_double_proto_boxplot.tsv}{TCP}
+		]
+		
+			% boxplot
+			\boxplots{%
+				box color = protoCol,
+				box shade,
+				fill opacity = 0.5%
+			}{rawData/enrichment_TFcombo_double_proto_boxplot.tsv}{rawData/enrichment_TFcombo_double_proto_boxplot_outliers.tsv}
+			
+			% add sample size
+			\samplesize{rawData/enrichment_TFcombo_double_proto_boxplot.tsv}{id}{n}
+			
+			% add significance
+			\signifallsimple*{rawData/enrichment_TFcombo_double_proto_boxplot.tsv}{id}{p.value}
+				
+			% save coordinates
+			\pgfplotstablegetrowsof{rawData/enrichment_TFcombo_double_proto_boxplot.tsv}
+			\pgfplotsinvokeforeach{1, ..., \pgfplotsretval}{
+				\coordinate (d#1) at (#1, 0);
+			}
+		
+		
+		\nextgroupplot[
+			width = 10.2 / 8.2 * \plotwidth,
+			title style = {minimum width = 10.2 / 8.2 * \plotwidth},
+			title = {three transcription factors},
+			x tick table = {rawData/enrichment_TFcombo_triple_proto_boxplot.tsv}{TCP}
+		]
+		
+			% boxplot
+			\boxplots{%
+				box color = protoCol,
+				box shade,
+				fill opacity = 0.5%
+			}{rawData/enrichment_TFcombo_triple_proto_boxplot.tsv}{rawData/enrichment_TFcombo_triple_proto_boxplot_outliers.tsv}
+			
+			% add sample size
+			\samplesize{rawData/enrichment_TFcombo_triple_proto_boxplot.tsv}{id}{n}
+			
+			% add significance
+			\signifallsimple*{rawData/enrichment_TFcombo_triple_proto_boxplot.tsv}{id}{p.value}
+				
+			% save coordinates
+			\pgfplotstablegetrowsof{rawData/enrichment_TFcombo_triple_proto_boxplot.tsv}
+			\pgfplotsinvokeforeach{1, ..., \pgfplotsretval}{
+				\coordinate (t#1) at (#1, 0);
+			}
+			
+	\end{hgroupplot}
+	
+	\node[anchor = base east, node font = \figsmall] (lTCP) at (group c1r1.west |- xticklabel.base) {\strut TCP};
+	\node[anchor = north east, node font = \figsmall] (lNAC) at (lTCP.base east) {\strut NAC};
+	\node[anchor = north east, node font = \figsmall] (lHSF) at (lNAC.base east) {\strut HSF};
+	
+	\pgfplotstableforeachcolumnelement{NAC}\of{rawData/enrichment_TFcombo_double_proto_boxplot.tsv}\as\xticklabel{
+		\pgfmathsetmacro{\i}{\pgfplotstablerow + 1}
+		\node[anchor = base, node font = \figsmall] at (lNAC.base -| d\i) {\strut\xticklabel};
+	}
+	
+	\pgfplotstableforeachcolumnelement{NAC}\of{rawData/enrichment_TFcombo_triple_proto_boxplot.tsv}\as\xticklabel{
+		\pgfmathsetmacro{\i}{\pgfplotstablerow + 1}
+		\node[anchor = base, node font = \figsmall] at (lNAC.base -| t\i) {\strut\xticklabel};
+	}
+	
+	\pgfplotstableforeachcolumnelement{HSF}\of{rawData/enrichment_TFcombo_double_proto_boxplot.tsv}\as\xticklabel{
+		\pgfmathsetmacro{\i}{\pgfplotstablerow + 1}
+		\node[anchor = base, node font = \figsmall] at (lHSF.base -| d\i) {\strut\xticklabel};
+	}
+	
+	\pgfplotstableforeachcolumnelement{HSF}\of{rawData/enrichment_TFcombo_triple_proto_boxplot.tsv}\as\xticklabel{
+		\pgfmathsetmacro{\i}{\pgfplotstablerow + 1}
+		\node[anchor = base, node font = \figsmall] at (lHSF.base -| t\i) {\strut\xticklabel};
+	}
+	
+		
+	%%% subfigure labels
+	\subfiglabel[yshift = .5\columnsep]{TFcomboLeaf}
+	\subfiglabel[yshift = .5\columnsep]{TFcomboProto}
+	
+\end{tikzpicture}

@@ -1,0 +1,869 @@
+%%% set compatibility level
+\pgfplotsset{compat = 1.17}
+
+%%% length, counters, booleans, ...
+\newlength{\plotwidth}
+\newlength{\plotheight}
+\newlength{\plotylabelwidth}
+\newlength{\plotxlabelheight}
+\newlength{\groupplotsep}
+
+\setlength{\plotylabelwidth}{2.8em}
+\setlength{\plotxlabelheight}{2.8em}
+\setlength{\groupplotsep}{1mm}
+
+\newcounter{groupplot}
+
+
+%%% general setup
+\usepgfplotslibrary{statistics, groupplots, colormaps}
+
+\pgfplotsset{
+	table/col sep = tab,
+	every axis/.append style = {
+		alias = last plot,
+		thin,
+		scale only axis = true,
+		width = \fourcolumnwidth - \plotylabelwidth,
+		height = 3.5cm,
+		legend style = {node font = \figsmall},
+		tick label style = {node font = \figsmall},
+		tick align = outside,
+		label style = {node font = \fignormal},
+		title style = {node font = \fignormal},
+		every axis title shift = 0pt,
+		max space between ticks = 20,
+		major tick length = 0.1cm,
+		minor tick length = 0.066cm,
+		ticklabel style = {
+			/pgf/number format/fixed,
+		},
+		every tick/.append style = {black, thin},
+		tickwidth = .75mm,
+		every x tick label/.append style = {align = center, inner xsep = 0pt},
+		every y tick label/.append style = {inner ysep = 0pt},
+		scaled ticks = false,
+		mark/.default = solido,
+		mark size = .5,
+		grid = both,
+		grid style = {very thin, gray!20},
+		tick pos = lower,
+		x grids/.is choice,
+		x grids/true/.style = {xmajorgrids = true, xminorgrids = true},
+		x grids/false/.style = {xmajorgrids = false, xminorgrids = false},
+		y grids/.is choice,
+		y grids/true/.style = {ymajorgrids = true, yminorgrids = true},
+		y grids/false/.style = {ymajorgrids = false, yminorgrids = false},
+		boxplot/whisker extend={\pgfkeysvalueof{/pgfplots/boxplot/box extend}*0.5},
+		boxplot/every median/.style = thick,
+		title style = {minimum width = \plotwidth, fill = gray!20, draw = black, yshift = -.5\pgflinewidth, name = title, text depth = .15\baselineskip, align = center},
+		legend cell align = left,
+		axis background/.style = {fill = white},
+		line plot/.style = {semithick, line join = round},
+		unbounded coords = jump,
+		boxplot/draw direction = y,
+		xticklabel style = {align = center}
+	},
+	x decimals/.style = {x tick label style = {/pgf/number format/.cd, fixed, zerofill, precision = #1}},
+	y decimals/.style = {y tick label style = {/pgf/number format/.cd, fixed, zerofill, precision = #1}},
+	zero line/.style = {execute at begin axis = {\draw[very thin, #1] (\xmin, 0) -- (\xmax, 0);}},
+	zero line/.default = black
+}
+
+
+%%% extra markers
+% round marker without border
+\pgfdeclareplotmark{solido}{%
+  \pgfpathcircle{\pgfpointorigin}{\pgfplotmarksize + .5\pgflinewidth}%
+  \pgfusepathqfill
+}
+
+
+%%% commands for min and max coordinates
+\def\xmin{\pgfkeysvalueof{/pgfplots/xmin}}
+\def\xmax{\pgfkeysvalueof{/pgfplots/xmax}}
+\def\ymin{\pgfkeysvalueof{/pgfplots/ymin}}
+\def\ymax{\pgfkeysvalueof{/pgfplots/ymax}}
+
+
+%%% add jitter to points of a scatter plot
+\pgfplotsset{
+	x jitter/.style = {
+		x filter/.expression = {x + rand * #1}
+	},
+	y jitter/.style = {
+		y filter/.expression = {y + rand * #1}
+	},
+	x jitter/.default = 0.25,
+	y jitter/.default = 0.25
+}
+
+
+%%% set x axis limits and tick labels (depending on sample number)
+% use:	x limits = {<number of samples>}
+%				x tick table = {<table>}{<column>}
+% for half violin plots use:	x tick table half = {<table>}{<column>}
+\pgfplotsset{
+	x limits/.style = {xmin = 1 - 0.6, xmax = #1 + 0.6},
+	y limits/.style = {ymin = 1 - 0.6, ymax = #1 + 0.6},
+	x tick table/.code 2 args= {\getrows{#1}},
+	x tick table/.append style = {%
+		x limits = {\datarows},
+		xtick = {1, ..., \datarows},
+		xticklabels from table = {#1}{#2}
+	},
+	x tick table half/.code 2 args= {\getrows{#1}},
+	x tick table half/.append style = {%
+		x limits = {\datarows},
+		xtick = {1.5, 3.5, ..., \datarows},
+		xticklabel = {\pgfmathint{\tick}\pgfplotstablegetelem{\pgfmathresult}{#2}\of{#1}\pgfplotsretval}
+	},
+	y tick table/.code 2 args= {\getrows{#1}},
+	y tick table/.append style = {%
+		y limits = {\datarows},
+		ytick = {1, ..., \datarows},
+		yticklabels from table = {#1}{#2}
+	},
+	y tick table half/.code 2 args= {\getrows{#1}},
+	y tick table half/.append style = {%
+		y limits = {\datarows},
+		ytick = {1.5, 3.5, ..., \datarows},
+		yticklabel = {\pgfmathint{\tick}\pgfplotstablegetelem{\pgfmathresult}{#2}\of{#1}\pgfplotsretval}
+	},
+	xymin/.style = {xmin = #1, ymin = #1},
+	xymax/.style = {xmax = #1, ymax = #1},
+	xytick/.style = {xtick = {#1}, ytick = {#1}}
+}
+
+
+
+%%% horizontal groupplot
+% use: \begin{hgroupplot}[<axis options>]{<total width>}{<number of columns>}{<xlabel>} <plot commands> \end{mygroupplot}
+\newenvironment{hgroupplot}[4][]{%
+	\pgfmathsetlength{\plotwidth}{(#2 - \plotylabelwidth - ((#3 - 1) * \groupplotsep) ) / #3}%
+	\ifthenelse{\isempty{#4}}{%
+		\def\xlabel{}%
+	}{%
+		\def\xlabel{%
+			\path let \p1 = (group c1r1.west), \p2 = (group c#3r1.east), \p3 = (xlabel.base) in node[anchor = base] (plot xlabel) at ($(\x1, \y3)!.5!(\x2, \y3)$) {#4};%
+		}%
+	}
+	\begin{groupplot}[
+		width = \plotwidth,
+		group style = {
+			horizontal sep = \groupplotsep,
+			y descriptions at = edge left,
+			x descriptions at = edge bottom,
+			columns = #3,
+			rows = 1,
+			every plot/.append style = {first plot, after first plot h}
+		},
+		xlabel = \phantom{#4},
+		xlabel style = {name = xlabel},
+		#1
+	]
+}{%
+	\end{groupplot}%
+	\xlabel%
+}
+
+
+\newenvironment{vgroupplot}[4][]{%
+	\pgfmathsetlength{\plotheight}{(#2 - \plotxlabelheight - ((#3 - 1) * \groupplotsep) ) / #3}%
+	\ifthenelse{\isempty{#4}}{%
+		\def\ylabel{}%
+	}{%
+		\def\ylabel{%
+			\path let \p1 = (group c1r1.north), \p2 = (group c1r#3.south), \p3 = (ylabel.base) in node[anchor = base, rotate = 90] (plot ylabel) at ($(\x3, \y1)!.5!(\x3, \y2)$) {#4};%
+		}%
+	}
+	\setcounter{groupplot}{0}
+	\begin{groupplot}[
+		height = \plotheight,
+		group style = {
+			vertical sep = \groupplotsep,
+			y descriptions at = edge left,
+			x descriptions at = edge bottom,
+			columns = 1,
+			rows = #3,
+			every plot/.append style = {no inner x ticks, first plot, after first plot v, if last plot v = #3, last plot v}
+		},
+		ylabel = \phantom{#4},
+		ylabel style = {name = ylabel},
+		#1
+	]
+}{%
+	\end{groupplot}%
+	\ylabel%
+}
+
+% required styles
+\pgfplotsset{
+	no inner y ticks/.style = {ymajorticks = false, yminorticks = false},
+	no inner x ticks/.style = {xmajorticks = false, xminorticks = false},
+	outer x ticks/.style = {xmajorticks = true, xminorticks = true},
+	group position/.code = {\pgfkeysalso{first plot/.style = {#1}}},
+	after first plot h/.code = {\gpgfplotsset{first plot/.style = no inner y ticks}},
+	after first plot v/.code = {\gpgfplotsset{first plot/.style = {}}},
+	if last plot v/.code = {\stepcounter{groupplot}\ifnum\value{groupplot}=#1\pgfkeysalso{last plot v/.style = {outer x ticks}}\fi},
+	last plot v/.style = {}
+}
+
+
+%%% legend setup
+\pgfplotsset{
+	legend image code/.code = {
+		\draw [mark repeat = 2,mark phase = 2, #1]
+			plot coordinates {
+				(0em, 0em)
+				(.75em, 0em)
+				(1.5em, 0em)
+			};
+	},
+	/pgfplots/ybar legend/.style = {
+		/pgfplots/legend image code/.code = {
+			\draw [##1, /tikz/.cd, bar width = 2pt, yshift = -0.3em, bar shift = 0pt]
+			plot coordinates {
+				(0em, 0.8em)
+				(\pgfplotbarwidth, 1.5em)
+				(2*\pgfplotbarwidth, 0.6em)
+			};
+		},
+	},
+	/pgfplots/xbar legend/.style = {
+		/pgfplots/legend image code/.code = {
+			\draw [##1, /tikz/.cd, bar width = 2pt, yshift = -0.2em, bar shift = 0pt]
+			plot coordinates {
+				(0.8em, 0em)
+				(1.5em, \pgfplotbarwidth)
+				(0.6em, 2*\pgfplotbarwidth)
+			};
+		},
+	},
+	/pgfplots/xbar legend 1/.style = {
+		/pgfplots/legend image code/.code = {
+			\draw [##1, fill = gray, /tikz/.cd, bar width = 2pt, yshift = -0.2em, bar shift = 0pt]
+			plot coordinates {
+				(.8em, 0em)
+				(.6em, \pgfplotbarwidth)
+			};
+			\draw [##1, /tikz/.cd, bar width = 2pt, yshift = -0.2em, bar shift = 0pt]
+			plot coordinates {
+				(1.5em, 2*\pgfplotbarwidth)
+			};
+		},
+	},
+	/pgfplots/xbar legend 2/.style = {
+		/pgfplots/legend image code/.code = {
+			\draw [##1, fill = gray, /tikz/.cd, bar width = 2pt, yshift = -0.2em, bar shift = 0pt]
+			plot coordinates {
+				(.8em, 0em)
+				(.6em, 2*\pgfplotbarwidth)
+			};
+			\draw [##1, /tikz/.cd, bar width = 2pt, yshift = -0.2em, bar shift = 0pt]
+			plot coordinates {
+				(1.5em, \pgfplotbarwidth)
+			};
+		},
+	},
+	/pgfplots/xbar legend 3/.style = {
+		/pgfplots/legend image code/.code = {
+			\draw [##1, /tikz/.cd, bar width = 2pt, yshift = -0.2em, bar shift = 0pt]
+			plot coordinates {
+				(1.5em, 0em)
+			};
+			\draw [##1, fill = gray, /tikz/.cd, bar width = 2pt, yshift = -0.2em, bar shift = 0pt]
+			plot coordinates {
+				(.6em, \pgfplotbarwidth)
+				(.8em, 2*\pgfplotbarwidth)
+			};
+		},
+	},
+	/pgfplots/density legend/.style = {
+		/pgfplots/legend image code/.code = {
+			\draw [##1, x = .25em, y = .25em, yshift = -0.3em]	plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)});
+		},
+	},
+}
+
+
+%%% helper for global pgfplot style definitions
+\newcommand\gpgfplotsset[1]{%
+	\begingroup%
+		\globaldefs=1\relax%
+		\pgfqkeys{/pgfplots}{#1}%
+	\endgroup%
+}
+
+
+%%% get number of rows/columns in a table -> stored in `\datarows`/`\datacols`
+% use: \getrows{<table>}
+\newcommand{\getrows}[1]{%
+	\pgfplotstablegetrowsof{#1}%
+	\pgfmathsetmacro{\datarows}{\pgfplotsretval}%
+}
+
+\newcommand{\getcols}[1]{%
+	\pgfplotstablegetcolsof{#1}%
+	\pgfmathsetmacro{\datacols}{\pgfplotsretval}%
+}
+
+%%% variants of `\pgfplotsinvokeforeach` that iterates from 1 to the number of rows/columns in the table
+% use:	\foreachtablerow{<table or file>}{<command (use `#1` to get current iterator)>}
+\makeatletter
+	\long\def\foreachtablerow#1#2{%
+		\getrows{#1}
+		\long\def\pgfplotsinvokeforeach@@##1{#2}%
+		\pgfplotsforeachungrouped \pgfplotsinvokeforeach@ in {1, ..., \datarows} {%
+			\expandafter\pgfplotsinvokeforeach@@\expandafter{\pgfplotsinvokeforeach@}%
+		}%
+	}
+	
+	\long\def\foreachtablecol#1#2{%
+		\getcols{#1}
+		\long\def\pgfplotsinvokeforeach@@##1{#2}%
+		\pgfplotsforeachungrouped \pgfplotsinvokeforeach@ in {1, ..., \datacols} {%
+			\expandafter\pgfplotsinvokeforeach@@\expandafter{\pgfplotsinvokeforeach@}%
+		}%
+	}
+\makeatother
+
+
+%%% command to add significance indicator to plot
+% usage: \signif[pgf options]{file}{first sample}{second sample}
+% useful options: `raise = ...` to raise (or lower) the indicator (connectors stay at the same height; use yshift to also raise them)
+%									`shorten both = ...` to increase (or decrease) distance between plot and indicator (default = 2.5)
+%									`signif cutoff = ...` to set the significance cutoff
+%									`signif levels = {..., ..., ...}` to set the significance levels
+%									`bar only` to not draw connectors (only the horizontal bar)
+%									`draw = none` to not draw any line 
+\makeatletter
+	\newcommand{\signif}{%
+		\@ifstar
+			\signifStar%
+			\signifNoStar%
+	}
+\makeatother
+
+\newcommand{\signifNoStar}[4][]{%
+	\addplot [no marks, shorten both = 2.5, point meta = \thisrow{p.value.#3_#4}, nodes near coords = \printsignif, nodes near coords style = {node font = \figsmall}, #1] table [x = x.#3_#4, y = y.#3_#4] {#2};
+}
+\newcommand{\signifStar}[4][]{%
+	\addplot [no marks, shorten both = 2.5, point meta = \thisrow{p.value.#3_#4}, nodes near coords = \printsignif*, nodes near coords style = {node font = \figsmall}, #1] table [x = x.#3_#4, y = y.#3_#4] {#2};
+}
+
+
+%% significance for all pairs (especially usefull for half violin plots or plots with selected pvalues only)
+% usage: \signif(*)[pgf options]{file}
+\makeatletter
+	\newcommand{\signifall}{%
+		\@ifstar
+			\signifallStar%
+			\signifallNoStar%
+	}
+\makeatother
+
+\newcommand{\signifallStar}[2][]{%
+	\getcols{#2}%
+	\pgfmathsetmacro{\samplen}{\datacols / 3}%
+	\pgfplotsinvokeforeach{1, ..., \samplen}
+	{%
+		\pgfmathsetmacro{\xcol}{int(##1 - 1)}%
+		\pgfmathsetmacro{\ycol}{int(\xcol + \samplen)}%
+		\pgfmathsetmacro{\pcol}{int(\ycol + \samplen)}%
+		\addplot [no marks, shorten both = 2.5, point meta = \thisrowno{\pcol}, nodes near coords = \printsignif*, nodes near coords style = {node font = \figsmall}, #1] table [x index = \xcol, y index = \ycol] {#2};%
+	}
+}
+
+\newcommand{\signifallNoStar}[2][]{%
+	\getcols{#2}%
+	\pgfmathsetmacro{\samplen}{\datacols / 3}%
+	\pgfplotsinvokeforeach{1, ..., \samplen}
+	{%
+		\pgfmathsetmacro{\xcol}{int(##1 - 1)}%
+		\pgfmathsetmacro{\ycol}{int(\xcol + \samplen)}%
+		\pgfmathsetmacro{\pcol}{int(\ycol + \samplen)}%
+		\addplot [no marks, shorten both = 2.5, point meta = \thisrowno{\pcol}, nodes near coords = \printsignif, nodes near coords style = {node font = \figsmall}, #1] table [x index = \xcol, y index = \ycol] {#2};%
+	}
+}
+
+
+%% significance for simple comparisons (compared to zero distribution)
+% use:	\signifallsimple(*)[<pgfplots options>]{<table>}{<column with x coords>}{<column with p-values>}
+\makeatletter
+	\newcommand{\signifallsimple}{%
+		\@ifstar
+			\signifallsimpleStar%
+			\signifallsimpleNoStar%
+	}
+\makeatother
+
+\newcommand{\signifallsimpleStar}[4][]{%
+	\addplot [no marks, draw = none, point meta = \thisrow{#4}, nodes near coords = \vphantom{A}\printsignif*, nodes near coords style = {node font = \figsmall, anchor = north}, #1] table [x = #3, y expr = \pgfkeysvalueof{/pgfplots/ymax}] {#2};%
+}
+
+\newcommand{\signifallsimpleNoStar}[4][]{%
+	\addplot [no marks, draw = none, point meta = \thisrow{#4}, nodes near coords = \printsignif, nodes near coords style = {node font = \figsmall, anchor = north}, #1] table [x = #3, y expr = \pgfkeysvalueof{/pgfplots/ymax}] {#2};%
+}
+
+
+%% use point meta data to print p-values (the * version prints significance levels)
+% use as: point meta = \thisrow{<p-value column>}, nodes near coords = \printsignif<*>[<cutoff (one value)/signif. levels (three values separated by ",")>] 
+\makeatletter
+	\newcommand{\printsignif}{%
+		\@ifstar
+			\printsignifStar%
+			\printsignifNoStar%
+	}
+\makeatother
+
+\newcommand{\printsignifStar}[1][\signiflevelone,\signifleveltwo,\signiflevelthree]{%
+	\pgfmathfloatifflags{\pgfplotspointmeta}{3}{}{\pgfmathfloattosci{\pgfplotspointmeta}\tolevel#1,{\pgfmathresult}}%
+}
+\newcommand{\printsignifNoStar}[1][\signifcutoff]{%
+	\pgfmathfloatifflags{\pgfplotspointmeta}{3}{}{\pgfmathfloattosci{\pgfplotspointmeta}\ifsignif#1,{\pgfmathresult}}%
+}
+
+% abbreviation for non-significant p-values and symbol for significance level
+\newcommand{\notsignif}{ns}
+\newcommand{\issignif}{{\signiffont \symbol{"2217}}}
+
+%% default significance cutoff/levels
+% 1 to \signifcutoff or \signiflevelone: ns
+% \signiflevelone to \signifleveltwo: *
+% \signifleveltwo to \signiflevelthree: **
+% \signiflevelthree to 0: ***
+\def\signifcutoff{0.01}
+\def\signiflevelone{0.01}
+\def\signifleveltwo{0.001}
+\def\signiflevelthree{0.0001}
+
+% convert p-value to significance level
+\def\tolevel#1,#2,#3,#4{%
+	\pgfmathparse{#4 <= #3 ? "\issignif\issignif\issignif" : (#4 <= #2 ? "\issignif\issignif" : (#4 <= #1 ? "\issignif" : "\notsignif"))}\pgfmathresult%
+}
+
+% print \notsignif for non-significant p-values
+\def\ifsignif#1,#2{%
+	\pgfmathparse{#2 <= #1 ? "\pgfmathprintnumber{#2}" : "\notsignif"}\pgfmathresult%
+}
+
+% useful styles
+\makeatletter
+\tikzset{
+	bar only/.style = jump mark mid,
+	shorten both/.style = {
+		shorten < = #1,
+		shorten > = #1
+	},
+	raise/.code = {
+		\pgfkeysalso{yshift = #1}
+		\pgfmathaddtolength\pgf@shorten@start@additional{-#1}
+		\pgfmathaddtolength\pgf@shorten@end@additional{-#1}
+	},
+	signif cutoff/.code = {
+		\def\signifcutoff{#1}
+	},
+	signif levels/.code args = {#1,#2,#3}{
+		\def\signiflevelone{#1}
+		\def\signifleveltwo{#2}
+		\def\signiflevelthree{#3}
+	}
+}
+\makeatother
+
+
+%%% style to prepare boxplot from summarized data in a table
+% table layout: one row per sample; required columns and content: lw, lower whisker; lq, lower quartile; med, median; uq, upper quartile; uw, upper whisker
+% usage: boxplot from table = {table macro}{row number (0-based)} 
+\makeatletter
+\pgfplotsset{
+    boxplot prepared from table/.code={
+        \def\tikz@plot@handler{\pgfplotsplothandlerboxplotprepared}%
+        \pgfplotsset{
+            /pgfplots/boxplot prepared from table/.cd,
+            #1,
+        }
+    },
+    /pgfplots/boxplot prepared from table/.cd,
+        table/.code={
+        	\pgfplotstable@isloadedtable{#1}%
+        		{\pgfplotstablecopy{#1}\to\boxplot@datatable}%
+        		{\pgfplotstableread{#1}\boxplot@datatable}%
+        },
+        row/.initial=1,
+        make style readable from table/.style={
+            #1/.code={
+            		\pgfmathint{\pgfkeysvalueof{/pgfplots/boxplot prepared from table/row} - 1}
+                \pgfplotstablegetelem{\pgfmathresult}{##1}\of\boxplot@datatable
+                \pgfplotsset{boxplot/#1/.expand once={\pgfplotsretval}}
+            }
+        },
+        make style readable from table=lower whisker,
+        make style readable from table=upper whisker,
+        make style readable from table=lower quartile,
+        make style readable from table=upper quartile,
+        make style readable from table=median
+}
+\makeatother
+
+\pgfplotsset{
+	boxplot from table/.style 2 args = {%
+		boxplot prepared from table = {%
+			table = #1,
+			row = #2,
+			lower whisker = lw,
+			lower quartile = lq,
+			median = med,
+			upper quartile = uq,
+			upper whisker = uw
+		}
+	}
+}
+
+
+%%% draw a combined violin and box plot
+% use `violin shade (inverse) = 0` to not shade the violin plots
+% use: \violinbox[<pgfplots options for violin and box plots>]{<table for boxplot>}{<file for violin plot>}
+\newcommand{\violinbox}[3][]{%
+	\foreachtablerow{#2}{%
+		\violinplot[save row = {##1}, violin shade, #1]{#3}{##1};%
+		\boxplot[save row = {##1}, boxplot/box extend = {\pgfkeysvalueof{/pgfplots/violin extend} * 0.2}, boxplot/whisker extend = 0, #1]{#2}{##1};%
+	}%
+}
+
+%%% draw a combined half violin and box plot
+% use: \halfviolinbox[<pgfplots options for violin and box plots>]{<table for boxplot>}{<file for violin plot>}
+\newcommand{\halfviolinbox}[3][]{%
+	\foreachtablerow{#2}{%
+		\ifthenelse{\isodd{##1}}{%
+			\halfviolinplotleft[save row = {##1}, #1]{#3}{##1};%
+			\boxplot[save row = {##1}, boxplot/box extend = {\pgfkeysvalueof{/pgfplots/violin extend} * 0.3}, boxplot/whisker extend = 0, boxplot/draw position = ##1 + 0.45, boxplot/draw relative anchor = 1, #1]{#2}{##1};%
+		}{%
+			\halfviolinplotright[save row = {##1}, #1]{#3}{##1};%
+			\boxplot[save row = {##1}, boxplot/box extend = {\pgfkeysvalueof{/pgfplots/violin extend} * 0.3}, boxplot/whisker extend = 0, boxplot/draw position = ##1 - 0.45, boxplot/draw relative anchor = 0, #1]{#2}{##1};%
+		}
+		
+	}%
+}
+
+%% draw a violin plot
+% use: \violinplot[<pgfplots options>]{<file>}{<sample>}
+\newcommand{\violinplot}[3][]{%
+	\addplot [black, fill = viocol, fill opacity = .5, #1, viostyle] table [x expr = \thisrow{x.#3} * \pgfkeysvalueof{/pgfplots/violin extend} + #3, y = y.#3] {#2} -- cycle;%
+}
+
+%% draw a half violin plot
+% use: \violinplot[<pgfplots options>]{<file>}{<sample>}
+\newcommand{\halfviolinplotright}[3][]{%
+	\addplot [black, fill = viocolright, fill opacity = .5, #1, viostyle] table [x expr = \thisrow{x.#3} * 2 * \pgfkeysvalueof{/pgfplots/violin extend} + #3 - 0.45, y = y.#3] {#2} -- cycle;%
+}
+\newcommand{\halfviolinplotleft}[3][]{%
+	\addplot [black, fill = viocolleft, fill opacity = .5, #1, viostyle] table [x expr = \thisrow{x.#3} * -2 * \pgfkeysvalueof{/pgfplots/violin extend} + #3 + 0.45, y = y.#3] {#2} -- cycle;%
+}
+
+%% draw a box plot
+% use: \boxplot[<pgfplots options>]{<table>}{<row>}
+% does not add outliers! use `\outliers[<pgfplots options>]{<table>}{<sample>}
+\newcommand{\boxplot}[3][]{%
+	\addplot [black, fill = boxcol, boxplot from table = {#2}{#3}, boxplot/draw position = #3, mark = solido, mark options = black, #1, boxstyle] coordinates {};%
+}
+
+\newcommand{\outliers}[3][]{%
+	\addplot [black, only marks, mark = solido, #1] table [x expr = #3, y = outlier.#3] {#2};%
+}
+
+%%% draw boxplots from table
+% use:	\boxplots[<outlier options>]{<boxplot options>}{<table>}{<outlier file>} or
+%				\boxplots*[<outlier options>]{<boxplot options>}{<table>} to not draw outliers
+\makeatletter
+	\newcommand{\boxplots}{%
+		\@ifstar
+			\boxplotsStar%
+			\boxplotsNoStar%
+	}
+\makeatother
+
+\newcommand{\boxplotsStar}[3][]{%
+	\foreachtablerow{#3}{%
+		\boxplot[save row = {##1}, #2]{#3}{##1};%
+	}%
+}
+
+\newcommand{\boxplotsNoStar}[4][]{%
+	\foreachtablerow{#3}{%
+		\boxplot[save row = {##1}, #2]{#3}{##1};%
+		\outliers[#1]{#4}{##1};%
+	}%
+}
+
+
+% default colors for violin and box plots
+\colorlet{viocol}{gray}
+\colorlet{viocolleft}{viocol!50!black}
+\colorlet{viocolright}{viocol}
+\colorlet{vioshade}{black}
+\colorlet{boxcol}{white}
+\colorlet{boxshade}{black}
+
+% useful styles for violin and box plots
+\pgfplotsset{
+	save row/.code = {\def\currrow{#1}},
+	viostyle/.style = {},
+	violin extend/.initial = 0.9,
+	violin color/.code = {\colorlet{viocol}{#1}},
+	violin color left/.code = {\colorlet{viocolleft}{#1}},
+	violin color right/.code = {\colorlet{viocolright}{#1}},
+	violin color half/.code = {\colorlet{viocolleft}{#1!50!black}\colorlet{viocolright}{#1}},
+	violin colors half/.code n args = {3}{
+		\pgfmathparse{\currrow - 1}
+		\ifcase\pgfmathresult
+			\colorlet{viocolleft}{#1!50!black}
+		\or
+			\colorlet{viocolright}{#1}
+		\or
+			\colorlet{viocolleft}{#2!50!black}
+		\or
+			\colorlet{viocolright}{#2}
+		\or
+			\colorlet{viocolleft}{#3!50!black}
+		\or
+			\colorlet{viocolright}{#3}
+		\fi
+	},
+	violin color half inverse/.code = {\colorlet{viocolleft}{#1}\colorlet{viocolright}{#1!50!black}},
+	violin shade color/.code = {\colorlet{vioshade}{#1}},
+	violin shade inverse/.code = {\pgfmathparse{100 - (#1 * (\currrow - 1) / (\datarows - 1))}\pgfkeysalso{viostyle/.estyle = {fill = viocol!\pgfmathresult!vioshade}}},
+	violin shade inverse/.default = 50,
+	violin shade/.code = {\pgfmathparse{100 - (#1 * (1 - (\currrow - 1) / (\datarows - 1)))}\pgfkeysalso{viostyle/.estyle = {fill = viocol!\pgfmathresult!vioshade}}},
+	violin shade/.default = 50,
+	boxstyle/.style = {},
+	box color/.code = {\colorlet{boxcol}{#1}},
+	box shade color/.code = {\colorlet{boxshade}{#1}},
+	box shade inverse/.code = {\pgfmathparse{100 - (#1 * (\currrow - 1) / (\datarows - 1))}\pgfkeysalso{boxstyle/.estyle = {fill = boxcol!\pgfmathresult!boxshade}}},
+	box shade inverse/.default = 50,
+	box shade/.code = {\pgfmathparse{100 - (#1 * (1 - (\currrow - 1) / (\datarows - 1)))}\pgfkeysalso{boxstyle/.estyle = {fill = boxcol!\pgfmathresult!boxshade}}},
+	box shade/.default = 50,
+	sample color/.style = {visualization depends on = value \thisrow{#1} \as \samplecolor}
+}
+
+
+%%% display sample size
+% use:	\samplesize[<pgfplots options>]{<table>}{<column with x coords>}{<column with sample size>}
+% to shift every second sample size use:	\samplesize[scatter, no marks, visualization depends on = {mod(x, 2) * .5\baselineskip \as \shift}, scatter/@pre marker code/.append style = {/tikz/yshift = \shift}]{<table>}{<column with x coords>}{<column with sample size>}
+\newcommand{\samplesize}[4][]{%
+	\addplot [black, draw = none, point meta = \thisrow{#4}, sample size, #1] table [x = #3, y expr = \pgfkeysvalueof{/pgfplots/ymin}] {#2};%
+}
+
+%% for half violin plots
+% use:	\samplesizehalf[<pgfplots options>]{<table>}{<column with x coords>}{<column with sample size>}
+% colored by viocolleft and viocolright; adjust with `violin color half = ...`, `violin color left = ...`, and/or `violin color right = ...`
+\newcommand{\samplesizehalf}[4][]{%
+	\addplot [draw = none, point meta = \thisrow{#4}, sample size, visualization depends on = \thisrow{#3} \as \id, nodes near coords = \twosamplesize, #1] table [x expr = \thisrow{#3} - 0.5, y expr = \pgfkeysvalueof{/pgfplots/ymin}] {#2};
+}
+
+% stacked display of two sample sizes
+\newcommand{\twosamplesize}{%
+	\ifthenelse{\isodd{\id}}{%
+		\pgfmathfloattosci{\pgfplotspointmeta}%
+		\xdef\lastn{\pgfmathresult}%
+	}{%
+		\ifcsname samplecolor\endcsname%
+			\pgfplotsset{violin color half = \samplecolor}%
+		\fi%
+		\textcolor{viocolleft}{\pgfmathprintnumber{\lastn}}\\[-.25\baselineskip]%
+		\ifcsname samplecolor\endcsname%
+			\pgfplotsset{violin color half = \samplecolor}%
+		\fi%
+		\textcolor{viocolright}{\pgfmathprintnumber{\pgfplotspointmeta}}%
+	}%
+}
+
+% default style for sample size nodes
+\pgfplotsset{
+	sample size/.style = {
+		nodes near coords,
+		nodes near coords style = {
+			node font = \figtiny,
+			align = center,
+			/pgf/number format/1000 sep = {}
+		}
+	}
+}
+
+
+%%% logo plots
+% use:	\logoplot[axis options]{file}
+% specify size and position in axis options (width, heigth, at, anchor, ...)
+% the width of the letters can be changed with option: letter width = ...
+% base colors are changed with option: base colors = {A = ..., C = ..., ...}
+% axis styles are changed with opiton: logo axis = none (no axes) / default (normal pgfplot axes) / IC (y axis for information content; no x axis; the default setting) / IC and position (y axis for information content and x axis for position)
+
+\newcommand{\logoplot}[2][]{
+	\begin{axis}[
+		logo axis,
+		#1,
+		logo plot
+	]
+		\addlogoplot{#2};
+	\end{axis}
+}
+
+\newcommand{\addlogoplot}[1]{%
+	\pgfplotsinvokeforeach{1, ..., 4}{%
+		\addplot[%
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark size = \pgfkeysvalueof{/pgfplots/width} / (\xmax - 0.5) * \pgfkeysvalueof{/pgfplots/letter width},
+			visualization depends on = \thisrow{IC_##1} * \pgfkeysvalueof{/pgfplots/height} / \ymax \as\baseht
+		] table[x = pos,y = IC_##1, meta = base_##1] {#1};%
+	}%
+}
+
+\colorlet{baseAcol}{Green4}
+\colorlet{baseCcol}{Blue2}
+\colorlet{baseGcol}{Goldenrod1}
+\colorlet{baseTcol}{Red2}
+	
+\pgfdeclareplotmark{baseA}{%
+	\pgftransformxscale{\pgfplotmarksize}
+	\pgftransformyscale{\baseht}
+	\pgfpathmoveto{\pgfpoint{-.5}{-1}}%
+	\pgfpathlineto{\pgfpoint{-.1}{0}}%
+	\pgfpathlineto{\pgfpoint{.1}{0}}%
+	\pgfpathlineto{\pgfpoint{.5}{-1}}%
+	\pgfpathlineto{\pgfpoint{.3}{-1}}%
+	\pgfpathlineto{\pgfpoint{.2}{-.75}}%
+	\pgfpathlineto{\pgfpoint{-.2}{-.75}}%
+	\pgfpathlineto{\pgfpoint{-.3}{-1}}%
+	\pgfpathclose
+	\pgfpathmoveto{\pgfpoint{.14}{-.6}}%
+	\pgfpathlineto{\pgfpoint{0}{-.25}}%
+	\pgfpathlineto{\pgfpoint{-.14}{-.6}}%
+	\pgfpathclose
+	\pgfusepathqfill
+}
+
+\pgfdeclareplotmark{baseC}{%
+	\pgftransformxscale{\pgfplotmarksize}
+	\pgftransformyscale{\baseht}
+	\pgfpathmoveto{\pgfpoint{.5}{-.7}}%
+	\pgfpathcurveto{\pgfpoint{.4}{-.9}}{\pgfpoint{.3}{-1}}{\pgfpoint{0}{-1}}%
+	\pgfpathcurveto{\pgfpoint{-.3}{-1}}{\pgfpoint{-.5}{-.825}}{\pgfpoint{-.5}{-.5}}%
+	\pgfpathcurveto{\pgfpoint{-.5}{-.175}}{\pgfpoint{-.3}{0}}{\pgfpoint{0}{0}}%
+	\pgfpathcurveto{\pgfpoint{.3}{0}}{\pgfpoint{.4}{-.1}}{\pgfpoint{.5}{-.3}}%
+	\pgfpathlineto{\pgfpoint{.3}{-.38}}%
+	\pgfpathcurveto{\pgfpoint{.225}{-.25}}{\pgfpoint{.2}{-.15}}{\pgfpoint{0}{-.15}}%
+	\pgfpathcurveto{\pgfpoint{-.2}{-.15}}{\pgfpoint{-.3}{-.3}}{\pgfpoint{-.3}{-.5}}%
+	\pgfpathcurveto{\pgfpoint{-.3}{-.7}}{\pgfpoint{-.2}{-.85}}{\pgfpoint{0}{-.85}}%
+	\pgfpathcurveto{\pgfpoint{.2}{-.85}}{\pgfpoint{.225}{-.75}}{\pgfpoint{.3}{-.62}}%
+	\pgfpathclose
+	\pgfusepathqfill
+}
+
+\pgfdeclareplotmark{baseG}{%
+	\pgftransformxscale{\pgfplotmarksize}
+	\pgftransformyscale{\baseht}
+	\pgfpathmoveto{\pgfpoint{.5}{-.7}}%
+	\pgfpathcurveto{\pgfpoint{.4}{-.9}}{\pgfpoint{.3}{-1}}{\pgfpoint{0}{-1}}%
+	\pgfpathcurveto{\pgfpoint{-.3}{-1}}{\pgfpoint{-.5}{-.825}}{\pgfpoint{-.5}{-.5}}%
+	\pgfpathcurveto{\pgfpoint{-.5}{-.175}}{\pgfpoint{-.3}{0}}{\pgfpoint{0}{0}}%
+	\pgfpathcurveto{\pgfpoint{.3}{0}}{\pgfpoint{.4}{-.1}}{\pgfpoint{.5}{-.3}}%
+	\pgfpathlineto{\pgfpoint{.3}{-.38}}%
+	\pgfpathcurveto{\pgfpoint{.225}{-.25}}{\pgfpoint{.2}{-.15}}{\pgfpoint{0}{-.15}}%
+	\pgfpathcurveto{\pgfpoint{-.2}{-.15}}{\pgfpoint{-.3}{-.3}}{\pgfpoint{-.3}{-.5}}%
+	\pgfpathcurveto{\pgfpoint{-.3}{-.7}}{\pgfpoint{-.2}{-.85}}{\pgfpoint{0}{-.85}}%
+	\pgfpathcurveto{\pgfpoint{.2}{-.85}}{\pgfpoint{.225}{-.75}}{\pgfpoint{.3}{-.62}}%
+	\pgfpathclose
+	\pgfpathmoveto{\pgfpoint{.5}{-.55}}%
+	\pgfpathlineto{\pgfpoint{.5}{-1}}%
+	\pgfpathlineto{\pgfpoint{.3}{-1}}%
+	\pgfpathlineto{\pgfpoint{.3}{-.7}}%
+	\pgfpathlineto{\pgfpoint{0}{-.7}}%
+	\pgfpathlineto{\pgfpoint{0}{-.55}}%
+	\pgfpathclose
+	\pgfusepathqfill
+}
+
+\pgfdeclareplotmark{baseT}{%
+	\pgftransformxscale{\pgfplotmarksize}
+	\pgftransformyscale{\baseht}
+	\pgfpathmoveto{\pgfpoint{-.1}{-1}}%
+	\pgfpathlineto{\pgfpoint{-.1}{-.15}}%
+	\pgfpathlineto{\pgfpoint{-.5}{-.15}}%
+	\pgfpathlineto{\pgfpoint{-.5}{0}}%
+	\pgfpathlineto{\pgfpoint{.5}{0}}%
+	\pgfpathlineto{\pgfpoint{.5}{-.15}}%
+	\pgfpathlineto{\pgfpoint{.1}{-.15}}%
+	\pgfpathlineto{\pgfpoint{.1}{-1}}%
+	\pgfpathclose
+	\pgfusepathqfill
+}
+
+\pgfplotsset{
+	base colors/.code = {
+		\pgfkeys{
+			/logo plot/.cd,
+			#1
+		}
+	},
+	/logo plot/A/.code = {\colorlet{baseAcol}{#1}},
+	/logo plot/C/.code = {\colorlet{baseCcol}{#1}},
+	/logo plot/G/.code = {\colorlet{baseGcol}{#1}},
+	/logo plot/T/.code = {\colorlet{baseTcol}{#1}},
+	letter width/.initial = 1,
+	logo y axis/.style = {},
+	logo x axis/.style = {},
+	show IC/.style = {
+		logo y axis/.style = {
+			ytick = {0, 1, 2},
+			ylabel = IC (bits),
+			axis y line = left,
+			y axis line style = {line cap = round, -},
+			ytick align = outside,
+			axis y line shift = \pgfkeysvalueof{/pgfplots/major tick length}	
+		}
+	},
+	show pos/.style = {
+		logo x axis/.style = {
+			axis x line = bottom,
+			x axis line style = {draw = none},
+			xtick style = {draw = none},
+			xtick align = inside
+		}
+	},
+	logo axis/.is choice,
+	logo axis/default/.style = {
+		logo y axis/.style = {},
+		logo x axis/.style = {}
+	},
+	logo axis/none/.style = {
+		logo y axis/.style = {axis y line = none},
+		logo x axis/.style = {axis x line = none}
+	},
+	logo axis/IC/.style = {
+		logo x axis/.style = {axis x line = none},
+		show IC
+	},
+	logo axis/IC and position/.style = {
+		show IC,
+		show pos
+	},
+	logo axis/.default = IC,
+	logo plot/.style = {
+		logo y axis,
+		logo x axis,
+		stack plots = y,
+		ymin = 0,
+		ymax = 2,
+		grid = none,
+		enlarge x limits = {abs = .5},
+		scatter/classes = {
+			A={mark = baseA, baseAcol},
+			C={mark = baseC, baseCcol},
+			G={mark = baseG, baseGcol},
+			T={mark = baseT, baseTcol}
+		}
+	}
+}

@@ -1,0 +1,38 @@
+\setfamily{residues}{tt}            %  Use typewriter family for residues
+\setseries{residues}{md}            %  Use normal series for residues
+\setshape {residues}{up}            %  Use upright shape for residues
+\setsize  {residues}{fignormal}     %  Use normal size for residues
+\setfamily{numbering}{sf}           %  Use typewriter family for numbering
+\setseries{numbering}{md}           %  Use normal series for numbering
+\setshape {numbering}{up}           %  Use upright shape for numbering
+\setsize  {numbering}{figsmall}     %  Use normal size for numbering
+\setfamily{names}{sf}               %  Use typewriter family for names
+\setseries{names}{md}               %  Use normal series for names
+\setshape {names}{up}               %  Use upright shape for names
+\setsize  {names}{fignormal}        %  Use normal size for names
+\setfamily{featurenames}{sf}        %  Use typewriter family for feature names
+\setseries{featurenames}{md}        %  Use normal series for feature names
+\setshape {featurenames}{up}        %  Use upright shape for feature names
+\setsize  {featurenames}{fignormal} %  Use normal size for feature  names
+\setfamily{featurestylenames}{sf}   %  Use typewriter family for feature style names
+\setseries{featurestylenames}{md}   %  Use normal series for feature style names
+\setshape {featurestylenames}{up}   %  Use upright shape for feature style names
+\setsize  {featurestylenames}{fignormal}%  Use normal size for feature style names
+\setfamily{features}{sf}            %  Use roman family for feature texts
+\setseries{features}{md}            %  Use normal series for feature texts
+\setshape {features}{it}            %  Use italics shape for feature texts
+\setsize  {features}{fignormal}     %  Use normal size for feature texts
+\setfamily{featurestyles}{sf}       %  Use typewriter family for feature styles
+\setseries{featurestyles}{md}       %  Use normal series for feature styles
+\setshape {featurestyles}{up}       %  Use upright shape for feature styles
+\setsize {featurestyles}{fignormal} %  Use normal size for feature styles
+\setfamily{legend}{sf}              %  Use typewriter family for legend texts
+\setseries{legend}{md}              %  Use normal series for legend texts
+\setshape {legend}{up}              %  Use upright shape for legend texts
+\setsize  {legend}{fignormal}       %  Use normal size for legend texts
+\setfamily{ruler}{sf}               %  Use sans serif font for ruler numbers
+
+\emphdefault{bf}
+
+\conservedresidues{Black}{gray!30}{upper}{up}
+\allmatchresidues{Black}{gray!50}{upper}{up}

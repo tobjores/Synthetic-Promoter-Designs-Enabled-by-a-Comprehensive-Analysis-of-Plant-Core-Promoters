@@ -1,0 +1,66 @@
+%\tikzset{external/export next = false}
+
+\begin{tikzpicture}
+
+	%%% alignment of TFIIBs
+	\coordinate[yshift = .25\columnsep] (alignment) at (0, 0);
+	
+	\begin{pgfinterruptboundingbox}
+		\node[anchor = north west, inner sep = 0pt, text width = \textwidth, xshift = -\columnsep] (alignment node) at (alignment) {%
+			\begin{texshade}[alignments.def]{../data/misc/TFIIB-alignment.fa}%
+				\noblockskip%
+				\hideconsensus%
+				\shownumbering{leftright}%
+				\threshold[80]{50}%
+				\emphblock{1}{283..283}%
+				\shadeblock{1}{283..283}{black}{maize!50}%
+				\shaderegion{4}{279..279}{black}{arabidopsis!50}%
+				\shaderegion{5}{280..280}{black}{arabidopsis!50}%
+				\shaderegion{6}{276..276}{black}{arabidopsis!50}%
+				\shaderegion{7}{279..279}{black}{arabidopsis!50}%
+				\shaderegion{8}{279..279}{black}{arabidopsis!50}%
+				\shaderegion{9}{279..279}{black}{arabidopsis!50}%
+				\nameseq{1}{Human TFIIB}%
+				\nameseq{2}{Mouse TFIIB}%
+				\nameseq{3}{Drosophila TFIIB}%
+				\nameseq{4}{Arabidopsis TFIIB}%
+				\nameseq{5}{Soybean TFIIB}%
+				\nameseq{6}{Tobacco TFIIB}%
+				\nameseq{7}{Rice TFIIB}%
+				\nameseq{8}{Maize TFIIB}%
+				\nameseq{9}{Sorghum TFIIB}%
+				\nameseq{10}{Maize TFIIB-related}%
+			\end{texshade}%
+		};
+	\end{pgfinterruptboundingbox}
+
+	\path (0, 0) rectangle (alignment node.south -| \textwidth, 0);
+	
+
+%	\similaritytable
+%
+%	\hspace{1cm}%
+%	\rowcolors{2}{white}{gray!20}
+%
+%	\begin{tabular}{ll}
+%		\toprule
+%		\textbf{name} & \textbf{Uniprot accession} \\
+%		\midrule
+%		human & Q00403 \\
+%		mouse & P62915 \\
+%		Drosophila & P29052 \\
+%		Arabidopsis & P48512 \\
+%		Soybean & P48513 \\
+%		Tobacco & A0A1S3YMX6 \\
+%		Rice & Q8W0W3 \\
+%		Maize & B4FHS1  \\
+%		Sorghum & C5X694  \\
+%		Maize-2 & A0A3L6EB89 \\
+%		\bottomrule
+%	\end{tabular}
+
+
+%	%%% subfigure labels
+%	\subfiglabel[yshift = .25\columnsep]{alignment}
+
+\end{tikzpicture}

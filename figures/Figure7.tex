@@ -1,0 +1,445 @@
+%\tikzset{external/export next = false}
+
+\begin{tikzpicture}
+		
+	%%% linear model correlation plot
+	\coordinate (LMcor) at (0, 0);
+	
+	\begin{hgroupplot}[%
+		ylabel = predicted promoter strength,
+		xymin = -5.5,
+		xymax = 6.5,
+		xytick = {-10, -8, ..., 10},
+		xlabel style = {align = center, name = xlabel},
+		group position = {anchor = above north west, at = {(LMcor)}, xshift = \plotylabelwidth},
+		scatter/classes = {
+			At={arabidopsis},
+			Zm={maize},
+			Sb={sorghum},
+			all={black}
+		}	,
+		legend pos = south east,
+		legend columns = 3,
+		legend image post style = {mark size = 1, fill opacity = 1}
+	]{\twocolumnwidth}{2}{}
+
+		\nextgroupplot[
+			title = tobacco model,
+			xlabel = measured promoter strength\\in tobacco leaves
+		]
+		
+			\addplot [
+				scatter,
+				scatter src = explicit symbolic,
+				only marks,
+				mark = solido,
+				fill opacity = 0.2
+			] table[x = enrichment, y = prediction, meta = sample.name] {rawData/linear-model_leaf_pred.tsv};
+			
+			\addplot [
+				scatter,
+				scatter src = explicit symbolic,
+				only marks,
+				mark = text,
+				text mark as node = true,
+				text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -\baselineskip * \coordindex},
+				text mark = {\rsquare},
+				visualization depends on = value \thisrow{rsquare}\as\rsquare
+			] table [x expr = \xmin, y expr = \ymax, meta = sample.name] {rawData/linear-model_leaf_stats.tsv};
+			
+			
+		\nextgroupplot[
+			title = maize model,
+			xlabel = measured promoter strength\\in maize protoplasts
+		]
+		
+			\addplot [
+				scatter,
+				scatter src = explicit symbolic,
+				only marks,
+				mark = solido,
+				fill opacity = 0.2
+			] table[x = enrichment, y = prediction, meta = sample.name] {rawData/linear-model_proto_pred.tsv};
+			
+			\addplot [
+				scatter,
+				scatter src = explicit symbolic,
+				only marks,
+				mark = text,
+				text mark as node = true,
+				text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -\baselineskip * \coordindex},
+				text mark = {\rsquare},
+				visualization depends on = value \thisrow{rsquare}\as\rsquare
+			] table [x expr = \xmin, y expr = \ymax, meta = sample.name] {rawData/linear-model_proto_stats.tsv};
+			
+			\legend{At\phantom{A}, Zm\phantom{A}, Sb}
+
+	\end{hgroupplot}
+
+	\leafsymbol[(-.3, .3)]{group c1r1.south east};
+	\protosymbol[(.3, .3)]{group c2r1.south west};
+	
+
+	%%% CNN correlation plot
+	\coordinate (CNNcor) at (LMcor -| \textwidth - \twocolumnwidth, 0);
+	
+	\begin{hgroupplot}[%
+		ylabel = predicted promoter strength,
+		xymin = -5.5,
+		xymax = 6.5,
+		xytick = {-10, -8, ..., 10},
+		xlabel style = {align = center, name = xlabel},
+		group position = {anchor = above north west, at = {(CNNcor)}, xshift = \plotylabelwidth},
+		scatter/classes = {
+			At={arabidopsis},
+			Zm={maize},
+			Sb={sorghum},
+			all={black}
+		}	,
+		legend pos = south east,
+		legend columns = 3,
+		legend image post style = {mark size = 1, fill opacity = 1}
+	]{\twocolumnwidth}{2}{}
+
+		\nextgroupplot[
+			title = tobacco model,
+			xlabel = measured promoter strength\\in tobacco leaves
+		]
+		
+			\addplot [
+				scatter,
+				scatter src = explicit symbolic,
+				only marks,
+				mark = solido,
+				fill opacity = 0.2
+			] table[x = enrichment, y = prediction, meta = sample.name] {rawData/CNN_test_leaf_pred.tsv};
+			
+			\addplot [
+				scatter,
+				scatter src = explicit symbolic,
+				only marks,
+				mark = text,
+				text mark as node = true,
+				text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -\baselineskip * \coordindex},
+				text mark = {$R^2=\rsquare$},
+				visualization depends on = value \thisrow{rsquare}\as\rsquare
+			] table [x expr = \xmin, y expr = \ymax, meta = sample.name] {rawData/CNN_test_leaf_stats.tsv};
+			
+			
+		\nextgroupplot[
+			title = maize model,
+			xlabel = measured promoter strength\\in maize protoplasts
+		]
+		
+			\addplot [
+				scatter,
+				scatter src = explicit symbolic,
+				only marks,
+				mark = solido,
+				fill opacity = 0.2
+			] table[x = enrichment, y = prediction, meta = sample.name] {rawData/CNN_test_proto_pred.tsv};
+			
+			\addplot [
+				scatter,
+				scatter src = explicit symbolic,
+				only marks,
+				mark = text,
+				text mark as node = true,
+				text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -\baselineskip * \coordindex},
+				text mark = {$R^2=\rsquare$},
+				visualization depends on = value \thisrow{rsquare}\as\rsquare
+			] table [x expr = \xmin, y expr = \ymax, meta = sample.name] {rawData/CNN_test_proto_stats.tsv};
+			
+			\legend{At\phantom{A}, Zm\phantom{A}, Sb}
+
+	\end{hgroupplot}
+
+	\leafsymbol[(-.3, .3)]{group c1r1.south east};
+	\protosymbol[(.3, .3)]{group c2r1.south west};
+	
+	
+	%%% promoter strength of evolved promoters with enhancer (leaf)
+	\coordinate[yshift = -\columnsep] (enrEvoLeaf) at (LMcor |- xlabel.south);
+	
+	\leafsymbol{enrEvoLeaf};
+	
+	\begin{hgroupplot}[%
+		ylabel = promoter strength,
+		ymin = -3,
+		ymax = 7.75,
+		ytick = {-10, -8, ..., 10},
+		execute at begin axis = {\draw[very thin, 35S enhancer] (\xmin, 4.55) -- (\xmax, 4.55);},
+		group position = {anchor = above north west, at = {(enrEvoLeaf)}, xshift = \plotylabelwidth, yshift = -1.25\baselineskip},
+		group/every plot/.append style = {x grids = false},
+	]{\twocolumnwidth}{3}{rounds of \textit{in silico} evolution}
+
+		\nextgroupplot[
+			title = tobacco model,
+			x tick table = {rawData/enrichment_evolution_leaf_leaf_boxplot.tsv}{sample}
+		]
+			
+		% violin and box plot
+		\violinbox[violin color = leafCol]{rawData/enrichment_evolution_leaf_leaf_boxplot.tsv}{rawData/enrichment_evolution_leaf_leaf_violin.tsv}
+			
+		% add sample size
+		\samplesize{rawData/enrichment_evolution_leaf_leaf_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enrichment_evolution_leaf_leaf_pvalues.tsv}{1}{2}
+		\signif*{rawData/enrichment_evolution_leaf_leaf_pvalues.tsv}{2}{3}
+		
+		
+		\nextgroupplot[
+			title = maize model,
+			x tick table = {rawData/enrichment_evolution_proto_leaf_boxplot.tsv}{sample}
+		]
+			
+		% violin and box plot
+		\violinbox[violin color = protoCol]{rawData/enrichment_evolution_proto_leaf_boxplot.tsv}{rawData/enrichment_evolution_proto_leaf_violin.tsv}
+			
+		% add sample size
+		\samplesize{rawData/enrichment_evolution_proto_leaf_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enrichment_evolution_proto_leaf_pvalues.tsv}{1}{2}
+		\signif*{rawData/enrichment_evolution_proto_leaf_pvalues.tsv}{2}{3}
+		
+		
+		\nextgroupplot[
+			title = both models,
+			x tick table = {rawData/enrichment_evolution_both_leaf_boxplot.tsv}{sample}
+		]
+			
+		% violin and box plot
+		\violinbox[violin color = leafCol!50!protoCol]{rawData/enrichment_evolution_both_leaf_boxplot.tsv}{rawData/enrichment_evolution_both_leaf_violin.tsv}
+			
+		% add sample size
+		\samplesize{rawData/enrichment_evolution_both_leaf_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enrichment_evolution_both_leaf_pvalues.tsv}{1}{2}
+		\signif*{rawData/enrichment_evolution_both_leaf_pvalues.tsv}{2}{3}
+			
+	\end{hgroupplot}
+	
+	\node[anchor = south west] (legend) at (group c1r1.above north west) {\textbf{with} 35S enhancer};
+	
+	
+	%%% promoter strength of evolved promoters with enhancer (proto)
+	\begin{pgfinterruptboundingbox} % somehow this plot adds about 8pt of whitespace to its right ... no idea why
+	
+		\coordinate (enrEvoProto) at (enrEvoLeaf -| CNNcor);
+		
+		\protosymbol{enrEvoProto};
+		
+		\begin{hgroupplot}[%
+			ylabel = promoter strength,
+			ymin = -3.5,
+			ymax = 5.25,
+			ytick = {-10, -8, ..., 10},
+			execute at begin axis = {\draw[very thin, 35S enhancer] (\xmin, 2.37) -- (\xmax, 2.37);},
+			group position = {anchor = above north west, at = {(enrEvoProto)}, xshift = \plotylabelwidth, yshift = -1.25\baselineskip},
+			group/every plot/.append style = {x grids = false},
+		]{\twocolumnwidth}{3}{rounds of \textit{in silico} evolution}
+	
+			\nextgroupplot[
+				title = tobacco model,
+				x tick table = {rawData/enrichment_evolution_leaf_proto_boxplot.tsv}{sample}
+			]
+				
+			% violin and box plot
+			\violinbox[violin color = leafCol]{rawData/enrichment_evolution_leaf_proto_boxplot.tsv}{rawData/enrichment_evolution_leaf_proto_violin.tsv}
+				
+			% add sample size
+			\samplesize{rawData/enrichment_evolution_leaf_proto_boxplot.tsv}{id}{n}
+			
+			% add significance level
+			\signif*{rawData/enrichment_evolution_leaf_proto_pvalues.tsv}{1}{2}
+			\signif*{rawData/enrichment_evolution_leaf_proto_pvalues.tsv}{2}{3}
+			
+			
+			\nextgroupplot[
+				title = maize model,
+				x tick table = {rawData/enrichment_evolution_proto_proto_boxplot.tsv}{sample}
+			]
+				
+			% violin and box plot
+			\violinbox[violin color = protoCol]{rawData/enrichment_evolution_proto_proto_boxplot.tsv}{rawData/enrichment_evolution_proto_proto_violin.tsv}
+				
+			% add sample size
+			\samplesize{rawData/enrichment_evolution_proto_proto_boxplot.tsv}{id}{n}
+			
+			% add significance level
+			\signif*{rawData/enrichment_evolution_proto_proto_pvalues.tsv}{1}{2}
+			\signif*{rawData/enrichment_evolution_proto_proto_pvalues.tsv}{2}{3}
+			
+			
+			\nextgroupplot[
+				title = both models,
+				x tick table = {rawData/enrichment_evolution_both_proto_boxplot.tsv}{sample}
+			]
+				
+			% violin and box plot
+			\violinbox[violin color = leafCol!50!protoCol]{rawData/enrichment_evolution_both_proto_boxplot.tsv}{rawData/enrichment_evolution_both_proto_violin.tsv}
+				
+			% add sample size
+			\samplesize{rawData/enrichment_evolution_both_proto_boxplot.tsv}{id}{n}
+			
+			% add significance level
+			\signif*{rawData/enrichment_evolution_both_proto_pvalues.tsv}{1}{2}
+			\signif*{rawData/enrichment_evolution_both_proto_pvalues.tsv}{2}{3}
+		
+		\end{hgroupplot}
+		
+		\node[anchor = south west] (legend) at (group c1r1.above north west) {\textbf{with} 35S enhancer};
+		
+	\end{pgfinterruptboundingbox}
+	
+	
+	%%% promoter strength of evolved promoters without enhancer (leaf)
+	\coordinate[yshift = -\columnsep] (enrEvoLeafnoE) at (LMcor |- plot xlabel.south);
+	
+	\leafsymbol{enrEvoLeafnoE};
+	
+	\begin{hgroupplot}[%
+		ylabel = promoter strength,
+		ymin = -6,
+		ymax = 4.5,
+		ytick = {-10, -8, ..., 10},
+		zero line = 35S enhancer,
+		group position = {anchor = above north west, at = {(enrEvoLeafnoE)}, xshift = \plotylabelwidth, yshift = -1.25\baselineskip},
+		group/every plot/.append style = {x grids = false},
+	]{\twocolumnwidth}{3}{rounds of \textit{in silico} evolution}
+
+		\nextgroupplot[
+			title = tobacco model,
+			x tick table = {rawData/enrichment_evolution_noEnh_leaf_leaf_boxplot.tsv}{sample}
+		]
+			
+		% violin and box plot
+		\violinbox[violin color = leafCol]{rawData/enrichment_evolution_noEnh_leaf_leaf_boxplot.tsv}{rawData/enrichment_evolution_noEnh_leaf_leaf_violin.tsv}
+			
+		% add sample size
+		\samplesize{rawData/enrichment_evolution_noEnh_leaf_leaf_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enrichment_evolution_noEnh_leaf_leaf_pvalues.tsv}{1}{2}
+		\signif*{rawData/enrichment_evolution_noEnh_leaf_leaf_pvalues.tsv}{2}{3}
+		
+		
+		\nextgroupplot[
+			title = maize model,
+			x tick table = {rawData/enrichment_evolution_noEnh_proto_leaf_boxplot.tsv}{sample}
+		]
+			
+		% violin and box plot
+		\violinbox[violin color = protoCol]{rawData/enrichment_evolution_noEnh_proto_leaf_boxplot.tsv}{rawData/enrichment_evolution_noEnh_proto_leaf_violin.tsv}
+			
+		% add sample size
+		\samplesize{rawData/enrichment_evolution_noEnh_proto_leaf_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enrichment_evolution_noEnh_proto_leaf_pvalues.tsv}{1}{2}
+		\signif*{rawData/enrichment_evolution_noEnh_proto_leaf_pvalues.tsv}{2}{3}
+		
+		
+		\nextgroupplot[
+			title = both models,
+			x tick table = {rawData/enrichment_evolution_noEnh_both_leaf_boxplot.tsv}{sample}
+		]
+			
+		% violin and box plot
+		\violinbox[violin color = leafCol!50!protoCol]{rawData/enrichment_evolution_noEnh_both_leaf_boxplot.tsv}{rawData/enrichment_evolution_noEnh_both_leaf_violin.tsv}
+			
+		% add sample size
+		\samplesize{rawData/enrichment_evolution_noEnh_both_leaf_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enrichment_evolution_noEnh_both_leaf_pvalues.tsv}{1}{2}
+		\signif*{rawData/enrichment_evolution_noEnh_both_leaf_pvalues.tsv}{2}{3}
+			
+	\end{hgroupplot}
+		
+	\node[anchor = south west] (legend) at (group c1r1.above north west) {\textbf{without} 35S enhancer};
+	
+	
+	%%% promoter strength of evolved promoters without enhancer (proto)
+	\begin{pgfinterruptboundingbox} % somehow this plot adds about 8pt of whitespace to its right ... no idea why
+	
+		\coordinate (enrEvoProtonoE) at (enrEvoLeafnoE -| CNNcor);
+		
+		\protosymbol{enrEvoProtonoE};
+		
+		\begin{hgroupplot}[%
+			ylabel = promoter strength,
+			ymin = -6.5,
+			ymax = 3,
+			ytick = {-10, -8, ..., 10},
+			zero line = 35S enhancer,
+			group position = {anchor = above north west, at = {(enrEvoProtonoE)}, xshift = \plotylabelwidth, yshift = -1.25\baselineskip},
+			group/every plot/.append style = {x grids = false},
+		]{\twocolumnwidth}{3}{rounds of \textit{in silico} evolution}
+	
+			\nextgroupplot[
+				title = tobacco model,
+				x tick table = {rawData/enrichment_evolution_noEnh_leaf_proto_boxplot.tsv}{sample}
+			]
+				
+			% violin and box plot
+			\violinbox[violin color = leafCol]{rawData/enrichment_evolution_noEnh_leaf_proto_boxplot.tsv}{rawData/enrichment_evolution_noEnh_leaf_proto_violin.tsv}
+				
+			% add sample size
+			\samplesize{rawData/enrichment_evolution_noEnh_leaf_proto_boxplot.tsv}{id}{n}
+			
+			% add significance level
+			\signif*{rawData/enrichment_evolution_noEnh_leaf_proto_pvalues.tsv}{1}{2}
+			\signif*{rawData/enrichment_evolution_noEnh_leaf_proto_pvalues.tsv}{2}{3}
+			
+			
+			\nextgroupplot[
+				title = maize model,
+				x tick table = {rawData/enrichment_evolution_noEnh_proto_proto_boxplot.tsv}{sample}
+			]
+				
+			% violin and box plot
+			\violinbox[violin color = protoCol]{rawData/enrichment_evolution_noEnh_proto_proto_boxplot.tsv}{rawData/enrichment_evolution_noEnh_proto_proto_violin.tsv}
+				
+			% add sample size
+			\samplesize{rawData/enrichment_evolution_noEnh_proto_proto_boxplot.tsv}{id}{n}
+			
+			% add significance level
+			\signif*{rawData/enrichment_evolution_noEnh_proto_proto_pvalues.tsv}{1}{2}
+			\signif*{rawData/enrichment_evolution_noEnh_proto_proto_pvalues.tsv}{2}{3}
+			
+			
+			\nextgroupplot[
+				title = both models,
+				x tick table = {rawData/enrichment_evolution_noEnh_both_proto_boxplot.tsv}{sample}
+			]
+				
+			% violin and box plot
+			\violinbox[violin color = leafCol!50!protoCol]{rawData/enrichment_evolution_noEnh_both_proto_boxplot.tsv}{rawData/enrichment_evolution_noEnh_both_proto_violin.tsv}
+				
+			% add sample size
+			\samplesize{rawData/enrichment_evolution_noEnh_both_proto_boxplot.tsv}{id}{n}
+			
+			% add significance level
+			\signif*{rawData/enrichment_evolution_noEnh_both_proto_pvalues.tsv}{1}{2}
+			\signif*{rawData/enrichment_evolution_noEnh_both_proto_pvalues.tsv}{2}{3}
+		
+		\end{hgroupplot}
+		
+		\node[anchor = south west] (legend) at (group c1r1.above north west) {\textbf{without} 35S enhancer};
+		
+	\end{pgfinterruptboundingbox}
+	
+	
+	%%% subfigure labels
+	\subfiglabel[yshift = .5\columnsep]{LMcor}
+	\subfiglabel[yshift = .5\columnsep]{CNNcor}
+	\subfiglabel[yshift = .5\columnsep]{enrEvoLeaf}
+	\subfiglabel[yshift = .5\columnsep]{enrEvoProto}
+	\subfiglabel[yshift = .5\columnsep]{enrEvoLeafnoE}
+	\subfiglabel[yshift = .5\columnsep]{enrEvoProtonoE}
+
+\end{tikzpicture}
