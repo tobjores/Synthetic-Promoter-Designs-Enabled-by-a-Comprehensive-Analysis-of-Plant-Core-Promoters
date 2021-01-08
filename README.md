@@ -1,6 +1,6 @@
 # Synthetic Promoter Designs Enabled by a Comprehensive Analysis of Plant Core Promoters
 
-Scripts used in the article "Synthetic Promoter Designs Enabled by a Comprehensive Analysis of Plant Core Promoters" (link to article)
+Scripts used in the article "Synthetic Promoter Designs Enabled by a Comprehensive Analysis of Plant Core Promoters" (https://www.biorxiv.org/content/10.1101/2021.01.07.425784v1)
 
 The folder 'analysis' contains the R code to process the raw subassembly and barcode count files and generate the data for the figures.
 
