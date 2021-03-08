@@ -192,7 +192,63 @@ TCP.high.sequences <- TCP.high.score %>%
     mutC = if_else(strand == '-', `str_sub<-`(sequence, base1, base1, value = 'T'), NA_character_),
     mutD = if_else(strand == '-', `str_sub<-`(sequence, base1 + 1, base1 + 1, value = 'T'), NA_character_),
     mutCD = if_else(strand == '-', `str_sub<-`(mutC, base1 + 1, base1 + 1, value = 'T'), NA_character_)
+  ) 
+
+# export motif logos for WT and mutated sequences
+# cluster 15
+TCP.variants.15 <- TCP.high.sequences %>%
+  filter(motif == 'TCP(15)') %>%
+  mutate(
+    start = if_else(strand == '+', start, stop),
+    across(c(WT, starts_with('mut')), str_sub, start = start, end = start + 9)
   ) %>%
+  select(WT, starts_with('mut')) %>%
+  select(-mutations)
+
+TCP.variants.15.fwd <- TCP.variants.15 %>%
+  filter(! is.na(mutA)) %>%
+  select(-mutC, -mutD, -mutCD) %>%
+  rename('WT-fwd' = WT)
+
+TCP.variants.15.rev <- TCP.variants.15 %>%
+  filter(! is.na(mutC)) %>%
+  select(-mutA, -mutB, -mutAB) %>%
+  rename('WT-rev' = WT)
+
+TCP.motifs.15.fwd <- lapply(TCP.variants.15.fwd, create_motif)
+TCP.motifs.15.rev <- lapply(TCP.variants.15.rev, create_motif)
+
+lapply(seq_along(TCP.motifs.15.fwd), function(x) PWM.to.LaTeX(TCP.motifs.15.fwd[[x]], paste0('../figures/rawData/motif_mutTCP(15)_', names(TCP.motifs.15.fwd)[[x]], '.tsv')))
+lapply(seq_along(TCP.motifs.15.rev), function(x) PWM.to.LaTeX(TCP.motifs.15.rev[[x]], paste0('../figures/rawData/motif_mutTCP(15)_', names(TCP.motifs.15.rev)[[x]], '.tsv')))
+
+#cluster 22
+TCP.variants.22 <- TCP.high.sequences %>%
+  filter(motif == 'TCP(22)') %>%
+  mutate(
+    start = if_else(strand == '+', start, stop),
+    across(c(WT, starts_with('mut')), str_sub, start = start, end = start + 7)
+  ) %>%
+  select(WT, starts_with('mut')) %>%
+  select(-mutations)
+
+TCP.variants.22.fwd <- TCP.variants.22 %>%
+  filter(! is.na(mutA)) %>%
+  select(-mutC, -mutD, -mutCD) %>%
+  rename('WT-fwd' = WT)
+
+TCP.variants.22.rev <- TCP.variants.22 %>%
+  filter(! is.na(mutC)) %>%
+  select(-mutA, -mutB, -mutAB) %>%
+  rename('WT-rev' = WT)
+
+TCP.motifs.22.fwd <- lapply(TCP.variants.22.fwd, create_motif)
+TCP.motifs.22.rev <- lapply(TCP.variants.22.rev, create_motif)
+
+lapply(seq_along(TCP.motifs.22.fwd), function(x) PWM.to.LaTeX(TCP.motifs.22.fwd[[x]], paste0('../figures/rawData/motif_mutTCP(22)_', names(TCP.motifs.22.fwd)[[x]], '.tsv')))
+lapply(seq_along(TCP.motifs.22.rev), function(x) PWM.to.LaTeX(TCP.motifs.22.rev[[x]], paste0('../figures/rawData/motif_mutTCP(22)_', names(TCP.motifs.22.rev)[[x]], '.tsv')))
+
+
+TCP.high.sequences <- TCP.high.sequences%>%
   select(sp, motif, gene, WT, starts_with('mut'), -mutations) %>%
   pivot_longer(
     c(WT, starts_with('mut')),
@@ -297,7 +353,35 @@ WRKY.high.sequences <- WRKY.high.score %>%
     mutC = if_else(strand == '-', `str_sub<-`(sequence, base1, base1, value = 'G'), NA_character_),
     mutD = if_else(strand == '-', `str_sub<-`(sequence, base2, base2, value = 'T'), NA_character_),
     mutCD = if_else(strand == '-', `str_sub<-`(mutC, base2, base2, value = 'T'), NA_character_)
+  )
+
+# export motif logos for WT and mutated sequences
+WRKY.variants <- WRKY.high.sequences %>%
+  mutate(
+    start = if_else(strand == '+', start, stop),
+    across(c(WT, starts_with('mut')), str_sub, start = start, end = start + 6)
   ) %>%
+  select(WT, starts_with('mut')) %>%
+  select(-mutations)
+
+WRKY.variants.fwd <- WRKY.variants %>%
+  filter(! is.na(mutA)) %>%
+  select(-mutC, -mutD, -mutCD) %>%
+  rename('WT-fwd' = WT)
+
+WRKY.variants.rev <- WRKY.variants %>%
+  filter(! is.na(mutC)) %>%
+  select(-mutA, -mutB, -mutAB) %>%
+  rename('WT-rev' = WT)
+
+WRKY.motifs.fwd <- lapply(WRKY.variants.fwd, create_motif)
+WRKY.motifs.rev <- lapply(WRKY.variants.rev, create_motif)
+
+lapply(seq_along(WRKY.motifs.fwd), function(x) PWM.to.LaTeX(WRKY.motifs.fwd[[x]], paste0('../figures/rawData/motif_mutWRKY_', names(WRKY.motifs.fwd)[[x]], '.tsv')))
+lapply(seq_along(WRKY.motifs.rev), function(x) PWM.to.LaTeX(WRKY.motifs.rev[[x]], paste0('../figures/rawData/motif_mutWRKY_', names(WRKY.motifs.rev)[[x]], '.tsv')))
+
+
+WRKY.high.sequences <- WRKY.high.sequences %>%
   select(sp, motif, gene, WT, starts_with('mut'), -mutations) %>%
   pivot_longer(
     c(WT, starts_with('mut')),

@@ -1,147 +1,125 @@
 %\tikzset{external/export next = false}
 
 \begin{tikzpicture}
-	
-	%%% enrichment by TATA and GC (tobacco)
-	\coordinate[yshift = -\columnsep] (enrTATAGCleaf) at (0, 0);
-	
-	\leafsymbol{enrTATAGCleaf}; 
+
+	%%% correlation expression and promoter strength
+	\coordinate (correlation) at (0, 0);
 	
 	\begin{hgroupplot}[%
-		ylabel = promoter strength,
-		ymin = -9.5,
-		ymax = 8,
-		ytick = {-10, -8, ..., 10},
-		group position = {anchor = above north west, at = {(enrTATAGCleaf)}, xshift = \plotylabelwidth, yshift = -1.25\baselineskip},
-		group/every plot/.append style = {x grids = false}
-	]{\twocolumnwidth}{3}{GC content}
-	
-			
-		\nextgroupplot[
-			title = Arabidopsis,
-			x tick table half = {rawData/enrichment_TATA+GC_At_leaf_boxplot.tsv}{LaTeX.label}
-		]
-			
-		% half violin and box plot
-		\halfviolinbox[violin color half = arabidopsis]{rawData/enrichment_TATA+GC_At_leaf_boxplot.tsv}{rawData/enrichment_TATA+GC_At_leaf_violin.tsv}
-			
-		% add sample size
-		\samplesizehalf[violin color half = arabidopsis]{rawData/enrichment_TATA+GC_At_leaf_boxplot.tsv}{id}{n}
-		
-		% add pvalues
-		\signifall*{rawData/enrichment_TATA+GC_At_leaf_pvalues.tsv}	
-		
-		
-		\nextgroupplot[
-			title = Maize,
-			x tick table half = {rawData/enrichment_TATA+GC_Zm_leaf_boxplot.tsv}{LaTeX.label}
-		]
-			
-		% half violin and box plot
-		\halfviolinbox[violin color half = maize]{rawData/enrichment_TATA+GC_Zm_leaf_boxplot.tsv}{rawData/enrichment_TATA+GC_Zm_leaf_violin.tsv}
-			
-		% add sample size
-		\samplesizehalf[violin color half = maize]{rawData/enrichment_TATA+GC_Zm_leaf_boxplot.tsv}{id}{n}
-		
-		% add pvalues
-		\signifall*{rawData/enrichment_TATA+GC_Zm_leaf_pvalues.tsv}
-		
-		
-		\nextgroupplot[
-			title = Sorghum,
-			x tick table half = {rawData/enrichment_TATA+GC_Sb_leaf_boxplot.tsv}{LaTeX.label}
-		]
-			
-		% half violin and box plot
-		\halfviolinbox[violin color half = sorghum]{rawData/enrichment_TATA+GC_Sb_leaf_boxplot.tsv}{rawData/enrichment_TATA+GC_Sb_leaf_violin.tsv}
-			
-		% add sample size
-		\samplesizehalf[violin color half = sorghum]{rawData/enrichment_TATA+GC_Sb_leaf_boxplot.tsv}{id}{n}
-		
-		% add pvalues
-		\signifall*{rawData/enrichment_TATA+GC_Sb_leaf_pvalues.tsv}	
+		ylabel = {Pearson's $r$},
+		zero line,
+		group position = {anchor = above north west, at = {(correlation)}, xshift = 1.2\plotylabelwidth},
+		group/every plot/.append style = {
+			x grids = false
+		},
+		x limits = 3,
+		xtick = {1, ..., 3},
+		xticklabels = {At, Zm, Sb}
+	]{\threecolumnwidth - .2\plotylabelwidth}{2}{species}
 
+			
+		\nextgroupplot[
+			title = {\phantom{tobacco}\\\phantom{leaves}}
+		]
+		
+			% boxplots
+			\foreach \sample/\col in {%
+				At/arabidopsis,
+				Zm/maize,
+				Sb/sorghum,
+			} {
+				\edef\thisplot{
+					\noexpand\addplot[boxplot, fill = \col, fill opacity = 0.5, mark = solido, mark options = {black, opacity = 1}] table[y = \sample] {rawData/expression_correlation_leaf.tsv};
+				}
+				\thisplot
+			}
+		
+		
+		\nextgroupplot[
+			title = {\phantom{maize}\\\phantom{protoplasts}}
+		]
+		
+			% boxplots
+			\foreach \sample/\col in {%
+				At/arabidopsis,
+				Zm/maize,
+				Sb/sorghum,
+			} {
+				\edef\thisplot{
+					\noexpand\addplot[boxplot, fill = \col, fill opacity = 0.5, mark = solido, mark options = {black, opacity = 1}] table[y = \sample] {rawData/expression_correlation_proto.tsv};
+				}
+				\thisplot
+			}
+			
 	\end{hgroupplot}
 	
-	\node[anchor = south west] (legend) at (group c1r1.above north west) {\textbf{TATA-box} motif:\vphantom{g} $-$};
-	\coordinate (legend symbol) at ($(legend.south east) + (.25em, .2em)$);
-	\node[anchor = base west] at ($(legend.base east) + (.6em, 0)$) {$+$};
+	\distance{title.south}{title.north}
 	
-	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolleft, fill opacity = .5, x = .25em, y = .1em, rotate = 90, shift = {(legend symbol)}] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
-	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolright, fill opacity = .5, x = .25em, y = -.1em, rotate = 90, shift = {(legend symbol)}, yshift = -.1em] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
+	\leafsymbol[(.5\ydistance, -.5\ydistance)]{group c1r1.west |- title.north}
+	\node[anchor = east, node font = \fignormal, text depth = .15\baselineskip, align = right] at (group c1r1.east |- title) {tobacco\\leaves};
+	\protosymbol[(-.5\ydistance, -.5\ydistance)]{group c2r1.east |- title.north}
+	\node[anchor = west, node font = \fignormal, text depth = .15\baselineskip, align = left] at (group c2r1.west |- title) {maize\\protoplasts};
 	
 	
-	%%% enrichment by TATA and GC (protoplasts)
-	\coordinate (enrTATAGCproto) at (\textwidth - \twocolumnwidth, 0 |- enrTATAGCleaf);
+	%%% example Arabidopsis (adult cotyledon)
+	\coordinate (At) at (correlation -| \twothirdcolumnwidth - \threecolumnwidth, 0);
 	
-	\protosymbol{enrTATAGCproto}; 
+	\leafsymbol{At}
 	
-	\begin{hgroupplot}[%
-		ylabel = promoter strength,
-		ymin = -9.5,
-		ymax = 8,
-		ytick = {-10, -8, ..., 10},
-		group position = {anchor = above north west, at = {(enrTATAGCproto)}, xshift = \plotylabelwidth, yshift = -\baselineskip},
-		group/every plot/.append style = {x grids = false}
-	]{\twocolumnwidth}{3}{GC content}
+	\distance{group c1r1.south}{group c1r1.above north}
 	
-			
-		\nextgroupplot[
-			title = Arabidopsis,
-			x tick table half = {rawData/enrichment_TATA+GC_At_proto_boxplot.tsv}{LaTeX.label}
-		]
-			
-		% half violin and box plot
-		\halfviolinbox[violin color half = arabidopsis]{rawData/enrichment_TATA+GC_At_proto_boxplot.tsv}{rawData/enrichment_TATA+GC_At_proto_violin.tsv}
-			
-		% add sample size
-		\samplesizehalf[violin color half = arabidopsis]{rawData/enrichment_TATA+GC_At_proto_boxplot.tsv}{id}{n}
+	\begin{axis}[
+		width = \threecolumnwidth - \plotylabelwidth,
+		height = \ydistance,
+		at = {(At)},
+		anchor = north west,
+		xshift = \plotylabelwidth,
+		xytick = {-20, -18, ..., 20},
+		xlabel = {$\log_2$(promoter strength)},
+		ylabel = {expression [$\log_2$(FPKM)]}
+	]
+	
+		\addplot [
+			only marks,
+			mark = solido,
+			mark size = 0.5,
+			fill opacity = 0.2
+		] table[x = enrichment,y = expression] {rawData/expression_enrichment_At_leaf.tsv};
 		
-		% add pvalues
-		\signifall*{rawData/enrichment_TATA+GC_At_proto_pvalues.tsv}	
-		
-		
-		\nextgroupplot[
-			title = Maize,
-			x tick table half = {rawData/enrichment_TATA+GC_Zm_proto_boxplot.tsv}{LaTeX.label}
-		]
-			
-		% half violin and box plot
-		\halfviolinbox[violin color half = maize]{rawData/enrichment_TATA+GC_Zm_proto_boxplot.tsv}{rawData/enrichment_TATA+GC_Zm_proto_violin.tsv}
-			
-		% add sample size
-		\samplesizehalf[violin color half = maize]{rawData/enrichment_TATA+GC_Zm_proto_boxplot.tsv}{id}{n}
-		
-		% add pvalues
-		\signifall*{rawData/enrichment_TATA+GC_Zm_proto_pvalues.tsv}
-		
-		
-		\nextgroupplot[
-			title = Sorghum,
-			x tick table half = {rawData/enrichment_TATA+GC_Sb_proto_boxplot.tsv}{LaTeX.label}
-		]
-			
-		% half violin and box plot
-		\halfviolinbox[violin color half = sorghum]{rawData/enrichment_TATA+GC_Sb_proto_boxplot.tsv}{rawData/enrichment_TATA+GC_Sb_proto_violin.tsv}
-			
-		% add sample size
-		\samplesizehalf[violin color half = sorghum]{rawData/enrichment_TATA+GC_Sb_proto_boxplot.tsv}{id}{n}
-		
-		% add pvalues
-		\signifall*{rawData/enrichment_TATA+GC_Sb_proto_pvalues.tsv}	
-
-	\end{hgroupplot}
+	\end{axis}
 	
-	\node[anchor = south west] (legend) at (group c1r1.above north west) {\textbf{TATA-box} motif:\vphantom{g} $-$};
-	\coordinate (legend symbol) at ($(legend.south east) + (.25em, .2em)$);
-	\node[anchor = base west] at ($(legend.base east) + (.6em, 0)$) {$+$};
 	
-	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolleft, fill opacity = .5, x = .25em, y = .1em, rotate = 90, shift = {(legend symbol)}] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
-	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolright, fill opacity = .5, x = .25em, y = -.1em, rotate = 90, shift = {(legend symbol)}, yshift = -.1em] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
+	%%% example maize (root cortex)
+	\coordinate (Zm) at (correlation -| \textwidth - \threecolumnwidth, 0);
+	
+	\protosymbol{Zm}
+	
+	\distance{group c1r1.south}{group c1r1.above north}
+	
+	\begin{axis}[
+		width = \threecolumnwidth - \plotylabelwidth,
+		height = \ydistance,
+		at = {(Zm)},
+		anchor = north west,
+		xshift = \plotylabelwidth,
+		xytick = {-20, -18, ..., 20},
+		xlabel = {$\log_2$(promoter strength)},
+		ylabel = {expression [$\log_2$(FPKM)]}
+	]
+	
+		\addplot [
+			only marks,
+			mark = solido,
+			mark size = 0.5,
+			fill opacity = 0.2
+		] table[x = enrichment,y = expression] {rawData/expression_enrichment_Zm_proto.tsv};
+		
+	\end{axis}
 	
 	
 	%%% subfigure labels
-	\subfiglabel[yshift = .5\columnsep]{enrTATAGCleaf}
-	\subfiglabel[yshift = .5\columnsep]{enrTATAGCproto}
+	\subfiglabel[yshift = .5\columnsep]{correlation}
+	\subfiglabel[yshift = .5\columnsep]{At}
+	\subfiglabel[yshift = .5\columnsep]{Zm}
 
 \end{tikzpicture}

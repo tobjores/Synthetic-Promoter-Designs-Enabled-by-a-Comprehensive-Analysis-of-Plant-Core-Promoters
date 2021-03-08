@@ -1,37 +1,132 @@
 %\tikzset{external/export next = false}
 
-\newcounter{plotct}
+\begin{tikzpicture}
 
+	%%% enhancer responsiveness by type (leaf)
+	\coordinate (enhTypeLeaf) at (0, 0);
+	
+	\leafsymbol[(.5, -.2)]{enhTypeLeaf};
+	
+	\begin{hgroupplot}[%
+		ylabel = $\log_2$(enhancer responsiveness),
+		ymin = -4,
+		ymax = 11,
+		ytick = {-10, -8, ..., 10},
+		group position = {anchor = above north west, at = {(enhTypeLeaf)}, xshift = \plotylabelwidth},
+		group/every plot/.append style = {x grids = false},
+		zero line,
+	]{\twocolumnwidth}{3}{promoter type}
 
-\begin{tikzpicture}	
-
-	%%% plant enhancers
-	
-	\coordinate (plantEnh) at (0, 0);
-	
-	\protosymbol{plantEnh}; 
-	
-	\begin{axis}[
-		at = {(plantEnh)},
-		xshift = \plotylabelwidth,
-		anchor = north west,
-		width = \threecolumnwidth - \plotylabelwidth,
-		boxplot/draw direction = y,
-		x grids = false,
-		ylabel = log\textsubscript{2}(enrichment),
-		xlabel = enhancer,
-		xtick = {1, 2, 3, 4, 5},
-		xticklabels = {none, 35S, \textit{AB80}, \textit{Cab-1}, \textit{rbcS-E9}},
-		ytick = {-5, ..., 5},
-		typeset ticklabels with strut,
-		zero line
-	]
-		
-		\foreach \sample in {none, 35S, AB80, Cab-1, rbcS-E9} {
+		\nextgroupplot[
+			title = Arabidopsis,
+			x tick table = {rawData/enh-effect_type_At_leaf_boxplot.tsv}{LaTeX.label}
+		]
 			
-			\addplot [boxplot, black, fill = boxcol, mark = solido, mark options = black, boxstyle] table[y = \sample] {../data/misc/data_plant_enhancers_protoplasts.tsv};
-		}
+		% violin and box plot
+		\violinbox[violin color = arabidopsis]{rawData/enh-effect_type_At_leaf_boxplot.tsv}{rawData/enh-effect_type_At_leaf_violin.tsv}
+			
+		% add sample size
+		\samplesize{rawData/enh-effect_type_At_leaf_boxplot.tsv}{id}{n}
 		
-	\end{axis}
+		% add significance level
+		\signif*{rawData/enh-effect_type_At_leaf_pvalues.tsv}{1}{2}
+		
+		
+		\nextgroupplot[
+			title = Maize,
+			x tick table = {rawData/enh-effect_type_Zm_leaf_boxplot.tsv}{LaTeX.label}
+		]
+		
+		% violin and box plot
+		\violinbox[violin color = maize]{rawData/enh-effect_type_Zm_leaf_boxplot.tsv}{rawData/enh-effect_type_Zm_leaf_violin.tsv}
+			
+		% add sample size
+		\samplesize{rawData/enh-effect_type_Zm_leaf_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enh-effect_type_Zm_leaf_pvalues.tsv}{1}{2}
+		
+		
+		\nextgroupplot[
+			title = Sorghum,
+			x tick table = {rawData/enh-effect_type_Sb_leaf_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% violin and box plot
+		\violinbox[violin color = sorghum]{rawData/enh-effect_type_Sb_leaf_boxplot.tsv}{rawData/enh-effect_type_Sb_leaf_violin.tsv}
+		
+		% add sample size
+		\samplesize{rawData/enh-effect_type_Sb_leaf_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enh-effect_type_Sb_leaf_pvalues.tsv}{1}{2}
+			
+	\end{hgroupplot}
 	
+	
+	%%% enhancer responsiveness by type (proto)
+	\coordinate (enhTypeProto) at (enhTypeLeaf -| \textwidth - \twocolumnwidth, 0);
+	
+	\protosymbol[(.5, -.2)]{enhTypeProto};
+	
+	\begin{hgroupplot}[%
+		ylabel = $\log_2$(enhancer responsiveness),
+		ymin = -4,
+		ymax = 9.25,
+		ytick = {-10, -8, ..., 10},
+		group position = {anchor = above north west, at = {(enhTypeProto)}, xshift = \plotylabelwidth},
+		group/every plot/.append style = {x grids = false},
+		zero line,
+	]{\twocolumnwidth}{3}{promoter type}
+
+		\nextgroupplot[
+			title = Arabidopsis,
+			x tick table = {rawData/enh-effect_type_At_proto_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% violin and box plot
+		\violinbox[violin color = arabidopsis]{rawData/enh-effect_type_At_proto_boxplot.tsv}{rawData/enh-effect_type_At_proto_violin.tsv}
+			
+		% add sample size
+		\samplesize{rawData/enh-effect_type_At_proto_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enh-effect_type_At_proto_pvalues.tsv}{1}{2}
+		
+		
+		\nextgroupplot[
+			title = Maize,
+			x tick table = {rawData/enh-effect_type_Zm_proto_boxplot.tsv}{LaTeX.label}
+		]
+		
+		% violin and box plot
+		\violinbox[violin color = maize]{rawData/enh-effect_type_Zm_proto_boxplot.tsv}{rawData/enh-effect_type_Zm_proto_violin.tsv}
+			
+		% add sample size
+		\samplesize{rawData/enh-effect_type_Zm_proto_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enh-effect_type_Zm_proto_pvalues.tsv}{1}{2}
+		
+		
+		\nextgroupplot[
+			title = Sorghum,
+			x tick table = {rawData/enh-effect_type_Sb_proto_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% violin and box plot
+		\violinbox[violin color = sorghum]{rawData/enh-effect_type_Sb_proto_boxplot.tsv}{rawData/enh-effect_type_Sb_proto_violin.tsv}
+		
+		% add sample size
+		\samplesize{rawData/enh-effect_type_Sb_proto_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enh-effect_type_Sb_proto_pvalues.tsv}{1}{2}
+			
+	\end{hgroupplot}
+	
+	
+	%%% subfigure labels
+	\subfiglabel[yshift = .5\columnsep]{enhTypeLeaf}
+	\subfiglabel[yshift = .5\columnsep]{enhTypeProto}
 \end{tikzpicture}

@@ -1,0 +1,321 @@
+%\tikzset{external/export next = false}
+
+\begin{tikzpicture}
+
+	\def\npro{310}
+
+	\begin{pgfinterruptboundingbox}
+	
+		%%% predicted promoter strength of evolved promoters with enhancer (leaf)
+		\coordinate (predEvoLeaf) at (0, 0);
+		
+		\leafsymbol[(.66, -.2)]{predEvoLeaf};
+		
+		\begin{hgroupplot}[%
+			ylabel = predicted $\log_2$(promoter strength),
+			ymin = -3,
+			ymax = 7.75,
+			ytick = {-10, -8, ..., 10},
+			xmin = -0.6,
+			xmax = 1 0.6,
+			xtick = {0, 2, ..., 10},
+			group position = {anchor = above north west, at = {(predEvoLeaf)}, xshift = \plotylabelwidth},
+			group/every plot/.append style = {x grids = false},
+		]{\twocolumnwidth}{3}{rounds of \textit{in silico} evolution}
+	
+			\nextgroupplot[
+				title = tobacco model
+			]
+			
+				\pgfplotsinvokeforeach{1, ..., \npro}{
+					\addplot[sharp plot, leafCol, opacity = .2] table[x = round, y = gene.#1] {rawData/evolution_prediction_leaf_leaf.tsv};
+				}
+				\addplot[sharp plot, black, thick] table[x = round, y = median] {rawData/evolution_prediction_leaf_leaf.tsv};
+			
+			\nextgroupplot[
+				title = maize model
+			]
+				
+				\pgfplotsinvokeforeach{1, ..., \npro}{
+					\addplot[sharp plot, protoCol, opacity = .2] table[x = round, y = gene.#1] {rawData/evolution_prediction_proto_leaf.tsv};
+				}
+				\addplot[sharp plot, black, thick] table[x = round, y = median] {rawData/evolution_prediction_proto_leaf.tsv};
+			
+			\nextgroupplot[
+				title = both models
+			]
+				
+				\pgfplotsinvokeforeach{1, ..., \npro}{
+					\addplot[sharp plot, leafCol!50!protoCol, opacity = .2] table[x = round, y = gene.#1] {rawData/evolution_prediction_both_leaf.tsv};
+				}
+				\addplot[sharp plot, black, thick] table[x = round, y = median] {rawData/evolution_prediction_both_leaf.tsv};
+				
+		\end{hgroupplot}
+		
+		
+		%%% predicted promoter strength of evolved promoters with enhancer (proto)	
+		\coordinate (predEvoProto) at (predEvoLeaf -| \textwidth - \twocolumnwidth, 0);
+			
+		\protosymbol[(.66, -.2)]{predEvoProto};
+			
+		\begin{hgroupplot}[%
+			ylabel = predicted $\log_2$(promoter strength),
+			ymin = -3.5,
+			ymax = 5.25,
+			ytick = {-10, -8, ..., 10},
+			xmin = -0.6,
+			xmax = 1 0.6,
+			xtick = {0, 2, ..., 10},
+			group position = {anchor = above north west, at = {(predEvoProto)}, xshift = \plotylabelwidth},
+			group/every plot/.append style = {x grids = false},
+		]{\twocolumnwidth}{3}{rounds of \textit{in silico} evolution}
+		
+			\nextgroupplot[
+				title = tobacco model
+			]
+			
+				\pgfplotsinvokeforeach{1, ..., \npro}{
+					\addplot[sharp plot, leafCol, opacity = .2] table[x = round, y = gene.#1] {rawData/evolution_prediction_leaf_proto.tsv};
+				}
+				\addplot[sharp plot, black, thick] table[x = round, y = median] {rawData/evolution_prediction_leaf_proto.tsv};
+			
+			\nextgroupplot[
+				title = maize model
+			]
+				
+				\pgfplotsinvokeforeach{1, ..., \npro}{
+					\addplot[sharp plot, protoCol, opacity = .2] table[x = round, y = gene.#1] {rawData/evolution_prediction_proto_proto.tsv};
+				}
+				\addplot[sharp plot, black, thick] table[x = round, y = median] {rawData/evolution_prediction_proto_proto.tsv};
+			
+			\nextgroupplot[
+				title = both models
+			]
+				
+				\pgfplotsinvokeforeach{1, ..., \npro}{
+					\addplot[sharp plot, leafCol!50!protoCol, opacity = .2] table[x = round, y = gene.#1] {rawData/evolution_prediction_both_proto.tsv};
+				}
+				\addplot[sharp plot, black, thick] table[x = round, y = median] {rawData/evolution_prediction_both_proto.tsv};
+			
+		\end{hgroupplot}
+			
+		%%% correlation of evolved promoters with enhancer (leaf)
+		\coordinate[yshift = -\columnsep] (corrEvoLeaf) at (predEvoLeaf |- plot xlabel.south);
+		
+		\leafsymbol[(.66, -.2)]{corrEvoLeaf};
+		
+		\begin{hgroupplot}[%
+			ylabel = predicted $\log_2$(promoter strength),
+			xymin = -4,
+			xymax = 7.75,
+			xytick = {-10, -8, ..., 10},
+			group position = {anchor = above north west, at = {(corrEvoLeaf)}, xshift = \plotylabelwidth},
+			legend pos = south east,
+			legend columns = 4,
+			legend image post style = {mark size = 1, fill opacity = 1}
+		]{\twocolumnwidth}{3}{$\log_2$(promoter strength) measured in tobacco leaves}
+	
+			\nextgroupplot[
+				title = tobacco model,
+				scatter/classes = {
+					0={leafCol!50!black},
+					3={leafCol!75!black},
+					10={leafCol}
+				}
+			]
+			
+				\addplot [
+					scatter,
+					scatter src = explicit symbolic,
+					only marks,
+					mark = solido,
+					fill opacity = 0.5
+				] table[x = enrichment, y = prediction, meta = sample.name] {rawData/evolution_correlation_leaf_leaf.tsv};
+				
+				\addplot [
+					only marks,
+					mark = text,
+					text mark as node = true,
+					text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -2\baselineskip * \coordindex},
+					text mark = {\spearman\\[-.25\baselineskip]\rsquare},
+					visualization depends on = value \thisrow{spearman}\as\spearman,
+					visualization depends on = value \thisrow{rsquare}\as\rsquare
+				] table [x expr = \xmin, y expr = \ymax] {rawData/evolution_correlation_leaf_leaf_stats.tsv};
+			
+			\nextgroupplot[
+				title = maize model,
+				scatter/classes = {
+					0={protoCol!50!black},
+					3={protoCol!75!black},
+					10={protoCol}
+				}
+			]
+				
+				\addplot [
+					scatter,
+					scatter src = explicit symbolic,
+					only marks,
+					mark = solido,
+					fill opacity = 0.5
+				] table[x = enrichment, y = prediction, meta = sample.name] {rawData/evolution_correlation_proto_leaf.tsv};
+				
+				\addplot [
+					only marks,
+					mark = text,
+					text mark as node = true,
+					text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -2\baselineskip * \coordindex},
+					text mark = {\spearman\\[-.25\baselineskip]\rsquare},
+					visualization depends on = value \thisrow{spearman}\as\spearman,
+					visualization depends on = value \thisrow{rsquare}\as\rsquare
+				] table [x expr = \xmin, y expr = \ymax] {rawData/evolution_correlation_proto_leaf_stats.tsv};
+			
+			\nextgroupplot[
+				title = both models,
+				scatter/classes = {
+					0={leafCol!50!protoCol!50!black},
+					3={leafCol!50!protoCol!75!black},
+					10={leafCol!50!protoCol}
+				}
+			]
+				
+				\addlegendimage{empty legend}
+				
+				\addplot [
+					scatter,
+					scatter src = explicit symbolic,
+					only marks,
+					mark = solido,
+					fill opacity = 0.5
+				] table[x = enrichment, y = prediction, meta = sample.name] {rawData/evolution_correlation_both_leaf.tsv};
+				
+				\addplot [
+					only marks,
+					mark = text,
+					text mark as node = true,
+					text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -2\baselineskip * \coordindex},
+					text mark = {\spearman\\[-.25\baselineskip]\rsquare},
+					visualization depends on = value \thisrow{spearman}\as\spearman,
+					visualization depends on = value \thisrow{rsquare}\as\rsquare
+				] table [x expr = \xmin, y expr = \ymax] {rawData/evolution_correlation_both_leaf_stats.tsv};
+				
+				\legend{rounds:, 0, 3, 10}
+				
+		\end{hgroupplot}
+		
+		
+		%%% correlation of evolved promoters with enhancer (proto)	
+			\coordinate (corrEvoProto) at (corrEvoLeaf -| predEvoProto);
+			
+			\protosymbol[(.66, -.2)]{corrEvoProto};
+			
+			\begin{hgroupplot}[%
+				ylabel = predicted $\log_2$(promoter strength),
+				xymin = -4.5,
+				xymax = 5.25,
+				xytick = {-10, -8, ..., 10},
+				group position = {anchor = above north west, at = {(corrEvoProto)}, xshift = \plotylabelwidth},
+				legend pos = south east,
+				legend columns = 4,
+				legend image post style = {mark size = 1, fill opacity = 1}
+			]{\twocolumnwidth}{3}{$\log_2$(promoter strength) measured in maize protoplasts}
+		
+				\nextgroupplot[
+					title = tobacco model,
+					scatter/classes = {
+						0={leafCol!50!black},
+						3={leafCol!75!black},
+						10={leafCol}
+					}
+				]
+					
+					\addplot [
+						scatter,
+						scatter src = explicit symbolic,
+						only marks,
+						mark = solido,
+						fill opacity = 0.5
+					] table[x = enrichment, y = prediction, meta = sample.name] {rawData/evolution_correlation_leaf_proto.tsv};
+					
+					\addplot [
+						only marks,
+						mark = text,
+						text mark as node = true,
+						text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -2\baselineskip * \coordindex},
+						text mark = {\spearman\\[-.25\baselineskip]\rsquare},
+						visualization depends on = value \thisrow{spearman}\as\spearman,
+						visualization depends on = value \thisrow{rsquare}\as\rsquare
+					] table [x expr = \xmin, y expr = \ymax] {rawData/evolution_correlation_leaf_proto_stats.tsv};
+				
+				\nextgroupplot[
+					title = maize model,
+					scatter/classes = {
+						0={protoCol!50!black},
+						3={protoCol!75!black},
+						10={protoCol}
+					}
+				]
+					
+					\addplot [
+						scatter,
+						scatter src = explicit symbolic,
+						only marks,
+						mark = solido,
+						fill opacity = 0.5
+					] table[x = enrichment, y = prediction, meta = sample.name] {rawData/evolution_correlation_proto_proto.tsv};
+					
+					\addplot [
+						only marks,
+						mark = text,
+						text mark as node = true,
+						text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -2\baselineskip * \coordindex},
+						text mark = {\spearman\\[-.25\baselineskip]\rsquare},
+						visualization depends on = value \thisrow{spearman}\as\spearman,
+						visualization depends on = value \thisrow{rsquare}\as\rsquare
+					] table [x expr = \xmin, y expr = \ymax] {rawData/evolution_correlation_proto_proto_stats.tsv};
+				
+				\nextgroupplot[
+					title = both models,
+					scatter/classes = {
+						0={leafCol!50!protoCol!50!black},
+						3={leafCol!50!protoCol!75!black},
+						10={leafCol!50!protoCol}
+					}
+				]
+			
+					\addlegendimage{empty legend}
+				
+					\addplot [
+						scatter,
+						scatter src = explicit symbolic,
+						only marks,
+						mark = solido,
+						fill opacity = 0.5
+					] table[x = enrichment, y = prediction, meta = sample.name] {rawData/evolution_correlation_both_proto.tsv};
+					
+					\addplot [
+						only marks,
+						mark = text,
+						text mark as node = true,
+						text mark style = {align = left, node font = \figsmall, anchor = north west, yshift = -2\baselineskip * \coordindex},
+						text mark = {\spearman\\[-.25\baselineskip]\rsquare},
+						visualization depends on = value \thisrow{spearman}\as\spearman,
+						visualization depends on = value \thisrow{rsquare}\as\rsquare
+					] table [x expr = \xmin, y expr = \ymax] {rawData/evolution_correlation_both_proto_stats.tsv};
+					
+					\legend{rounds:, 0, 3, 10}
+	
+			\end{hgroupplot}
+			
+			
+			%%% subfigure labels
+			\subfiglabel[yshift = .5\columnsep]{predEvoLeaf}
+			\subfiglabel[yshift = .5\columnsep]{predEvoProto}
+			\subfiglabel[yshift = .5\columnsep]{corrEvoLeaf}
+			\subfiglabel[yshift = .5\columnsep]{corrEvoProto}
+	
+	\end{pgfinterruptboundingbox}
+	
+	% manually add the correct bounding box
+	\path (predEvoLeaf) ++(.2pt, .5\columnsep) rectangle (\textwidth + .2pt, 0 |- plot xlabel.south);
+
+\end{tikzpicture}

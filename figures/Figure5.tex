@@ -39,15 +39,6 @@
 	\draw[arrow] (ORF.south -| leaves) ++(-.1\fourcolumnwidth, -.1) -- ++(-.4, -.5) coordinate (a1);
 	\draw[arrow] (ORF.south -| leaves) ++(.1\fourcolumnwidth + .15cm, -.1) -- ++(.4, -.5) coordinate (a2);
 	
-%	\draw[arrow] (a1) ++(0, -1.45) -- ++(.4, -.5);
-%	\draw[arrow] (a2) ++(0, -1.45) -- ++(-.4, -.5);
-%	
-%	\coordinate (transcripts) at ($(leaves) + (-.25\fourcolumnwidth, -1.5)$);
-%	
-%	\transcript[barcode = MediumPurple2]{transcripts};
-%	\transcript[barcode = Orchid1]{$(transcripts) + (-.5, -.33)$};
-%	\transcript[barcode = MediumPurple2]{$(transcripts) + (-.17, -.67)$};
-	
 	
 	%%% GO-terms
 	\coordinate[yshift = -\columnsep - 1.5cm] (GOterms) at (lightBar -| scheme);
@@ -92,9 +83,6 @@
 	
 	\draw[thin] (last plot.north -| legend.west) rectangle (last plot.south -| legend.east) coordinate (c1);
 	
-%	\distance{legend.north}{legend.south}
-%	\node[anchor = north east] at (last plot.outer south) {\convertto{cm}{\ydistance}; \the\ydistance};
-	
 	
 	%%% light-dependency by enhancer
 	\coordinate (lightDepEnh) at (scheme -| \twocolumnwidth - \fourcolumnwidth, 0);
@@ -102,7 +90,7 @@
 	\lightsymbol{lightDepEnh};
 	
 	\begin{hgroupplot}[%
-		ylabel = light-dependency,
+		ylabel = $\log_2$(light-dependency),
 		height = 3.5cm + 1.25\baselineskip + 8.08pt,
 		ymin = -6.75,
 		ymax = 7.5,
@@ -161,7 +149,7 @@
 	\lightsymbol{lightDepTATAGC}; 
 	
 	\begin{hgroupplot}[%
-		ylabel = light-dependency,
+		ylabel = $\log_2$(light-dependency),
 		ymin = -6.75,
 		ymax = 9,
 		ytick = {-10, -8, ..., 10},
@@ -231,7 +219,7 @@
 	\lightsymbol{lightDepTCP}; 
 	
 	\begin{hgroupplot}[%
-		ylabel = light-dependency,
+		ylabel = $\log_2$(light-dependency),
 		ymin = -6.75,
 		ymax = 9,
 		ytick = {-10, -8, ..., 10},
@@ -301,7 +289,7 @@
 	\lightsymbol{lightDepWRKY}; 
 	
 	\begin{hgroupplot}[%
-		ylabel = light-dependency,
+		ylabel = $\log_2$(light-dependency),
 		ymin = -6.75,
 		ymax = 9,
 		ytick = {-10, -8, ..., 10},

@@ -604,6 +604,56 @@ for (i in 1:nrow(sys.sp)) {
   )
 }
 
+# for maize: test subpeaks (Supp Figure 4)
+TATA.pos.maize <- TATA.pos %>%
+  group_by('gene' = sequence) %>%
+  summarise(
+    TATA.pos = case_when(
+      any(between(pos, 94, 101)) ~ 'peak 1',
+      any(between(pos, 107, 116)) ~ 'peak 2',
+      any(between(pos, 132, 142)) ~ 'peak 3',
+      TRUE ~ 'no peak'
+    )
+  )
+
+promoter.strength.maize <- promoter.strength %>% 
+  filter(sp == 'Zm') %>%
+  left_join(
+    TATA.pos.maize,
+    by = 'gene'
+  ) %>%
+  filter(! enhancer & ! light)
+
+for (system in names(system.name)) {
+  df <- promoter.strength.maize %>%
+    filter(sys == system) %>%
+    mutate(
+      sample.name = factor(
+        if_else(is.na(TATA.pos), 'no TATA', TATA.pos),
+        levels = c('no TATA', 'no peak', 'peak 1', 'peak 2', 'peak 3'),
+        ordered = TRUE
+      ),
+      LaTeX.label = if_else(sample.name == 'no TATA', '$-$', '$+$'),
+      peak = case_when(
+        sample.name == 'no TATA' ~ '',
+        sample.name == 'no peak' ~ '$-$',
+        TRUE ~ str_sub(sample.name, 6, 6)
+      )
+    )
+  
+  LaTeX.violinplot(
+    data = df,
+    samples_from = sample.name,
+    values_from = enrichment,
+    file = paste('../figures/rawData/enrichment_TATA-pos_subpeaks_Zm', system, sep = '_'),
+    LaTeX.label,
+    peak,
+    outliers = FALSE,
+    p_values = TRUE,
+    data_range = range(promoter.strength.maize %>% pull(enrichment))
+  )
+}
+
 
 # promoter strength by TATA and GC in dark without enhancer (Supp Figure 3)
 promoter.strength.filtered <- left_join(
@@ -640,6 +690,38 @@ for (i in 1:nrow(sys.sp)) {
     p_values = TRUE,
     half = TRUE,
     data_range = range(promoter.strength.filtered %>% filter(sys == system) %>% pull(enrichment))
+  )
+}
+
+
+# GC distribution of subgroups
+for (i in 1:nrow(sys.sp)) {
+  system <- sys.sp[i, 'system', drop = TRUE]
+  species <- sys.sp[i, 'species', drop = TRUE]
+  
+  df <- promoter.strength.filtered %>%
+    filter(sys == system & sp == species) %>%
+    mutate(
+      sample = paste0(GC.low, if_else(! is.na(TATA.pos), '+', '-')),
+      sample.name = factor(
+        sample,
+        levels = sort(unique(sample)),
+        labels = paste0('bin', rep(seq_along(unique(GC.low)), each = 2), rep(c('-', '+'), times = length(unique(GC.low)))),
+        ordered = TRUE
+      ),
+      LaTeX.label = sprintf('%.2f\\GCto %.2f', GC.low, GC.high)
+    )
+  
+  LaTeX.violinplot(
+    data = df,
+    samples_from = sample.name,
+    values_from = GC,
+    file = paste('../figures/rawData/GC_TATA+GC', species, system, sep = '_'),
+    LaTeX.label,
+    outliers = FALSE,
+    p_values = TRUE,
+    half = TRUE,
+    data_range = range(promoter.strength.filtered %>% filter(sys == system) %>% pull(GC))
   )
 }
 
@@ -959,25 +1041,28 @@ TCP.pos.TATA <- TCP.pos %>%
   filter(! is.na(rel.pos))
 
 promoter.strength.filtered <- promoter.strength %>%
-  filter(! enhancer & ! light & sys == 'leaf') %>%
+  filter(! enhancer & ! light) %>%
   inner_join(select(TCP.pos.TATA, 'gene' = sequence, rel.pos), by = 'gene')
 
-for (species in all.species$short) {
+for (i in 1:nrow(sys.sp)) {
+  system <- sys.sp[i, 'system', drop = TRUE]
+  species <- sys.sp[i, 'species', drop = TRUE]
+  
   df <- promoter.strength.filtered %>%
-    filter(sp == species) %>%
+    filter(sys == system & sp == species) %>%
     mutate(
       sample.name = ordered(
         rel.pos,
         levels = c('upstream', 'downstream')
       ),
-      LaTeX.label = rel.pos
+      LaTeX.label = if_else(sample.name == 'upstream', 'up', 'down')
     )
   
   LaTeX.violinplot(
     data = df,
     samples_from = sample.name,
     values_from = enrichment,
-    file = paste('../figures/rawData/enrichment_TCPpos', species, 'leaf', sep = '_'),
+    file = paste('../figures/rawData/enrichment_TCPpos', species, system, sep = '_'),
     LaTeX.label,
     outliers = FALSE,
     p_values = TRUE,
@@ -1028,25 +1113,100 @@ HSF.pos.TATA <- HSF.pos %>%
   filter(! is.na(rel.pos))
 
 promoter.strength.filtered <- promoter.strength %>%
-  filter(! enhancer & ! light & sys == 'proto') %>%
+  filter(! enhancer & ! light) %>%
   inner_join(select(HSF.pos.TATA, 'gene' = sequence, rel.pos), by = 'gene')
 
-for (species in all.species$short) {
+for (i in 1:nrow(sys.sp)) {
+  system <- sys.sp[i, 'system', drop = TRUE]
+  species <- sys.sp[i, 'species', drop = TRUE]
+  
   df <- promoter.strength.filtered %>%
-    filter(sp == species) %>%
+    filter(sys == system & sp == species) %>%
     mutate(
       sample.name = ordered(
         rel.pos,
         levels = c('upstream', 'downstream')
       ),
-      LaTeX.label = rel.pos
+      LaTeX.label = if_else(sample.name == 'upstream', 'up', 'down')
     )
   
   LaTeX.violinplot(
     data = df,
     samples_from = sample.name,
     values_from = enrichment,
-    file = paste('../figures/rawData/enrichment_HSFpos', species, 'proto', sep = '_'),
+    file = paste('../figures/rawData/enrichment_HSFpos', species, system, sep = '_'),
+    LaTeX.label,
+    outliers = FALSE,
+    p_values = TRUE,
+    half = FALSE,
+    data_range = range(promoter.strength.filtered$enrichment)
+  )
+}
+
+
+# NAC
+NAC.pos <- as_tibble(scan_sequences(filter_motifs(TFs, name = 'TF-cluster_1'), all.seqs, RC = TRUE, threshold = 1, nthreads = 0)) %>%
+  mutate(
+    score = (score - min.score) / (max.score - min.score)
+  ) %>%
+  filter(score >= thresh) %>%
+  group_by(sequence) %>%
+  filter(score == max(score)) %>%
+  mutate(
+    pos = 0.5 * (start + stop)
+  ) %>%
+  ungroup()
+
+# histogram
+data <- NAC.pos %>%
+  inner_join(select(all.sequences, 'sequence' = gene, sp)) %>%
+  group_by(sp, pos) %>%
+  summarise(
+    percentage = n()
+  ) %>%
+  ungroup() %>%
+  pivot_wider(
+    names_from = sp,
+    values_from = percentage
+  ) %>%
+  arrange(pos)
+
+write_tsv(data, '../figures/rawData/NAC_position.tsv', na = 'NaN')
+
+# promoter strength (rel. to TATA position)
+NAC.pos.TATA <- NAC.pos %>%
+  inner_join(TATA.pos, by = 'sequence') %>%
+  mutate(
+    rel.pos = case_when(
+      stop < TATA.start ~ 'upstream',
+      start > TATA.stop ~ 'downstream'
+    )
+  ) %>%
+  filter(! is.na(rel.pos))
+
+promoter.strength.filtered <- promoter.strength %>%
+  filter(! enhancer & ! light) %>%
+  inner_join(select(NAC.pos.TATA, 'gene' = sequence, rel.pos), by = 'gene')
+
+for (i in 1:nrow(sys.sp)) {
+  system <- sys.sp[i, 'system', drop = TRUE]
+  species <- sys.sp[i, 'species', drop = TRUE]
+  
+  df <- promoter.strength.filtered %>%
+    filter(sys == system & sp == species) %>%
+    mutate(
+      sample.name = ordered(
+        rel.pos,
+        levels = c('upstream', 'downstream')
+      ),
+      LaTeX.label = if_else(sample.name == 'upstream', 'up', 'down')
+    )
+  
+  LaTeX.violinplot(
+    data = df,
+    samples_from = sample.name,
+    values_from = enrichment,
+    file = paste('../figures/rawData/enrichment_NACpos', species, system, sep = '_'),
     LaTeX.label,
     outliers = FALSE,
     p_values = TRUE,
@@ -1119,7 +1279,7 @@ for (i in 1:nrow(sys.sp)) {
 
 ## enhancer responsiveness by tissue specificity in dark (Figure 4a,b)
 
-# load expression data and calculate specificity
+# load expression data and calculate tisssue-specificity and correlation with promoter strength
 for (species in all.species$short) {
   if (! file.exists(paste0('expression_data/', short.common[species], '_FPKM.tsv'))) {
     if (species == 'At') {
@@ -1137,12 +1297,14 @@ for (species in all.species$short) {
     )
   }
   
-  tissue.specificity <- read_tsv(paste0('expression_data/', short.common[species], '_FPKM.tsv'), comment = '#') %>%
+  RNAseq <- read_tsv(paste0('expression_data/', short.common[species], '_FPKM.tsv'), comment = '#') %>%
     mutate_if(is.numeric, replace_na, 0.1) %>%
     filter_if(is.numeric, any_vars(. >= 1)) %>%
     mutate_if(is.numeric, log2) %>%
     select(-`Gene Name`) %>%
-    rename('gene' = `Gene ID`) %>%
+    rename('gene' = `Gene ID`)
+  
+  tissue.specificity <- RNAseq %>%
     pivot_longer(
       -gene,
       names_to = 'sample',
@@ -1158,16 +1320,90 @@ for (species in all.species$short) {
     )
   
   assign(paste0('tissue.specificity.', species), tissue.specificity)
+  
+  RNAseq.samples <- colnames(RNAseq)[-1]
+  
+  expr.strength <- promoter.strength %>%
+    filter(sp == species & ! enhancer & ! light) %>%
+    inner_join(
+      RNAseq,
+      by = 'gene'
+    )
+  
+  expression.corr <- expr.strength %>%
+    group_by(sys) %>%
+    summarise(
+      across(
+        all_of(RNAseq.samples),
+        ~ cor(.x, enrichment, use = 'complete.obs')
+      )
+    ) %>%
+    pivot_longer(
+      all_of(RNAseq.samples),
+      names_to = 'sample',
+      values_to = 'correlation'
+    ) %>%
+    mutate(
+      sp = species
+    )
+  
+  if (species == 'At') {
+    best.sample.At <- expression.corr %>%
+      filter(sys == 'leaf') %>%
+      arrange(-correlation) %>%
+      pull(sample)
+    
+    best.sample.At <- best.sample.At[1]
+    
+    expr.strength.filtered <- expr.strength %>%
+      filter(sys == 'leaf') %>%
+      select(enrichment, 'expression' = all_of(best.sample.At))
+    
+    write_tsv(expr.strength.filtered, '../figures/rawData/expression_enrichment_At_leaf.tsv')
+  } else if (species == 'Zm') {
+    best.sample.Zm <- expression.corr %>%
+      filter(sys == 'proto') %>%
+      arrange(-correlation) %>%
+      pull(sample)
+    
+    best.sample.Zm <- best.sample.Zm[1]
+    
+    expr.strength.filtered <- expr.strength %>%
+      filter(sys == 'proto') %>%
+      select(enrichment, 'expression' = all_of(best.sample.Zm))
+    
+    write_tsv(expr.strength.filtered, '../figures/rawData/expression_enrichment_Zm_proto.tsv')
+  }
+  
+  assign(paste0('expression.corr.', species), expression.corr)
 }
 
+expression.corr <- bind_rows(mget(paste0('expression.corr.', all.species$short)))
 
+for (system in all.systems$short) {
+  df <- expression.corr %>%
+    filter(sys == system) %>%
+    group_by(sp) %>%
+    mutate(
+      id = seq_len(n())
+    ) %>%
+    select(id, correlation, sp) %>%
+    pivot_wider(
+      names_from = sp,
+      values_from = correlation
+    ) %>%
+    select(-id)
+  
+  write_tsv(df, paste0('../figures/rawData/expression_correlation_', system, '.tsv'), na = 'NaN')
+}
+
+# merge tissue specificity with enhancer responsiveness and export data
 tissue.specificity <- bind_rows(
   tissue.specificity.At,
   tissue.specificity.Zm,
   tissue.specificity.Sb,
 )
 
-# merge tissue specificity with enhancer responsiveness and export data
 enhancer.effect.filtered <- enhancer.effect %>%
   filter(! light) %>%
   inner_join(tissue.specificity, by = 'gene')
@@ -1629,9 +1865,18 @@ for (i in 1:nrow(sys.sp)) {
     TATA,
     Inr,
     Ypatch,
-    outliers = TRUE,
+    outliers = FALSE,
     p_values = FALSE
   )
+  
+  all.points <- df %>%
+    summarise(
+      sample = sample.name,
+      x = as.numeric(sample.name),
+      y = enrichment
+    )
+  
+  write_tsv(all.points, paste('../figures/rawData/enrichment_syntheticPRO', species, system, 'points.tsv', sep = '_'))
 }
 
 
@@ -1869,6 +2114,83 @@ for (i in 1:nrow(sys.opt_for)) {
   )
 }
 
+# correlation with prediction
+prediction <- read_tsv('../CNN/evolution_data.tsv') %>%
+  select('gene' = origin, opt_for, round, starts_with('pred')) %>%
+  pivot_longer(
+    starts_with('pred'),
+    names_to = 'sys',
+    names_prefix = 'pred_',
+    values_to = 'prediction'
+  ) %>%
+  mutate(
+    opt_for = if_else(opt_for == 'start', 'leaf/proto/both', opt_for)
+  ) %>%
+  separate_rows(
+    opt_for,
+    sep = '/'
+  )
+
+evolution.pred <- evolution.val %>%
+  inner_join(
+    prediction,
+    by = c('sys', 'gene', 'opt_for', 'round')
+  )
+
+for (i in 1:nrow(sys.opt_for)) {
+  system <- sys.opt_for[i, 'system', drop = TRUE]
+  optimization <- sys.opt_for[i, 'optimization', drop = TRUE]
+  
+  df <- evolution.pred %>%
+    filter(sys == system & opt_for == optimization) %>%
+    mutate(
+      sample.name = round
+    ) %>%
+    slice_sample(prop = 1) %>%
+    select(sample.name, enrichment, prediction)
+  
+  correlation <- df %>%
+    summarise(
+      spearman = sprintf('$\\rho=%.2f$', cor(enrichment, prediction, method = 'spearman', use = 'complete.obs')),
+      rsquare = sprintf('$R^2=%.2f$', cor(enrichment, prediction, method = 'pearson', use = 'complete.obs')^2)
+    )
+  
+  write_tsv(df, paste0('../figures/rawData/evolution_correlation_', optimization, '_', system, '.tsv'), na = 'NaN')
+  write_tsv(correlation, paste0('../figures/rawData/evolution_correlation_', optimization, '_', system, '_stats.tsv'), na = 'NaN')
+}
+
+# all predicitions
+prediction.mod <- prediction %>%
+  group_by(gene) %>%
+  mutate(
+    id = paste0('gene.', cur_group_id())
+  ) %>%
+  ungroup() %>%
+  select(-gene)
+
+prediction.median <- prediction.mod %>%
+  group_by(sys, opt_for, round) %>%
+  summarise(
+    prediction = median(prediction),
+    id = 'median'
+  )
+
+for (i in 1:nrow(sys.opt_for)) {
+  system <- sys.opt_for[i, 'system', drop = TRUE]
+  optimization <- sys.opt_for[i, 'optimization', drop = TRUE]
+  
+  df <- bind_rows(prediction.mod, prediction.median) %>%
+    filter(sys == system & opt_for == optimization) %>%
+    pivot_wider(
+      names_from = id,
+      values_from = prediction
+    ) %>%
+    select(round, median, starts_with('gene.'))
+  
+  write_tsv(df, paste0('../figures/rawData/evolution_prediction_', optimization, '_', system, '.tsv'), na = 'NaN')
+}
+
+
 # without enhancer
 evolution.val <- promoter.strength.val %>%
   filter(! enhancer & ! light) %>%
@@ -1951,30 +2273,76 @@ TFscan.norm <- TFscan.norm %>%
     motif = if_else(grepl('TCP', motif, fixed = TRUE), 'TCP', motif)
   )
 
-# export data: TCP for leaf system, HSF for protoplasts
+# export data:
 for (system in all.systems$short) {
-  df <- TFscan.norm %>%
-    filter(sys == system & motif == if_else(system == 'leaf', 'TCP', 'HSF')) %>%
-    mutate(
-      sample.name = ordered(pos)
-    ) %>%
-    filter(! is.na(sample.name)) %>%
-    group_by(sample.name) %>%
-    mutate(
-      p.value = wilcox.test(enrichment)$p.value
-    ) %>%
-    ungroup()
-  
-  LaTeX.boxplot(
-    data = df,
-    samples_from = sample.name,
-    values_from = enrichment,
-    file = paste('../figures/rawData/enrichment_TFscan', if_else(system == 'leaf', 'TCP', 'HSF'), system, sep = '_'),
-    p.value,
-    outliers = TRUE,
-    p_values = FALSE
-  )
+  for (TF in c('TCP', 'HSF', 'NAC')) {
+    df <- TFscan.norm %>%
+      filter(sys == system & motif == TF) %>%
+      mutate(
+        sample.name = ordered(pos)
+      ) %>%
+      filter(! is.na(sample.name)) %>%
+      group_by(sample.name) %>%
+      mutate(
+        p.value = wilcox.test(enrichment)$p.value
+      ) %>%
+      ungroup()
+    
+    LaTeX.boxplot(
+      data = df,
+      samples_from = sample.name,
+      values_from = enrichment,
+      file = paste('../figures/rawData/enrichment_TFscan', TF, system, sep = '_'),
+      p.value,
+      outliers = TRUE,
+      p_values = FALSE
+    )
+  }
 }
+
+
+## validation of TFBS mutant effects without enhancer on light-dependency (Supp Figure 12)
+TF.val <- promoter.strength.val %>%
+  filter(set == 'PROval' & motif %in% c('WRKY', 'TCP(15)', 'TCP(22)')) %>%
+  filter(! enhancer & sys == 'leaf') %>%
+  group_by(light, gene) %>%
+  mutate(
+    enrichment = enrichment - median(enrichment[variant == 'WT'])
+  ) %>%
+  ungroup() %>%
+  filter(variant != 'WT' & ! is.na(enrichment))
+
+TF.light <- TF.val %>%
+  group_by(gene, motif, variant) %>%
+  filter(n() == 2) %>%
+  summarise(
+    light.dep = enrichment[light] - enrichment[! light]
+  ) %>%
+  ungroup() %>%
+  mutate(
+    nmut = if_else(nchar(variant) == 4, '1', '2')
+  )
+
+df <- TF.light %>%
+  mutate(
+    sample.name = ordered(motif, levels = c('TCP(15)', 'TCP(22)', 'WRKY'))
+  ) %>%
+  filter(! is.na(sample.name)) %>%
+  group_by(sample.name) %>%
+  mutate(
+    p.value = wilcox.test(light.dep)$p.value
+  ) %>%
+  ungroup()
+
+LaTeX.boxplot(
+  data = df,
+  samples_from = sample.name,
+  values_from = light.dep,
+  file = '../figures/rawData/light-dep_mutTF',
+  p.value,
+  outliers = TRUE,
+  p_values = FALSE
+)
 
 
 ### Supplementary tables
@@ -2342,7 +2710,306 @@ freezePane(wb, sheet = 1, firstActiveRow = 6, firstActiveCol = 2)
 saveWorkbook(wb, '../data/supp_tables/Supplementary Table 4.xlsx', overwrite = TRUE)
 
 
-## Evolved promoters (Supplemetary Table 5)
+## TF position rel. to TATA (Supplementary Table 5)
+for (TF in seq_along(TFs)) {
+  TF.motif <- filter_motifs(TFs, name = paste0('TF-cluster_', TF))
+  
+  TF.pos <- as_tibble(scan_sequences(TF.motif, all.seqs, RC = TRUE, threshold = motif_score(TF.motif, threshold = 0.85), threshold.type = 'logodds.abs', nthreads = 0)) %>%
+    mutate(
+      score = (score - min.score) / (max.score - min.score)
+    ) %>%
+    filter(score >= thresh) %>%
+    group_by(sequence) %>%
+    filter(score == max(score)) %>%
+    mutate(
+      pos = 0.5 * (start + stop)
+    ) %>%
+    ungroup()
+  
+  TF.pos.TATA <- TF.pos %>%
+    inner_join(TATA.pos, by = 'sequence') %>%
+    mutate(
+      rel.pos = case_when(
+        stop < TATA.start ~ 'upstream',
+        start > TATA.stop ~ 'downstream'
+      )
+    ) %>%
+    filter(! is.na(rel.pos))
+  
+  promoter.strength.filtered <- promoter.strength %>%
+    inner_join(select(TF.pos.TATA, 'gene' = sequence, rel.pos), by = 'gene')
+  
+  difference <- promoter.strength.filtered %>%
+    group_by(enhancer, light, sys, sp) %>%
+    filter(n_distinct(rel.pos) == 2) %>%
+    summarise(
+      diff = median(enrichment[rel.pos == 'upstream']) - median(enrichment[rel.pos == 'downstream'])
+    ) %>%
+    ungroup()
+  
+  assign(paste0('difference.', TF), mutate(difference, TF = paste0('TF_', TF)))
+}
+
+difference <- bind_rows(mget(paste0('difference.', seq_along(TFs)))) %>%
+  group_by(TF, sys, light, enhancer) %>%
+  summarise(
+    difference = mean(diff)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    enhancer = enhancer.name[as.character(enhancer)],
+    light = light.name[as.character(light)]
+  ) %>%
+  pivot_wider(
+    names_from = c(sys, enhancer, light),
+    values_from = difference
+  ) %>%
+  mutate(
+    TF = ordered(
+      TF,
+      levels = paste('TF', seq_along(TFs), sep = '_')
+    )
+  ) %>%
+  arrange(TF) %>%
+  select(
+    TF,
+    leaf_noENH_dark,
+    proto_noENH_dark,
+    leaf_withENH_dark,
+    proto_withENH_dark,
+    leaf_noENH_light,
+    leaf_withENH_light,
+  )
+
+rm(list = paste0('difference.', seq_along(TFs)))
+
+# create an excel file with the motif summary
+wb <- createWorkbook()
+
+options('openxlsx.numFmt' = '0.00')
+modifyBaseFont(wb, fontSize = 10, fontName = 'Arial')
+
+bold <- createStyle(textDecoration = 'bold')
+wrap <- createStyle(wrapText = TRUE)
+boldwrap <- createStyle(textDecoration = 'bold', wrapText = TRUE, halign = 'center')
+weakStyle <- createStyle(bgFill = '#FFC7CE')
+
+addWorksheet(wb, sheetName = 'TF effect rel. to TATA')
+
+writeData(
+  wb,
+  sheet = 1,
+  'Supplementary Table 5 | Transcription factor binding sites are more active upstream of the TATA-box.',
+  startCol = 1,
+  startRow = 1
+)
+
+mergeCells(wb, sheet = 1, rows = 1, cols = 1:7)
+addStyle(wb, sheet = 1, style = bold, rows = 1, cols = 1:7)
+
+writeData(
+  wb,
+  sheet = 1,
+  'For each species, the difference in promoter strength between promotors with the indicated TF binding site upstream or downstream of the TATA-box was calculated for each library and assay system and the mean difference across the 3 species is listed here. TF binding sites associated with weaker promoters when present upstream of the TATA-box (mean(difference) < 0) are highlighted in red. TF_x, binding site for TFs from cluster x.',
+  startCol = 1,
+  startRow = 2
+)
+
+mergeCells(wb, sheet = 1, rows = 2, cols = 1:7)
+setRowHeights(wb, sheet = 1, rows = 2, heights = 39)
+addStyle(wb, sheet = 1, style = wrap, rows = 2, cols = 1:7)
+
+writeData(
+  wb,
+  sheet = 1,
+  list(
+    'TF binding site',
+    'no enhancer, dark,\ntobacco leaves',
+    'no enhancer, dark,\nmaize protoplasts',
+    'with enhancer, dark,\ntobacco leaves',
+    'with enhancer, dark,\nmaize protoplasts',
+    'no enhancer, light,\ntobacco leaves',
+    'with enhancer, light,\ntobacco leaves'
+  ),
+  startCol = 1,
+  startRow = 4
+)
+
+addStyle(wb, sheet = 1, style = boldwrap, rows = 4, cols = 1:7)
+setColWidths(wb, sheet = 1, cols = 1, widths = 12)
+setColWidths(wb, sheet = 1, cols = 2:7, widths = 18)
+
+writeData(
+  wb,
+  sheet = 1,
+  difference,
+  startCol = 1,
+  startRow = 5,
+  colNames = FALSE
+)
+
+conditionalFormatting(wb, 1, cols = 2:7, rows = 5:76, rule = '< 0', style = weakStyle)
+
+freezePane(wb, sheet = 1, firstActiveRow = 5, firstActiveCol = 2)
+
+saveWorkbook(wb, '../data/supp_tables/Supplementary Table 5.xlsx', overwrite = TRUE)
+
+
+## Synthetic promoters (Supplementary Table 6)
+convertTF <- function(TF, pos = NULL) {
+  if (is.null(pos)) {
+    pos = as.numeric(TF[2]) - 166
+    TF = TF[1]
+  }
+  return(paste0(TF, ' (', pos, ')'))
+}
+
+synthetic.promoters <- promoter.strength.val %>%
+  filter(motif %in% c('synthetic', 'TFcombo', 'TFscan')) %>%
+  mutate(
+    CPEs = case_when(
+      variant == 'WT' ~ 'none',
+      motif != 'synthetic' ~ 'TATA',
+      TRUE ~ sapply(str_split(variant, '\\+'), paste, collapse = ', ')
+    ),
+    CPEs = str_replace(CPEs, '^, ', ''),
+    CPEs = str_replace(CPEs, 'TATA', 'TATA-box'),
+    CPEs = str_replace(CPEs, 'Ypatch', 'Y patch'),
+    TFs = case_when(
+      motif == 'synthetic' ~ 'none',
+      motif == 'TFscan' ~ sapply(str_split(variant, '_'), convertTF),
+      motif == 'TFcombo' ~ sapply(lapply(str_split(variant, '-'), convertTF, pos = c(-131, -101, -71)), paste, collapse = ', ')
+    ),
+    TFs = str_replace_all(TFs, '(, )?none \\(-[:digit:]+\\)', ''),
+    TFs = str_replace(TFs, '^, ', ''),
+    TFs = str_replace_all(TFs, 'TCP1', 'TCP-15'),
+    TFs = str_replace_all(TFs, 'TCP2', 'TCP-22')
+  )
+
+synthetic.seqs <- read_tsv('validation_sequences/validation_seqs_two.tsv') %>%
+  filter(motif %in% c('synthetic', 'TFcombo', 'TFscan')) %>%
+  select(gene, motif, variant, sequence)
+
+synthetic.promoters.mod <- synthetic.promoters %>%
+  left_join(synthetic.seqs, by = c('gene', 'motif', 'variant')) %>%
+  select(sys, enhancer, light, gene, CPEs, TFs, sequence, enrichment) %>%
+  mutate(
+    enhancer = enhancer.name[as.character(enhancer)],
+    light = light.name[as.character(light)]
+  ) %>%
+  pivot_wider(
+    names_from = c(sys, enhancer, light),
+    values_from = enrichment
+  )
+
+# 35S promoter strength
+strength.35S <- promoter.strength.val %>%
+  filter(set == 'PROevo' & ((enhancer & variant == 'withPRO-withENH') | (! enhancer & variant == 'withPRO-noENH'))) %>%
+  mutate(
+    enhancer = enhancer.name[as.character(enhancer)],
+    light = light.name[as.character(light)]
+  ) %>%
+  mutate(
+    experiment = paste(sys, enhancer, light, sep = '_')
+  ) %>%
+  select(experiment, enrichment) %>%
+  deframe()
+
+# create an excel file with strength of evolved promoters
+wb <- createWorkbook()
+
+modifyBaseFont(wb, fontSize = 10, fontName = 'Arial')
+
+options('openxlsx.numFmt' = '0.00')
+
+bold <- createStyle(textDecoration = 'bold')
+wrap <- createStyle(wrapText = TRUE)
+boldwrap <- createStyle(textDecoration = 'bold', wrapText = TRUE, halign = 'center')
+no.decimal <- createStyle(numFmt = '0')
+seq.font <- createStyle(fontName = 'Courier New')
+strongStyle <- createStyle(bgFill = '#92D050')
+
+addWorksheet(wb, sheetName = 'synthetic promoters')
+
+writeData(
+  wb,
+  sheet = 1,
+  'Supplementary Table 6 | Strength of synthetic promoters.',
+  startCol = 1,
+  startRow = 1
+)
+
+mergeCells(wb, sheet = 1, rows = 1, cols = 1:10)
+addStyle(wb, sheet = 1, style = bold, rows = 1, cols = 1:10)
+
+writeData(
+  wb,
+  sheet = 1,
+  "Promoter strength (log2; normalized to the 35S minimal promoter) was determined by STARR-seq in the indicated condition and asssay system. The names for the synthetic promoters start with synA for synthetic promoters with an Arabidopsis-like nucleotide frequency and with synZ for promoters with a maize-like base composition. Core promoter elements (CPEs) and transcription factor binding sites (TFBSs) added to the synthetic promoters are indicated. For TFBSs, the insertion position relative to the TSS is indicated in parenthesis. Promoters stronger than the 35S minimal promoter are highlighted in green. #N/A indicates missing data. TCP-x, binding site for TCP TFs from cluster x.",
+  startCol = 1,
+  startRow = 2
+)
+
+mergeCells(wb, sheet = 1, rows = 2, cols = 1:10)
+setRowHeights(wb, sheet = 1, rows = 2, heights = 39)
+addStyle(wb, sheet = 1, style = wrap, rows = 2, cols = 1:10)
+
+writeData(
+  wb,
+  sheet = 1,
+  list(
+    'promoter',
+    'CPEs',
+    'TFBSs',
+    'no enhancer, dark,\ntobacco leaves',
+    'no enhancer, dark,\nmaize protoplasts',
+    'with enhancer, dark,\ntobacco leaves',
+    'with enhancer, dark,\nmaize protoplasts',
+    'no enhancer, light,\ntobacco leaves',
+    'with enhancer, light,\ntobacco leaves',
+    'sequence'
+  ),
+  startCol = 1,
+  startRow = 4
+)
+
+addStyle(wb, sheet = 1, style = boldwrap, rows = 4, cols = 1:10)
+setRowHeights(wb, sheet = 1, rows = 4, heights = 26)  
+
+df <- synthetic.promoters.mod %>%
+  select(gene, CPEs, TFs, leaf_noENH_dark, proto_noENH_dark, leaf_withENH_dark, proto_withENH_dark, leaf_noENH_light, leaf_withENH_light, sequence)
+
+writeData(
+  wb,
+  sheet = 1,
+  df,
+  startCol = 1,
+  startRow = 5,
+  colNames = FALSE,
+  keepNA = TRUE
+)
+
+addStyle(wb, sheet = 1, style = no.decimal, cols = 3, rows = 5:(dim(df)[1] + 4))
+addStyle(wb, sheet = 1, style = seq.font, cols = 10, rows = 5:(dim(df)[1] + 4))
+
+for (i in seq_len(6)) {
+  experiment <- c('leaf_noENH_dark', 'proto_noENH_dark', 'leaf_withENH_dark', 'proto_withENH_dark', 'leaf_noENH_light', 'leaf_withENH_light')[i]
+  conditionalFormatting(wb, 1, cols = 3 + i, rows = 5:(dim(df)[1] + 4), rule = paste0('>', strength.35S[experiment]), style = strongStyle)
+}
+
+
+setColWidths(wb, sheet = 1, cols = 1, widths = 24)
+setColWidths(wb, sheet = 1, cols = 2, widths = 19)
+setColWidths(wb, sheet = 1, cols = 3, widths = 37)
+setColWidths(wb, sheet = 1, cols = 4:9, widths = 18)
+setColWidths(wb, sheet = 1, cols = 10, widths = 12)
+
+freezePane(wb, sheet = 1, firstActiveRow = 5, firstActiveCol = 2)
+
+saveWorkbook(wb, '../data/supp_tables/Supplementary Table 6.xlsx', overwrite = TRUE)
+
+
+## Evolved promoters (Supplemetary Table 7)
 evolved.promoters <- promoter.strength.val %>%
   filter(motif == 'evolution' | motif == 'synthetic' | grepl('native', motif, fixed = 'TRUE')) %>%
   mutate(
@@ -2417,7 +3084,7 @@ addWorksheet(wb, sheetName = 'evolved promoters')
 writeData(
   wb,
   sheet = 1,
-  'Supplementary Table 5 | Strength of evolved promoters.',
+  'Supplementary Table 7 | Strength of evolved promoters.',
   startCol = 1,
   startRow = 1
 )
@@ -2487,4 +3154,4 @@ setColWidths(wb, sheet = 1, cols = 10, widths = 12)
 
 freezePane(wb, sheet = 1, firstActiveRow = 5, firstActiveCol = 2)
 
-saveWorkbook(wb, '../data/supp_tables/Supplementary Table 5.xlsx', overwrite = TRUE)
+saveWorkbook(wb, '../data/supp_tables/Supplementary Table 7.xlsx', overwrite = TRUE)

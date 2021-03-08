@@ -6,7 +6,7 @@
 	\coordinate (LMcor) at (0, 0);
 	
 	\begin{hgroupplot}[%
-		ylabel = predicted promoter strength,
+		ylabel = predicted $\log_2$(promoter strength),
 		xymin = -5.5,
 		xymax = 6.5,
 		xytick = {-10, -8, ..., 10},
@@ -25,7 +25,7 @@
 
 		\nextgroupplot[
 			title = tobacco model,
-			xlabel = measured promoter strength\\in tobacco leaves
+			xlabel = $\log_2$(promoter strength)\\measured in tobacco leaves
 		]
 		
 			\addplot [
@@ -50,7 +50,7 @@
 			
 		\nextgroupplot[
 			title = maize model,
-			xlabel = measured promoter strength\\in maize protoplasts
+			xlabel = $\log_2$(promoter strength)\\measured in maize protoplasts
 		]
 		
 			\addplot [
@@ -84,7 +84,7 @@
 	\coordinate (CNNcor) at (LMcor -| \textwidth - \twocolumnwidth, 0);
 	
 	\begin{hgroupplot}[%
-		ylabel = predicted promoter strength,
+		ylabel = predicted $\log_2$(promoter strength),
 		xymin = -5.5,
 		xymax = 6.5,
 		xytick = {-10, -8, ..., 10},
@@ -103,7 +103,7 @@
 
 		\nextgroupplot[
 			title = tobacco model,
-			xlabel = measured promoter strength\\in tobacco leaves
+			xlabel = $\log_2$(promoter strength)\\measured in tobacco leaves
 		]
 		
 			\addplot [
@@ -128,7 +128,7 @@
 			
 		\nextgroupplot[
 			title = maize model,
-			xlabel = measured promoter strength\\in maize protoplasts
+			xlabel = $\log_2$(promoter strength)\\measured in maize protoplasts
 		]
 		
 			\addplot [
@@ -164,11 +164,11 @@
 	\leafsymbol{enrEvoLeaf};
 	
 	\begin{hgroupplot}[%
-		ylabel = promoter strength,
+		ylabel = $\log_2$(promoter strength),
 		ymin = -3,
 		ymax = 7.75,
 		ytick = {-10, -8, ..., 10},
-		execute at begin axis = {\draw[very thin, 35S enhancer] (\xmin, 4.55) -- (\xmax, 4.55);},
+		execute at begin axis = {\draw[very thin, 35S enhancer] (\xmin, 4.54) -- (\xmax, 4.54);},
 		group position = {anchor = above north west, at = {(enrEvoLeaf)}, xshift = \plotylabelwidth, yshift = -1.25\baselineskip},
 		group/every plot/.append style = {x grids = false},
 	]{\twocolumnwidth}{3}{rounds of \textit{in silico} evolution}
@@ -233,11 +233,11 @@
 		\protosymbol{enrEvoProto};
 		
 		\begin{hgroupplot}[%
-			ylabel = promoter strength,
+			ylabel = $\log_2$(promoter strength),
 			ymin = -3.5,
 			ymax = 5.25,
 			ytick = {-10, -8, ..., 10},
-			execute at begin axis = {\draw[very thin, 35S enhancer] (\xmin, 2.37) -- (\xmax, 2.37);},
+			execute at begin axis = {\draw[very thin, 35S enhancer] (\xmin, 2.7) -- (\xmax, 2.7);},
 			group position = {anchor = above north west, at = {(enrEvoProto)}, xshift = \plotylabelwidth, yshift = -1.25\baselineskip},
 			group/every plot/.append style = {x grids = false},
 		]{\twocolumnwidth}{3}{rounds of \textit{in silico} evolution}
@@ -302,7 +302,7 @@
 	\leafsymbol{enrEvoLeafnoE};
 	
 	\begin{hgroupplot}[%
-		ylabel = promoter strength,
+		ylabel = $\log_2$(promoter strength),
 		ymin = -6,
 		ymax = 4.5,
 		ytick = {-10, -8, ..., 10},
@@ -371,7 +371,7 @@
 		\protosymbol{enrEvoProtonoE};
 		
 		\begin{hgroupplot}[%
-			ylabel = promoter strength,
+			ylabel = $\log_2$(promoter strength),
 			ymin = -6.5,
 			ymax = 3,
 			ytick = {-10, -8, ..., 10},

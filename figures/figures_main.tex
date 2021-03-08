@@ -108,6 +108,9 @@
 	\\[-.25\baselineskip]to\\[-.2\baselineskip]%
 }
 
+%\newcommand{\hl}[2][yellow]{{\setlength{\fboxsep}{0pt}\colorbox{#1}{#2}}}
+\newcommand{\hl}[2][yellow]{#2}
+
 %%% tikz setup
 \pgfmathsetseed{928}
 
@@ -236,10 +239,10 @@
 			\caption{%
 				\textbf{STARR-seq measures core promoter strength in tobacco leaves and maize protoplasts.}\titleend
 				\subfigref{A} Assay scheme. The core promoters (bases $-165$ to $+5$ relative to the TSS) of all genes of Arabidopsis, maize and sorghum were array-synthesized and cloned into STARR-seq constructs to drive the expression of a barcoded GFP reporter gene. For each species, two libraries, one without and one with a 35S enhancer upstream of the promoter, were created. The libraries were subjected to STARR-seq in transiently transformed tobacco leaves and maize protoplasts.\nextentry
-				\subfigref{B} Each promoter library (At, Arabiopsis; Zm, maize; Sb, sorghum) contained two internal control constructs driven by the 35S minimal promoter without ($-$) or with ($+$) an upstream 35S enhancer. The enrichment ($\log_2$) of recovered mRNA barcodes compared to DNA input was calculated with the enrichment of the enhancer-less control set to 0. In all following figures this metric is indicated as promoter strength. Each boxplot (center line, median; box limits, upper and lower quartiles; whiskers, 1.5 $\times$ interquartile range; points, outliers) represents the enrichment of all barcodes linked to the corresponding construct.\nextentry
-				\subfigref{C}\subfigref{D} Correlation of two biological replicates of STARR-seq using the maize promoter libraries in tobacco leaves \parensubfig{C} or in maize protoplasts \parensubfig{D}.\nextentry
-				\subfigref{E} Comparison of the strength of maize promoters in tobacco leaves and maize protoplasts.\nextentry
-				\subfigref{F}\subfigref{G} Violin plots of promoter strength as measured by STARR-seq in tobacco leaves \parensubfig{F} or maize protoplasts \parensubfig{G} for libraries without ($-$) or with ($+$) the 35S enhancer upstream of the promoter. \nextentry
+				\subfigref{B} Each promoter library (At, Arabiopsis; Zm, maize; Sb, sorghum) contained two internal control constructs driven by the 35S minimal promoter without ($-$) or with ($+$) an upstream 35S enhancer. The enrichment ($\log_2$) of recovered mRNA barcodes compared to DNA input was calculated with the enrichment of the enhancer-less control set to 0. In all following figures this metric is indicated as promoter strength. Each boxplot (center line, median; box limits, upper and lower quartiles; whiskers, 1.5 $\times$ interquartile range; points, outliers) represents the enrichment of all barcodes linked to the corresponding \hl{internal control construct}.\nextentry
+				\subfigref{C}\subfigref{D} Correlation \hl{(Pearson's $R^2$ and Spearman's $\rho$)} of two biological replicates of STARR-seq using the maize promoter libraries in tobacco leaves \parensubfig{C} or in maize protoplasts \parensubfig{D}.\nextentry
+				\subfigref{E} Comparison of the strength of maize promoters in tobacco leaves and maize protoplasts. \hl{Pearson's $R^2$ and Spearman's $\rho$ are indicated.}\nextentry
+				\subfigref{F}\subfigref{G} Violin plots of \hl{the strength of plant promoters from the indicated species} as measured by STARR-seq in tobacco leaves \parensubfig{F} or maize protoplasts \parensubfig{G} for libraries without ($-$) or with ($+$) the 35S enhancer upstream of the promoter. \nextentry
 				\subfigref{H} Enrichment of selected GO terms for genes associated with the 1000 strongest promoters in the Arabidopsis (At), maize (Zm), and sorghum (Sb) promoter libraries without enhancer in tobacco leaves (top panel) and maize protoplasts (bottom panel). The red line marks the significance threshold (adjusted $p\ \textsf{value} \leq 0.05$). Non-significant bars are shown in gray.\nextentry
 				\subfigref{I}\subfigref{J} Violinplots of promoter strength (libraries without 35S enhancer) in tobacco leaves \parensubfig{I} or maize protoplasts \parensubfig{J}. Promoters were grouped by gene type. In all figures, violinplots represent the kernel density distribution and the boxplots within represent the median (center line), upper and lower quartiles (box limits), and 1.5 $\times$ the interquartile range (whiskers) for all corresponding promoters. Numbers at the bottom of the plot indicate the number of tested promoters. Significant differences between two samples were determined using the Wilcoxon rank-sum test and are indicated: \issignif, $p \leq \signiflevelone$; \issignif\issignif, $p \leq \signifleveltwo$; \issignif\issignif\issignif, $p \leq \signiflevelthree$; \notsignif, not significant.
 			}%
@@ -265,7 +268,7 @@
 				\textbf{The TATA-box is a key determinant of promoter strength.}\titleend
 				\subfigref{A} Histograms showing the percentage of promoters with a TATA-box at the indicated position. The region between positions $-59$ and $-23$ in which most TATA-boxes reside is highlighted in gray.\nextentry
 				\subfigref{B}\subfigref{C} Violin plots (as defined in \autoref{fig:overview}) of promoter strength for libraries without enhancer in tobacco leaves \parensubfig{B} or maize protoplasts \parensubfig{C}. Promoters without a TATA-box ($-$) were compared to those with a TATA-box outside ($+$/$-$) or within ($+$/$+$) the $-59$ to $-23$ region.\nextentry
-				\subfigrange{D}{G} Thirty plant promoters with a strong \parensubfig[\subfigref{D}]{E} or weak \parensubfig[\subfigref{F}]{G} TATA-box (WT) were tested. One (mutA and mutB) or two (mutAB) T>G mutations were inserted into promoters with a strong TATA-box \parensubfig[\subfigref{D}]{E}. A canonical TATA-box (+TATA) or one with a T>G mutation (+mutTATA) was inserted into promoters with a weak TATA-box \parensubfig[\subfigref{F}]{G}. Logoplots \parensubfig[\subfigref{F}]{D} of the TATA-box regions of these promoters  and their strength \parensubfig[\subfigref{G}]{E} relative to the WT promoter (set to 0, horizontal black line) are shown. Boxplots (center line, median; box limits, upper and lower quartiles; whiskers, 1.5 $\times$ interquartile range; points, outliers) denote the strength of the indicated promoter variants. Numbers at the bottom of the plot indicate the number of tested promoter elements. Significant differences from a null distribution were determined using the Wilcoxon rank-sum test and are indicated: \issignif, $p \leq \signiflevelone$; \issignif\issignif, $p \leq \signifleveltwo$; \issignif\issignif\issignif, $p \leq \signiflevelthree$; \notsignif, not significant.
+				\subfigrange{D}{G} Thirty plant promoters with a strong \parensubfig[\subfigref{D}]{E} or weak \parensubfig[\subfigref{F}]{G} TATA-box (WT) were tested. One (mutA and mutB) or two (mutAB) T>G mutations were inserted into promoters with a strong TATA-box \parensubfig[\subfigref{D}]{E}. A canonical TATA-box (+TATA) or one with a T>G mutation (+mutTATA) was \hl{used to replace the} weak TATA-box \parensubfig[\subfigref{F}]{G}. Logoplots \parensubfig[\subfigref{F}]{D} of the TATA-box regions of these promoters  and their strength \parensubfig[\subfigref{G}]{E} relative to the WT promoter (set to 0, horizontal black line) are shown. Boxplots (center line, median; box limits, upper and lower quartiles; whiskers, 1.5 $\times$ interquartile range; points, outliers) denote the strength of the indicated promoter variants. Numbers at the bottom of the plot indicate the number of tested promoter elements. Significant differences from a null distribution were determined using the Wilcoxon rank-sum test and are indicated: \issignif, $p \leq \signiflevelone$; \issignif\issignif, $p \leq \signifleveltwo$; \issignif\issignif\issignif, $p \leq \signiflevelthree$; \notsignif, not significant.
 			}%
 			\label{fig:TATA}%
 		\end{fig}
@@ -274,7 +277,7 @@
 			\input{Figure4}%
 			\caption{%
 				\textbf{Enhancer responsiveness of promoters depends on the TATA-box and GC content.}\titleend
-				\subfigref{A}\subfigref{B} Violin plots (as defined in \autoref{fig:overview}) of enhancer responsiveness (promoter strength\textsuperscript{with enhancer} $-$ promoter strength\textsuperscript{without enhancer}) in tobacco leaves \parensubfig{A} or maize protoplasts \parensubfig{B}. Promoters were grouped into three bins of approximately similar size according to the tissue-specificity $\tau$ (Yanai et al., 2005) of the expression of the associated gene.\nextentry
+				\subfigref{A}\subfigref{B} Violin plots (as defined in \autoref{fig:overview}) of enhancer responsiveness (promoter strength\textsuperscript{with enhancer} \hl{divided by} promoter strength\textsuperscript{without enhancer}) in tobacco leaves \parensubfig{A} or maize protoplasts \parensubfig{B}. Promoters were grouped into three bins of approximately similar size according to the tissue-specificity $\tau$ of the expression of the associated gene.\nextentry
 				\subfigref{C}\subfigref{D} Violin plots of enhancer responsiveness in tobacco leaves \parensubfig{C} or maize protoplasts \parensubfig{D}. Promoters without a TATA-box ($-$) were compared to those with a TATA-box outside ($+$/$-$) or within ($+$/$+$) the $-59$ to $-23$ region.\nextentry
 				\subfigref{E}\subfigref{F} Violin plots of enhancer responsiveness in tobacco leaves \parensubfig{E} or maize protoplasts \parensubfig{F} for promoters grouped by GC content.
 			}%
@@ -286,7 +289,7 @@
 			\caption{%
 				\textbf{Promoter strength can be modulated by light.}\titleend
 				\subfigref{A} Tobacco leaves were transiently transformed with STARR-seq promoter libraries and the plants were kept for two days in 16h light/8h dark cycles (light) or completely in the dark (dark) prior to mRNA extraction.\nextentry
-				\subfigref{B} Violin plots (as defined in \autoref{fig:overview}) of light-dependency (promoter strength\textsuperscript{light} $-$ promoter strength\textsuperscript{dark}) for promoters in the libraries with ($+$) or without ($-$) the 35S enhancer.\nextentry
+				\subfigref{B} Violin plots (as defined in \autoref{fig:overview}) of light-dependency (promoter strength\textsuperscript{light} \hl{divided by} promoter strength\textsuperscript{dark}) for promoters in the libraries with ($+$) or without ($-$) the 35S enhancer.\nextentry
 				\subfigref{C} Enrichment of selected GO terms for genes associated with the 1000 most light-dependent promoters. The red line marks the significance threshold (adjusted $p\ \textsf{value} \leq 0.05$). Non-significant bars are gray.\nextentry
 				\subfigrange{D}{F} Violin plots of light-dependency. Promoters are grouped by GC content and split into promoters without (left half, darker color) or with (right half, lighter color) a TATA-box \parensubfig{D}, or a binding site for TCP \parensubfig{E} or WRKY \parensubfig{F} transcription factors.
 			}%
@@ -297,7 +300,7 @@
 			\input{Figure6}%
 			\caption{
 				\textbf{Design and validation of synthetic promoters.}\titleend
-				\subfigrange{A}{C} Synthetic promoters with nucleotide frequencies similar to an average Arabidopsis (35.2\% A, 16.6\% C, 15.3\% G, 32.8\% T) or maize (24.5\% A, 29.0\% C, 22.5\% G, 23.9\% T) promoter were created and modified by adding a TATA-box, Y patch, and/or Inr element \parensubfig{A}. Promoter strength was determined by STARR-seq in tobacco leaves \parensubfig{B} and maize protoplasts \parensubfig{C}. Promoters with an Arabidopsis-like nucleotide composition are shown on the left, those with maize-like base frequencies on the right. The strength of the 35S minimal promoter is indicated by a horizontal blue line.\nextentry
+				\subfigrange{A}{C} Synthetic promoters with nucleotide frequencies similar to an average Arabidopsis (35.2\% A, 16.6\% C, 15.3\% G, 32.8\% T) or maize (24.5\% A, 29.0\% C, 22.5\% G, 23.9\% T) promoter were created and modified by adding a TATA-box, Y patch, and/or Inr element \parensubfig{A}. Promoter strength was determined by STARR-seq in tobacco leaves \parensubfig{B} and maize protoplasts \parensubfig{C}. Promoters with an Arabidopsis-like nucleotide composition are shown on the left, those with maize-like base frequencies on the right. The strength of the 35S minimal promoter is indicated by a horizontal blue line. Due to the small sample size, individual data points are shown.\nextentry
 				\subfigrange{D}{F} Transcription factor binding sites for TCP, NAC, and HSF transcription factors were inserted at positions 35, 65, and/or 95 of the synthetic promoters with a TATA-box \parensubfig{D} and the activity of promoters with a single binding site for the indicated transcription factor \parensubfig{E} or multiple binding sites \parensubfig{F} was determined in tobacco leaves (left panel) or maize protoplasts (right panel).
 				\subfigref{G}\subfigref{H} A single TCP \parensubfig{G} or HSF \parensubfig{H} transcription factor binding site was inserted at the indicated position in the synthetic promoters containing a TATA-box. The strength of these promoters was measured in tobacco leaves \parensubfig{G} or maize protoplasts \parensubfig{H}. Boxplots are as defined in \autoref{fig:TATA}. In (\textbf{\plainsubfigref{E}}-\textbf{\plainsubfigref{H}}), the corresponding promoter without any transcription factor binding was set to 0 (horizontal black line).
 			}%
@@ -309,9 +312,9 @@
 			\input{Figure7}%
 			\caption{%
 				\textbf{Computational models can predict promoter strength and enable \textit{in silico} evolution of plant promoters.}\titleend
-				\subfigref{A} Correlation between the promoter strength as determined by STARR-seq using promoter libraries with the 35S enhancer and predictions from a linear model based on the GC content and motif scores for core promoter elements and transcription factors. The models were trained on data from the tobacco leaf system (tobacco model) or the maize protoplasts (maize model). The overall correlation is indicated in black and correlations for each species are colored as indicated (inset). Correlations are shown for a test set of 10\% of all promoters.\nextentry
+				\subfigref{A} Correlation between the promoter strength as determined by STARR-seq using promoter libraries with the 35S enhancer and predictions from a linear model based on the GC content and motif scores for core promoter elements and transcription factors. The models were trained on data from the tobacco leaf system (tobacco model) or the maize protoplasts (maize model). The overall correlation is indicated in black and correlations for each species are colored as indicated (inset). Correlations \hl{(Pearson's $R^2$)} are shown for a test set of 10\% of all promoters.\nextentry
 				\subfigref{B} Similar to \parensubfig{A} but the prediction is based on a convolutional neural network trained on promoter sequences.\nextentry
-				\subfigrange{C}{F} Violin plots (as defined in \autoref{fig:overview}) of promoter strength of the unmodified promoters (0 rounds of evolution) or after they were subjected to three or ten rounds of  \textit{in silico} evolution as determined in tobacco leaves \parensubfig[\subfigref{C}]{E} or maize protoplasts \parensubfig[\subfigref{D}]{F}. The promoters were tested in a library with \parensubfig[\subfigref{C}]{D} or without \parensubfig[\subfigref{E}]{F} an upstream 35S enhancer. The model(s) used for the \textit{in silico} evolution is indicated on each plot. The promoter strength of the 35S promoter is indicated by a horizontal blue line.
+				\subfigrange{C}{F} Violin plots (as defined in \autoref{fig:overview}) of promoter strength of the unmodified promoters (0 rounds of evolution) or after they were subjected to three or ten rounds of  \textit{in silico} evolution as determined in tobacco leaves \parensubfig[\subfigref{C}]{E} or maize protoplasts \parensubfig[\subfigref{D}]{F}. The promoters were tested in a library with \parensubfig[\subfigref{C}]{D} or without \parensubfig[\subfigref{E}]{F} an upstream 35S enhancer. The models used for the \textit{in silico} evolution are indicated on each plot. The promoter strength of the 35S promoter is indicated by a horizontal blue line.
 			}%
 			\label{fig:models}
 		\end{fig}
@@ -340,7 +343,8 @@
 				\subfigref{C} Comparison of the strength of Arabidopsis promoters in tobacco leaves and maize protoplasts.\nextentry
 				\subfigref{D}\subfigref{E} Correlation of two biological replicates of STARR-seq using the sorghum promoter libraries in tobacco leaves \parensubfig{D} or in maize protoplasts \parensubfig{E}.\nextentry
 				\subfigref{F} Comparison of the strength of sorghum promoters in tobacco leaves and maize protoplasts.\nextentry
-				\subfigrange{G}{I}  Correlation of two biological replicates of STARR-seq using the Arabidopsis \parensubfig{G}, maize \parensubfig{H}, or sorghum \parensubfig{I} promoter libraries in tobacco leaves that were kept for two days in 16h light/8h dark cycles prior to mRNA extraction.
+				\subfigrange{G}{I}  Correlation of two biological replicates of STARR-seq using the Arabidopsis \parensubfig{G}, maize \parensubfig{H}, or sorghum \parensubfig{I} promoter libraries in tobacco leaves that were kept for two days in 16h light/8h dark cycles prior to mRNA extraction.\nextentry
+				\hl{Pearson's $R^2$ and Spearman's $\rho$ are indicated in all plots.}
 			}%
 			\label{sfig:correlation}%
 		\end{sfig}
@@ -350,7 +354,8 @@
 			\caption{%
 				\textbf{Promoter strength in small validation libraries correlates highly with comprehensive data.}\titleend
 				\subfigrange{A}{C} Correlation between the strength of promoters present in the comprehensive promoter libraries (main data) and in a separate, smaller validation library. The promoter strength was determined in tobacco leaves \parensubfig{A} and maize protoplasts \parensubfig{B} that were kept in the dark prior to mRNA extraction. Additionally, promoter strength was measured in tobacco leaves that were kept for two days in 16h light/8h dark cycles prior to mRNA extraction \parensubfig{C}.\nextentry
-				\subfigrange{D}{F} As in (\textbf{\plainsubfigref{A}}-\textbf{\plainsubfigref{C}}) but for a second validation library.
+				\subfigrange{D}{F} As in (\textbf{\plainsubfigref{A}}-\textbf{\plainsubfigref{C}}) but for a second validation library.\nextentry
+				\hl{Pearson's $R^2$ and Spearman's $\rho$ are indicated in all plots.}
 			}%
 			\label{sfig:val-cor}%
 		\end{sfig}
@@ -358,17 +363,37 @@
 		\begin{sfig}
 			\input{SuppFig3}%
 			\caption{%
-				\textbf{The effect of the TATA-box on promoter strength is not a result of decreased GC content.}\titleend
-				\subfigref{A}\subfigref{B} Violin plots of promoter strength in tobacco leaves \parensubfig{A} or maize protoplasts \parensubfig{B}. Promoters were grouped by GC content and split into promoters without (left half, darker color) or with (right half, lighter color) a TATA-box. Violin plots are as defined in \autoref{fig:overview}, except only one half is shown.
+				\textbf{Promoter strength and \textit{in vivo} expression levels are not correlated.}\titleend
+				\subfigref{A} Correlation (Pearson's $r$) between the promoter strength and expression levels of the corresponding genes in the indicated species. Each boxplot (center line, median; box limits, upper and lower quartiles; whiskers, 1.5 $\times$ interquartile range; points, outliers) represents the correlation for all individual tissue samples in the RNA-seq dataset (see Methods).\nextentry
+				\subfigref{B}\subfigref{C} Examples of the correlation between gene expression (Arabidopsis adult cotyledon \parensubfig{B} or maize root cortex \parensubfig{C} samples) and promoter strength as determined in tobacco leaves \parensubfig{B} or maize protoplasts \parensubfig{C}. These examples correspond to the highest correlations in \parensubfig{A}.
 			}%
-			\label{sfig:TATA-GC}%
+			\label{sfig:expression}
 		\end{sfig}
 		
 		\begin{sfig}
 			\input{SuppFig4}%
 			\caption{%
+				\textbf{Strength of maize promoters depends on the TATA-box location in maize protoplasts.}\titleend
+				\subfigref{A} Histogram showing the percentage of maize promoters with a TATA-box at the indicated position (reproduced from \autoref{fig:TATA}). Three peaks in the distribution of TATA-boxes are highlighted in gray. Peak 1 spans bases $-$72 to $-$65, peak 2 spans bases $-$59 to $-$50, and peak 3 spans bases $-$34 to $-$24.\nextentry
+				\subfigref{B} Violin plots (as defined in \autoref{fig:overview}) of promoter strength for maize promoters without enhancer in the indicated assay system. Promoters without a TATA-box ($-$) were compared to those with a TATA-box outside ($+$/$-$) or within one of the three peaks highlighted in \parensubfig{A}.
+			}%
+			\label{sfig:TATAmaize}
+		\end{sfig}
+		
+		\begin{sfig}
+			\input{SuppFig5}%
+			\caption{%
+				\textbf{The effect of the TATA-box on promoter strength is not a result of decreased GC content.}\titleend
+				\subfigrange{A}{D} Violin plots of promoter strength \parensubfig[\subfigref{A}]{B} or \hl{GC content \parensubfig[\subfigref{C}]{D}} in tobacco leaves \parensubfig[\subfigref{A}]{C} or maize protoplasts \parensubfig[\subfigref{B}]{D}. Promoters were grouped by GC content and split into promoters without (left half, darker color) or with (right half, lighter color) a TATA-box. Violin plots are as defined in \autoref{fig:overview}, except only one half is shown.
+			}%
+			\label{sfig:TATA-GC}%
+		\end{sfig}
+		
+		\begin{sfig}
+			\input{SuppFig6}%
+			\caption{%
 				\textbf{The BRE\textsuperscript{u} element is most active in maize protoplasts.}\titleend
-				\subfigrange{A}{D} Violin plots of promoter strength in tobacco leaves \parensubfig[\subfigref{A}]{C} or maize protoplasts \parensubfig[\subfigref{B}]{D}. Promoters were grouped by GC content and split into promoters without (left half, darker color) or with (right half, lighter color) a BRE\textsuperscript{u} \parensubfig[\subfigref{A}]{B}, or BRE\textsuperscript{d} \parensubfig[\subfigref{C}]{D} element. Violin plots are as defined in \autoref{fig:overview}, except only one half is shown.\nextentry
+				\subfigrange{A}{D} Violin plots of promoter strength in tobacco leaves \parensubfig[\subfigref{A}]{C} or maize protoplasts \parensubfig[\subfigref{B}]{D}. Promoters \hl{with a strong or intermediate TATA-box (motif score $\geq$ 0.7; see Methods)} were grouped by GC content and split into promoters without (left half, darker color) or with (right half, lighter color) a BRE\textsuperscript{u} \parensubfig[\subfigref{A}]{B}, or BRE\textsuperscript{d} \parensubfig[\subfigref{C}]{D} element. Violin plots are as defined in \autoref{fig:overview}, except only one half is shown.\nextentry
 				\subfigref{E}\subfigref{G} Logoplots for promoters with a BRE\textsuperscript{u} \parensubfig{E} or BRE\textsuperscript{d} \parensubfig{F} before (WT) and after (mut) introducing mutations that disrupt the elements.\nextentry
 				\subfigref{G} Logoplots for promoters without a BRE (WT) and with an inserted BRE\textsuperscript{u} (+ BRE\textsuperscript{u}) or BRE\textsuperscript{d} (+ BRE\textsuperscript{d}) element.\nextentry
 				\subfigref{H} Boxplots (as defined in \autoref{fig:TATA}) for the relative strength of the promoter variants shown in (\textbf{\plainsubfigref{E}}-\textbf{\plainsubfigref{G}}). The corresponding WT promoter was set to 0 (horizontal black line).
@@ -377,7 +402,7 @@
 		\end{sfig}
 					
 		\begin{sfig}
-			\input{SuppFig5}
+			\input{SuppFig7}
 			\caption{%
 				\textbf{The maize genome encodes a TFIIB-related protein with a conserved valine residue required for BRE\textsuperscript{u} recognition.}\titleend
 				Alignment of TFIIB and TFIIB-like protein sequences from indicated species. Residues conserved in 80 or 50\% of the sequences are highlighted in dark or light gray, respectively. The valine residue required for recognition of BRE\textsuperscript{u} is highlighted in green.
@@ -386,7 +411,7 @@
 		\end{sfig}
 
 		\begin{sfig}
-			\input{SuppFig6}%
+			\input{SuppFig8}%
 			\caption{%
 				\textbf{The Y patch is a plant-specific core promoter element.}\titleend
 				\subfigref{A} Histogram showing the percentage of promoters with a TATA-box at the indicated position.\nextentry
@@ -396,7 +421,7 @@
 		\end{sfig}
 		
 		\begin{sfig}
-			\input{SuppFig7}%
+			\input{SuppFig9}%
 			\caption{%
 				\textbf{Core promoter elements at the TSS influence promoter strength.}\titleend
 				\subfigrange{A}{D} Violin plots of promoter strength in tobacco leaves \parensubfig[\subfigref{A}]{C} or maize protoplasts \parensubfig[\subfigref{B}]{D}. Promoters were grouped by GC content and split into promoters without (left half, darker color) or with (right half, lighter color) an Inr \parensubfig[\subfigref{A}]{B}, or TCT \parensubfig[\subfigref{C}]{D} element at the TSS. Violin plots are as defined in \autoref{fig:overview}, except only one half is shown.
@@ -405,7 +430,7 @@
 		\end{sfig}
 		
 		\begin{sfig}
-			\input{SuppFig8}%
+			\input{SuppFig10}%
 			\caption{%
 				\textbf{Transcription factor binding sites contribute to promoter strength in an assay system-dependent manner.}\titleend
 				\subfigrange{A}{D} Violin plots of promoter strength for libraries without enhancer in tobacco leaves \parensubfig[\subfigref{A}]{C} or maize protoplasts \parensubfig[\subfigref{B}]{D}. Promoters were grouped by GC content and split into promoters without (left half, darker color) or with (right half, lighter color) a binding site for TCP \parensubfig[\subfigref{A}]{B} or HSF \parensubfig[\subfigref{C}]{D} transcription factors. Violin plots are as defined in \autoref{fig:overview}, except only one half is shown.
@@ -414,26 +439,26 @@
 		\end{sfig}
 		
 		\begin{sfig}
-			\input{SuppFig9}%
+			\input{SuppFig11}%
 			\caption{%
 				\textbf{Transcription factor binding sites are more active upstream of the TATA-box.}\titleend
-				\subfigref{A}\subfigref{B} Histograms showing the number of promoters with a TCP \parensubfig{A} or HSF \parensubfig{B} transcription factor binding site at the indicated position.\nextentry
-				\subfigrange{C}{F} Violin plots (as defined in \autoref{fig:overview}) of promoter strength for libraries without enhancer in tobacco leaves \parensubfig[\subfigref{C}]{E} or maize protoplasts \parensubfig[\subfigref{D}]{F}. Promoters were grouped by the position of their TCP \parensubfig[\subfigref{C}]{D}, or HSF \parensubfig[\subfigref{E}]{F} transcription factor binding site relative to the TATA-box.
+				\subfigrange{A}{C} Histograms showing the number of promoters with a TCP \parensubfig{A}, HSF \parensubfig{B} or \hl{NAC} \parensubfig{C} transcription factor binding site at the indicated position.\nextentry
+				\subfigrange{D}{I} Violin plots (as defined in \autoref{fig:overview}) of promoter strength for libraries without enhancer in tobacco leaves (\textbf{\plainsubfigref{D}}-\textbf{\plainsubfigref{F}}) or maize protoplasts (\textbf{\plainsubfigref{G}}-\textbf{\plainsubfigref{I}}). Promoters were grouped by whether their TCP \parensubfig[\subfigref{D}]{G}, HSF \parensubfig[\subfigref{E}]{H} or \hl{NAC} \parensubfig[\subfigref{F}]{I} transcription factor binding site is located upstream (up) or downstream (down) of the TATA-box.
 			}%
 			\label{sfig:TFpos}%
 		\end{sfig}
 		
 		\begin{sfig}
-			\input{SuppFig10}%
+			\input{SuppFig12}%
 			\caption{%
-				\textbf{Promoters of miRNA genes are more responsive to the 35S enhancer than those associated with protein-coding genes.}\titleend
-				\subfigref{A}\subfigref{B} Violin plots (as defined in \autoref{fig:overview}) of enhancer responsiveness (promoter strength\textsuperscript{with enhancer} $-$ promoter strength\textsuperscript{without enhancer}) in tobacco leaves \parensubfig{A} or maize protoplasts \parensubfig{B}. Promoters associated with miRNA or protein-coding genes are compared.
+				\textbf{Promoters of miRNA genes are more responsive to the 35S enhancer than those of protein-coding genes.}\titleend
+				\subfigref{A}\subfigref{B} Violin plots (as defined in \autoref{fig:overview}) of enhancer responsiveness in tobacco leaves \parensubfig{A} or maize protoplasts \parensubfig{B}. Promoters associated with miRNA or protein-coding genes are compared.
 			}%
 			\label{sfig:enhEffectSpecificity}%
 		\end{sfig}
 		
 		\begin{sfig}
-			\input{SuppFig11}%
+			\input{SuppFig13}%
 			\caption{%
 				\textbf{Promoter-proximal transcription factor binding sites influence enhancer responsiveness.}\titleend
 				\subfigrange{A}{F} Violin plots of enhancer responsiveness in tobacco leaves \parensubfig[\subfigref{A}\subfigref{C}]{E} or maize protoplasts \parensubfig[\subfigref{B}\subfigref{D}]{F}. Promoters were grouped by GC content and split into promoters without (left half, darker color) or with (right half, lighter color) a TCP \parensubfig[\subfigref{A}]{B}, WRKY \parensubfig[\subfigref{C}]{D}, or B3 \parensubfig[\subfigref{E}]{F} transcription factor binding site. Violin plots are as defined in \autoref{fig:overview}, except only one half is shown.
@@ -442,7 +467,7 @@
 		\end{sfig}
 		
 		\begin{sfig}
-			\input{SuppFig12}%
+			\input{SuppFig14}%
 			\caption{%
 				\textbf{Light-responsive plant enhancers are not active in maize protoplasts.}\titleend
 				Constructs harboring no enhancer (none), a 35S enhancer, or one of three light-responsive plant enhancers (\textit{AB80}, \textit{Cab-1}, or \textit{rbcS-E9}) upstream of the 35S minimal promoter were subjected to STARR-seq in maize protoplasts generated from dark-grown plants (Jores et al., 2020). Each boxplot (center line, median; box limits, upper and lower quartiles; whiskers, 1.5 $\times$ interquartile range; points, outliers) denotes the enrichment of all recovered mRNA barcodes over the DNA input. Only one experiment was performed.
@@ -450,8 +475,18 @@
 			\label{sfig:plantEnhancers}%
 		\end{sfig}
 		
+			\begin{sfig}
+				\input{SuppFig15}%
+				\caption{%
+					\textbf{Mutations in transcription factor binding sites influence light-dependency.}\titleend
+					\subfigrange{A}{C} One or two T>G mutations were introduced in binding sites for TCP \parensubfig[\subfigref{A}]{B} or WRKY \parensubfig{C} transcription factors. Which bases were mutated depended on the orientation in which the binding site was present in the wild type promoter.\nextentry
+					\subfigref{D} Boxplots (as defined in \autoref{fig:TATA}) for the relative light-dependency of promoters harboring mutations in the indicated transcription factor binding site as shown in (\textbf{\plainsubfigref{A}}-\textbf{\plainsubfigref{C}}). The corresponding wild type promoter was set to 0 (horizontal black line).
+				}%
+				\label{sfig:ligDepMutTFs}
+			\end{sfig}
+		
 		\begin{sfig}
-			\input{SuppFig13}%
+			\input{SuppFig16}%
 			\caption{%
 				\textbf{Transcription factor binding sites affect promoter strength additively.}\titleend
 				\subfigref{A}\subfigref{B} Boxplots (as defined in \autoref{fig:TATA}) of promoter strength for libraries without enhancer in tobacco leaves \parensubfig{A} or maize protoplasts \parensubfig{B} for synthetic promoters with the indicated numbers of binding sites for TCP, NAC, and HSF transcription factors. The corresponding promoter without any transcription factor binding site was set to 0 (horizontal black line).
@@ -459,10 +494,25 @@
 			\label{sfig:TFcombos}%
 		\end{sfig}
 		
-%		\begin{stab}
-%			\caption{caption}%
-%			\input{SuppTable1}%
-%		\end{stab}
+		\begin{sfig}
+			\input{SuppFig17}%
+			\caption{%
+				\textbf{Transcription factor binding sites increase promoter strength only when present upstream of the TATA-box.}\titleend
+				\subfigrange{A}{D} A single NAC \parensubfig[\subfigref{A}]{B}, HSF \parensubfig{C} or TCP \parensubfig{D} transcription factor binding site was inserted at the indicated position in the synthetic promoters containing a TATA-box. The strength of these promoters was measured in tobacco leaves \parensubfig[\subfigref{A}]{C} or maize protoplasts \parensubfig[\subfigref{B}]{D}. Boxplots are as defined in \autoref{fig:TATA}. The corresponding promoter without any transcription factor binding was set to 0 (horizontal black line).
+			}%
+			\label{sfig:TFscan}%
+		\end{sfig}
+		
+		\begin{sfig}
+			\input{SuppFig18}%
+			\caption{%
+				\textbf{The \textit{in silico} evolution is most effective in early rounds.}\titleend
+				\subfigref{A}\subfigref{B} 150 native and 160 synthetic promoters were subjected to 10 rounds of \textit{in silico} evolution and the strength of the evolved promoters was predicted with the tobacco model \parensubfig{A} or the maize model \parensubfig{B}. The black line represents the median promoter strength after each round.\nextentry
+				\subfigref{C}\subfigref{D} Correlation (Pearson's $R^2$ and Spearman's $\rho$) between the predicted and experimentally-determined strength of promoters after 0, 3, or 10 rounds of \textit{in silico} evolution. Promoter strengths measured in tobacco leaves were compared to predictions from the tobacco model \parensubfig{C} and the data from maize protoplasts was compared to the predictions from the maize model \parensubfig{D}.\nextentry
+				The models used for the \textit{in silico} evolution are indicated on each plot.
+			}%
+			\label{sfig:evoCorr}
+		\end{sfig}
 		
 	\fi
 	
