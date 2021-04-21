@@ -1,0 +1,313 @@
+%\tikzset{external/export next = false}
+
+\begin{tikzpicture}
+	%%% enrichment by BREu (tobacco)
+	\coordinate (enrBREuLeaf) at (0, 0);
+	
+	\leafsymbol{enrBREuLeaf};
+	
+	\begin{axis}[%
+			anchor = above north west,
+			at = {(enrBREuLeaf)},
+			xshift = \plotylabelwidth,
+			yshift = -1.25\baselineskip,
+			ylabel = $\log_2$(promoter strength),
+			ymin = -9.5,
+			ymax = 8,
+			ytick = {-10, -8, ..., 10},
+			x tick table half = {rawData/enrichment_BREu_leaf_boxplot.tsv}{LaTeX.label},
+			xticklabel style = {name = xticklabel},
+			x grids = false
+		]
+	
+		% half violin and box plot
+		\halfviolinbox[violin colors half = {arabidopsis}{maize}{sorghum}]{rawData/enrichment_BREu_leaf_boxplot.tsv}{rawData/enrichment_BREu_leaf_violin.tsv}
+			
+		% add sample size
+		\samplesizehalf[sample color = LaTeX.label]{rawData/enrichment_BREu_leaf_boxplot.tsv}{id}{n}
+		
+		% add pvalues
+		\signif*{rawData/enrichment_BREu_leaf_pvalues.tsv}{1}{2}
+		\signif*{rawData/enrichment_BREu_leaf_pvalues.tsv}{3}{4}
+		\signif*{rawData/enrichment_BREu_leaf_pvalues.tsv}{5}{6}
+	
+	\end{axis}
+	
+	\node[anchor = south west] (legend) at (last plot.north west) {\textbf{BRE\textsuperscript{u}} element:\vphantom{g} $-$};
+	\coordinate (legend symbol) at ($(legend.south east) + (.25em, .2em)$);
+	\node[anchor = base west] at ($(legend.base east) + (.6em, 0)$) {$+$};
+	
+	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolleft, fill opacity = .5, x = .25em, y = .1em, rotate = 90, shift = {(legend symbol)}] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
+	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolright, fill opacity = .5, x = .25em, y = -.1em, rotate = 90, shift = {(legend symbol)}, yshift = -.1em] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
+	
+	
+	%%% enrichment by BREu (protoplasts)
+	\coordinate (enrBREuProto) at (enrBREuLeaf -| \twocolumnwidth - \fourcolumnwidth, 0);
+	
+	\protosymbol{enrBREuProto};
+	
+	\begin{axis}[%
+			anchor = above north west,
+			at = {(enrBREuProto)},
+			xshift = \plotylabelwidth,
+			yshift = -1.25\baselineskip,
+			ylabel = $\log_2$(promoter strength),
+			ymin = -9.5,
+			ymax = 8,
+			ytick = {-10, -8, ..., 10},
+			x tick table half = {rawData/enrichment_BREu_Proto_boxplot.tsv}{LaTeX.label},
+			x grids = false
+		]
+	
+		% half violin and box plot
+		\halfviolinbox[violin colors half = {arabidopsis}{maize}{sorghum}]{rawData/enrichment_BREu_Proto_boxplot.tsv}{rawData/enrichment_BREu_Proto_violin.tsv}
+			
+		% add sample size
+		\samplesizehalf[sample color = LaTeX.label]{rawData/enrichment_BREu_Proto_boxplot.tsv}{id}{n}
+		
+		% add pvalues
+		\signif*{rawData/enrichment_BREu_Proto_pvalues.tsv}{1}{2}
+		\signif*{rawData/enrichment_BREu_Proto_pvalues.tsv}{3}{4}
+		\signif*{rawData/enrichment_BREu_Proto_pvalues.tsv}{5}{6}
+	
+	\end{axis}
+	
+	\node[anchor = south west] (legend) at (last plot.north west) {\textbf{BRE\textsuperscript{u}} element:\vphantom{g} $-$};
+	\coordinate (legend symbol) at ($(legend.south east) + (.25em, .2em)$);
+	\node[anchor = base west] at ($(legend.base east) + (.6em, 0)$) {$+$};
+	
+	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolleft, fill opacity = .5, x = .25em, y = .1em, rotate = 90, shift = {(legend symbol)}] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
+	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolright, fill opacity = .5, x = .25em, y = -.1em, rotate = 90, shift = {(legend symbol)}, yshift = -.1em] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
+	
+
+	%%% enrichment by BREd (tobacco)
+	\coordinate (enrBREdLeaf) at (enrBREuLeaf -| \textwidth - \twocolumnwidth, 0);
+	
+	\leafsymbol{enrBREdLeaf};
+	
+	\begin{axis}[%
+			anchor = above north west,
+			at = {(enrBREdLeaf)},
+			xshift = \plotylabelwidth,
+			yshift = -1.25\baselineskip,
+			ylabel = $\log_2$(promoter strength),
+			ymin = -9.5,
+			ymax = 8,
+			ytick = {-10, -8, ..., 10},
+			x tick table half = {rawData/enrichment_BREd_leaf_boxplot.tsv}{LaTeX.label},
+			x grids = false
+		]
+	
+		% half violin and box plot
+		\halfviolinbox[violin colors half = {arabidopsis}{maize}{sorghum}]{rawData/enrichment_BREd_leaf_boxplot.tsv}{rawData/enrichment_BREd_leaf_violin.tsv}
+			
+		% add sample size
+		\samplesizehalf[sample color = LaTeX.label]{rawData/enrichment_BREd_leaf_boxplot.tsv}{id}{n}
+		
+		% add pvalues
+		\signif*{rawData/enrichment_BREd_leaf_pvalues.tsv}{1}{2}
+		\signif*{rawData/enrichment_BREd_leaf_pvalues.tsv}{3}{4}
+		\signif*{rawData/enrichment_BREd_leaf_pvalues.tsv}{5}{6}
+	
+	\end{axis}
+	
+	\node[anchor = south west] (legend) at (last plot.north west) {\textbf{BRE\textsuperscript{d}} element:\vphantom{g} $-$};
+	\coordinate (legend symbol) at ($(legend.south east) + (.25em, .2em)$);
+	\node[anchor = base west] at ($(legend.base east) + (.6em, 0)$) {$+$};
+	
+	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolleft, fill opacity = .5, x = .25em, y = .1em, rotate = 90, shift = {(legend symbol)}] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
+	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolright, fill opacity = .5, x = .25em, y = -.1em, rotate = 90, shift = {(legend symbol)}, yshift = -.1em] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
+	
+	
+	%%% enrichment by BREd (protoplasts)
+	\coordinate (enrBREdProto) at (enrBREdLeaf -| \textwidth - \fourcolumnwidth, 0);
+	
+	\protosymbol{enrBREdProto};
+	
+	\begin{axis}[%
+			anchor = above north west,
+			at = {(enrBREdProto)},
+			xshift = \plotylabelwidth,
+			yshift = -1.25\baselineskip,
+			ylabel = $\log_2$(promoter strength),
+			ymin = -9.5,
+			ymax = 8,
+			ytick = {-10, -8, ..., 10},
+			x tick table half = {rawData/enrichment_BREd_Proto_boxplot.tsv}{LaTeX.label},
+			x grids = false
+		]
+	
+		% half violin and box plot
+		\halfviolinbox[violin colors half = {arabidopsis}{maize}{sorghum}]{rawData/enrichment_BREd_Proto_boxplot.tsv}{rawData/enrichment_BREd_Proto_violin.tsv}
+			
+		% add sample size
+		\samplesizehalf[sample color = LaTeX.label]{rawData/enrichment_BREd_Proto_boxplot.tsv}{id}{n}
+		
+		% add pvalues
+		\signif*{rawData/enrichment_BREd_Proto_pvalues.tsv}{1}{2}
+		\signif*{rawData/enrichment_BREd_Proto_pvalues.tsv}{3}{4}
+		\signif*{rawData/enrichment_BREd_Proto_pvalues.tsv}{5}{6}
+	
+	\end{axis}
+	
+	\node[anchor = south west] (legend) at (last plot.north west) {\textbf{BRE\textsuperscript{d}} element:\vphantom{g} $-$};
+	\coordinate (legend symbol) at ($(legend.south east) + (.25em, .2em)$);
+	\node[anchor = base west] at ($(legend.base east) + (.6em, 0)$) {$+$};
+	
+	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolleft, fill opacity = .5, x = .25em, y = .1em, rotate = 90, shift = {(legend symbol)}] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
+	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolright, fill opacity = .5, x = .25em, y = -.1em, rotate = 90, shift = {(legend symbol)}, yshift = -.1em] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
+	
+	
+	%%% mutate BRE motif (logo plots)
+	\coordinate[yshift = -\columnsep] (variantsBREumut) at (enrBREuLeaf |- xticklabel.south);
+	
+	\coordinate[shift = {(\plotylabelwidth, \columnsep)}] (last plot) at (variantsBREumut);
+	
+	\foreach \variant in {WT, mut} {
+			\begin{axis}[
+				at = {(last plot.south west)},
+				yshift = -.75\columnsep,
+				anchor = above north west,
+				width = .85\threecolumnwidth - \plotylabelwidth,
+				height = 0.5cm,
+				logo axis = IC,
+				logo y axis/.append style = {ylabel = IC},
+				title = {\vphantom{\textsuperscript{d}}BRE\textsuperscript{u} (\variant)},
+				title style = {draw = none, fill = none},
+				logo plot
+			]
+			
+				\fill[gray, fill opacity = 0.2] (8.5, \ymin) rectangle (16.5, \ymax);
+			
+				\addlogoplot{rawData/motif_mutBREu_\variant.tsv};
+				
+			\end{axis}
+	}
+	
+	
+	\coordinate[shift = {(-\plotylabelwidth, -\columnsep)}] (variantsBREdmut) at (last plot.south west);
+	
+	\foreach \variant in {WT, mut} {
+			\begin{axis}[
+				at = {(last plot.south west)},
+				yshift = -.75\columnsep,
+				anchor = above north west,
+				width = .85\threecolumnwidth - \plotylabelwidth,
+				height = 0.5cm,
+				logo axis = IC,
+				logo y axis/.append style = {ylabel = IC},
+				title = {\vphantom{\textsuperscript{d}}BRE\textsuperscript{d} (\variant)},
+				title style = {draw = none, fill = none},
+				logo plot
+			]
+			
+				\fill[gray, fill opacity = 0.2] (8.5, \ymin) rectangle (16.5, \ymax);
+			
+				\addlogoplot{rawData/motif_mutBREd_\variant.tsv};
+				
+			\end{axis}
+	}
+	
+	
+	\coordinate(variantsBREins) at (\twothirdcolumnwidth - 1.15\threecolumnwidth, 0 |- variantsBREumut);
+	
+	\coordinate[shift = {(\plotylabelwidth, \columnsep)}] (last plot) at (variantsBREins);
+	
+	\foreach \variant/\vartitle in {WT, +BREu/+ BRE\textsuperscript{u}, +BREd/+ BRE\textsuperscript{d}} {
+			\begin{axis}[
+				at = {(last plot.south west)},
+				yshift = -.75\columnsep,
+				anchor = above north west,
+				width = .85\threecolumnwidth - \plotylabelwidth,
+				height = 0.5cm,
+				logo axis = IC,
+				logo y axis/.append style = {ylabel = IC},
+				title = {\vphantom{\textsuperscript{d}}no BRE (\vartitle)},
+				title style = {draw = none, fill = none},
+				logo plot
+			]
+			
+				\fill[gray, fill opacity = 0.2] (8.5, \ymin) rectangle (16.5, \ymax);
+			
+				\addlogoplot{rawData/motif_insBRE_\variant.tsv};
+				
+			\end{axis}
+	}
+	
+	
+	%%% mutate BRE motif (promoter strength)
+	\coordinate (enrBREmut) at (\textwidth - 1.3\threecolumnwidth, 0 |- variantsBREumut);
+	
+	\begin{hgroupplot}[%
+		ylabel = {$\log_2$(rel. promoter strength)},
+		ymin = -1.75,
+		ymax = 2,
+		ytick = {-10, -9, ..., 10},
+		zero line,
+		xticklabel style = {rotate = 45, align = right, anchor = north east, name = xticklabel},
+		group position = {anchor = above north west, at = {(enrBREmut)}, xshift = \plotylabelwidth},
+		group/every plot/.append style = {
+			x grids = false,
+			typeset ticklabels with strut 
+		}
+	]{1.3\threecolumnwidth}{2}{}
+
+			
+		\nextgroupplot[
+			title = {\phantom{tobacco}\\\phantom{leaves}},
+			x tick table = {rawData/enrichment_mutateBRE_leaf_boxplot.tsv}{LaTeX.label}
+		]
+		
+			% boxplot
+			\boxplots{%
+				box color = leafCol,
+				box shade,
+				fill opacity = 0.5%
+			}{rawData/enrichment_mutateBRE_leaf_boxplot.tsv}{rawData/enrichment_mutateBRE_leaf_boxplot_outliers.tsv}
+			
+			% add sample size
+			\samplesize{rawData/enrichment_mutateBRE_leaf_boxplot.tsv}{id}{n}
+			
+			% add significance
+			\signifallsimple*{rawData/enrichment_mutateBRE_leaf_boxplot.tsv}{id}{p.value}
+		
+		
+		\nextgroupplot[
+			title = {\phantom{maize}\\\phantom{protoplasts}},
+			x tick table = {rawData/enrichment_mutateBRE_proto_boxplot.tsv}{LaTeX.label}
+		]
+		
+			% boxplot
+			\boxplots{%
+				box color = protoCol,
+				box shade,
+				fill opacity = 0.5%
+			}{rawData/enrichment_mutateBRE_proto_boxplot.tsv}{rawData/enrichment_mutateBRE_proto_boxplot_outliers.tsv}
+			
+			% add sample size
+			\samplesize{rawData/enrichment_mutateBRE_proto_boxplot.tsv}{id}{n}
+			
+			% add significance
+			\signifallsimple*{rawData/enrichment_mutateBRE_proto_boxplot.tsv}{id}{p.value}
+			
+	\end{hgroupplot}
+	
+	\distance{title.south}{title.north}
+	
+	\leafsymbol[(.5\ydistance, -.5\ydistance)]{group c1r1.west |- title.north}
+	\node[anchor = east, node font = \fignormal, text depth = .15\baselineskip, align = right] at (group c1r1.east |- title) {tobacco\\leaves};
+	\protosymbol[(-.5\ydistance, -.5\ydistance)]{group c2r1.east |- title.north}
+	\node[anchor = west, node font = \fignormal, text depth = .15\baselineskip, align = left] at (group c2r1.west |- title) {maize\\protoplasts};
+
+	
+	%%% subfigure labels
+	\subfiglabel[yshift = .5\columnsep]{enrBREuLeaf}
+	\subfiglabel[yshift = .5\columnsep]{enrBREuProto}
+	\subfiglabel[yshift = .5\columnsep]{enrBREdLeaf}
+	\subfiglabel[yshift = .5\columnsep]{enrBREdProto}
+	\subfiglabel[yshift = .5\columnsep]{variantsBREumut}
+	\subfiglabel[yshift = .5\columnsep]{variantsBREdmut}
+	\subfiglabel[yshift = .5\columnsep]{variantsBREins}
+	\subfiglabel[yshift = .5\columnsep]{enrBREmut}
+
+\end{tikzpicture}

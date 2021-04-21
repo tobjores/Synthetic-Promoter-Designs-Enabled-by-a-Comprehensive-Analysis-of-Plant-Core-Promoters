@@ -2,181 +2,294 @@
 
 \begin{tikzpicture}
 
-	%%% Ypatch position
-	\coordinate (YpatchPos) at (0, 0);
+	\begin{pgfinterruptboundingbox}
 
-	\begin{axis}[
-		at = {(YpatchPos)},
-		anchor = north west,
-		xshift = \plotylabelwidth,
-		width = \twocolumnwidth - \plotylabelwidth,
-		xlabel = {Y patch position (rel. to TSS)},
-		xlabel style = {name = plot xlabel},
-		ylabel = promoters (\%),
-		xmin = 0,
-		xmax = 170,
-		ymin = 0,
-		y decimals = 1,
-		xtick = {6, 26, ..., 166},
-		xticklabel = {$\pgfmathparse{\tick < 166 ? \tick - 166 : \tick -165}\pgfmathprintnumber[print sign]{\pgfmathresult}$},
-		ybar stacked,
-		bar width = 1,
-		ybar legend,
-		legend columns = 3,
-		legend pos = north west
-	]
-
-		\addplot [arabidopsis, fill, fill opacity = .5] table [x = pos, y = At] {rawData/Ypatch_position.tsv};
-		\addplot [maize, fill, fill opacity = .5] table [x = pos, y = Zm] {rawData/Ypatch_position.tsv};
-		\addplot [sorghum, fill, fill opacity = .5] table [x = pos, y = Sb] {rawData/Ypatch_position.tsv};
-		
-		\legend{Arabidopsis\phantom{A}, Maize\phantom{A}, Sorghum}
-	
-	\end{axis}
-
-
-	%%% enrichment by Y patch (tobacco)
-	\coordinate[yshift = -\columnsep] (enrYpatchLeaf) at (YpatchPos |- plot xlabel.south);
-	
-	\leafsymbol{enrYpatchLeaf}; 
-	
-	\begin{hgroupplot}[%
-		ylabel = $\log_2$(promoter strength),
-		ymin = -9.5,
-		ymax = 8,
-		ytick = {-10, -8, ..., 10},
-		group position = {anchor = above north west, at = {(enrYpatchLeaf)}, xshift = \plotylabelwidth, yshift = -1.25\baselineskip},
-		group/every plot/.append style = {x grids = false}
-	]{\twocolumnwidth}{3}{GC content}
-	
+			%%% NAC positions
+			\coordinate (NACscanPos) at (0, 0);
 			
-		\nextgroupplot[
-			title = Arabidopsis,
-			x tick table half = {rawData/enrichment_Ypatch+GC_At_leaf_boxplot.tsv}{LaTeX.label}
-		]
+			\setlength{\templength}{\twocolumnwidth - \plotylabelwidth}
 			
-		% half violin and box plot
-		\halfviolinbox[violin color half = arabidopsis]{rawData/enrichment_Ypatch+GC_At_leaf_boxplot.tsv}{rawData/enrichment_Ypatch+GC_At_leaf_violin.tsv}
+			\draw[very thick, gray] (NACscanPos) ++(\plotylabelwidth, -.5\columnsep) coordinate (TF pos1) -- ++(\templength, 0) coordinate (TF pos4end);
 			
-		% add sample size
-		\samplesizehalf[violin color half = arabidopsis]{rawData/enrichment_Ypatch+GC_At_leaf_boxplot.tsv}{id}{n}
-		
-		% add pvalues
-		\signifall*{rawData/enrichment_Ypatch+GC_At_leaf_pvalues.tsv}	
-		
-		
-		\nextgroupplot[
-			title = Maize,
-			x tick table half = {rawData/enrichment_Ypatch+GC_Zm_leaf_boxplot.tsv}{LaTeX.label}
-		]
+			\draw[line width = .1cm, 35S enhancer] ($(TF pos1) + (.78\templength, 0)$) -- ++(.05\templength, 0) node[anchor = south, pos = .5, node font = \figsmall] {TATA};
 			
-		% half violin and box plot
-		\halfviolinbox[violin color half = maize]{rawData/enrichment_Ypatch+GC_Zm_leaf_boxplot.tsv}{rawData/enrichment_Ypatch+GC_Zm_leaf_violin.tsv}
+			\draw[-{Stealth[round]}] ($(TF pos1) + (.97\templength, 0)$) coordinate (TSS) |- ++(.2, .15);
+			\draw[gray] (TSS) -- ++(0, -.15) node[anchor = east, rotate = 90, node font = \figsmall] {\pgfmathprintnumber[print sign = true, precision = 0]{1}};
 			
-		% add sample size
-		\samplesizehalf[violin color half = maize]{rawData/enrichment_Ypatch+GC_Zm_leaf_boxplot.tsv}{id}{n}
-		
-		% add pvalues
-		\signifall*{rawData/enrichment_Ypatch+GC_Zm_leaf_pvalues.tsv}
-		
-		
-		\nextgroupplot[
-			title = Sorghum,
-			x tick table half = {rawData/enrichment_Ypatch+GC_Sb_leaf_boxplot.tsv}{LaTeX.label}
-		]
+			\pgfplotstableforeachcolumnelement{sample}\of{rawData/enrichment_TFscan_NAC_leaf_boxplot.tsv}\as\position{
+				\fill[SlateBlue4] ($(TF pos1) + (\position/170*\templength, -.025)$) -- ++(-.075, -.15) -- ++(.15, 0) node[pos = .5, anchor = east, rotate = 90, node font = \figsmall] (pos\position) {\pgfmathparse{\position - 166}\pgfmathprintnumber[print sign = true, precision = 0]{\pgfmathresult}} -- cycle;
+			}
 			
-		% half violin and box plot
-		\halfviolinbox[violin color half = sorghum]{rawData/enrichment_Ypatch+GC_Sb_leaf_boxplot.tsv}{rawData/enrichment_Ypatch+GC_Sb_leaf_violin.tsv}
-			
-		% add sample size
-		\samplesizehalf[violin color half = sorghum]{rawData/enrichment_Ypatch+GC_Sb_leaf_boxplot.tsv}{id}{n}
-		
-		% add pvalues
-		\signifall*{rawData/enrichment_Ypatch+GC_Sb_leaf_pvalues.tsv}	
-
-	\end{hgroupplot}
+			\node[anchor = east, SlateBlue4, align = right, node font = \figsmall, xshift = \plotylabelwidth] at (NACscanPos |- pos10) {NAC\\[-.25\baselineskip]position};
 	
-	\node[anchor = south west] (legend) at (group c1r1.above north west) {\textbf{Y patch} element:\vphantom{g} $-$};
-	\coordinate (legend symbol) at ($(legend.south east) + (.25em, .2em)$);
-	\node[anchor = base west] at ($(legend.base east) + (.6em, 0)$) {$+$};
-	
-	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolleft, fill opacity = .5, x = .25em, y = .1em, rotate = 90, shift = {(legend symbol)}] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
-	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolright, fill opacity = .5, x = .25em, y = -.1em, rotate = 90, shift = {(legend symbol)}, yshift = -.1em] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
-	
-	
-	%%% enrichment by Y patch (protoplasts)
-	\coordinate[yshift = -\columnsep] (enrYpatchProto) at (YpatchPos |- plot xlabel.south);
-	
-	\protosymbol{enrYpatchProto}; 
-	
-	\begin{hgroupplot}[%
-		ylabel = $\log_2$(promoter strength),
-		ymin = -9.5,
-		ymax = 8,
-		ytick = {-10, -8, ..., 10},
-		group position = {anchor = above north west, at = {(enrYpatchProto)}, xshift = \plotylabelwidth, yshift = -1.25\baselineskip},
-		group/every plot/.append style = {x grids = false}
-	]{\twocolumnwidth}{3}{GC content}
-	
+			%%% NAC position scan (tobacco)
+			\coordinate[yshift = -.5\columnsep] (NACscanLeaf) at (NACscanPos |- pos10.west);
 			
-		\nextgroupplot[
-			title = Arabidopsis,
-			x tick table half = {rawData/enrichment_Ypatch+GC_At_proto_boxplot.tsv}{LaTeX.label}
-		]
+			\leafsymbol[(.35, -.15)]{NACscanLeaf};
 			
-		% half violin and box plot
-		\halfviolinbox[violin color half = arabidopsis]{rawData/enrichment_Ypatch+GC_At_proto_boxplot.tsv}{rawData/enrichment_Ypatch+GC_At_proto_violin.tsv}
+			\begin{axis}[%
+				anchor = north west,
+				at = {(NACscanLeaf)},
+				xshift = \plotylabelwidth,
+				width = \twocolumnwidth - \plotylabelwidth,
+				xlabel = NAC binding site position  (rel. to TSS),
+				ylabel = $\log_2$(rel. promoter strength),
+				ylabel style = {xshift = -\baselineskip},
+				xmin = 0,
+				xmax = 170,
+				xtick = {10, 30, ..., 150, 166},
+				xticklabel = {$\pgfmathparse{\tick < 166 ? \tick - 166 : \tick -165}\pgfmathprintnumber[print sign]{\pgfmathresult}$},
+				ymin = -3.2,
+				ymax = 4,
+				ytick = {-10, -9, ..., 10},
+				zero line,
+				x grids = false
+			]
 			
-		% add sample size
-		\samplesizehalf[violin color half = arabidopsis]{rawData/enrichment_Ypatch+GC_At_proto_boxplot.tsv}{id}{n}
-		
-		% add pvalues
-		\signifall*{rawData/enrichment_Ypatch+GC_At_proto_pvalues.tsv}	
-		
-		
-		\nextgroupplot[
-			title = Maize,
-			x tick table half = {rawData/enrichment_Ypatch+GC_Zm_proto_boxplot.tsv}{LaTeX.label}
-		]
+				% TATA-box
+				\fill[35S enhancer, fill opacity = .1] (132.5, \ymin) rectangle (140.5, \ymax) node[pos = .5, opacity = 1, node font = \figsmall] {TATA};
 			
-		% half violin and box plot
-		\halfviolinbox[violin color half = maize]{rawData/enrichment_Ypatch+GC_Zm_proto_boxplot.tsv}{rawData/enrichment_Ypatch+GC_Zm_proto_violin.tsv}
+				% boxplots
+				\pgfplotstableforeachcolumnelement{sample}\of{rawData/enrichment_TFscan_NAC_leaf_boxplot.tsv}\as\sample{
+					\ifthenelse{\pgfplotstablerow<0}{}{
+						\pgfmathparse{50 + (50 * \sample / 170)}
+						\edef\colpct{\pgfmathresult}
+						\pgfmathparse{int(\pgfplotstablerow + 1)}
+						\edef\thisboxplot{
+							\noexpand\boxplot[%
+								boxplot/draw position = \sample,
+								box color = leafCol,
+								fill opacity = .5,
+								fill = boxcol!\colpct!boxshade,
+								boxplot/box extend = 4%
+							]{rawData/enrichment_TFscan_NAC_leaf_boxplot.tsv}{\pgfmathresult};
+							\noexpand\addplot [black, only marks, mark = solido] table [x expr = \sample, y = outlier.\pgfmathresult] {rawData/enrichment_TFscan_NAC_leaf_boxplot_outliers.tsv};
+						}
+						\thisboxplot
+					}
+				}
+				
+				% add sample size
+				\samplesize[nodes near coords style = {anchor = west, rotate = 90}]{rawData/enrichment_TFscan_NAC_leaf_boxplot.tsv}{sample}{n}
+					
+			\end{axis}
 			
-		% add sample size
-		\samplesizehalf[violin color half = maize]{rawData/enrichment_Ypatch+GC_Zm_proto_boxplot.tsv}{id}{n}
-		
-		% add pvalues
-		\signifall*{rawData/enrichment_Ypatch+GC_Zm_proto_pvalues.tsv}
-		
-		
-		\nextgroupplot[
-			title = Sorghum,
-			x tick table half = {rawData/enrichment_Ypatch+GC_Sb_proto_boxplot.tsv}{LaTeX.label}
-		]
 			
-		% half violin and box plot
-		\halfviolinbox[violin color half = sorghum]{rawData/enrichment_Ypatch+GC_Sb_proto_boxplot.tsv}{rawData/enrichment_Ypatch+GC_Sb_proto_violin.tsv}
+			%%% NAC positions
+			\coordinate (NACscanPos2) at (NACscanPos -| \textwidth - \twocolumnwidth, 0);
 			
-		% add sample size
-		\samplesizehalf[violin color half = sorghum]{rawData/enrichment_Ypatch+GC_Sb_proto_boxplot.tsv}{id}{n}
-		
-		% add pvalues
-		\signifall*{rawData/enrichment_Ypatch+GC_Sb_proto_pvalues.tsv}	
-
-	\end{hgroupplot}
+			\setlength{\templength}{\twocolumnwidth - \plotylabelwidth}
+			
+			\draw[very thick, gray] (NACscanPos2) ++(\plotylabelwidth, -.5\columnsep) coordinate (TF pos1) -- ++(\templength, 0) coordinate (TF pos4end);
+			
+			\draw[line width = .1cm, 35S enhancer] ($(TF pos1) + (.78\templength, 0)$) -- ++(.05\templength, 0) node[anchor = south, pos = .5, node font = \figsmall] {TATA};
+			
+			\draw[-{Stealth[round]}] ($(TF pos1) + (.97\templength, 0)$) coordinate (TSS) |- ++(.2, .15);
+			\draw[gray] (TSS) -- ++(0, -.15) node[anchor = east, rotate = 90, node font = \figsmall] {\pgfmathprintnumber[print sign = true, precision = 0]{1}};
+			
+			\pgfplotstableforeachcolumnelement{sample}\of{rawData/enrichment_TFscan_NAC_proto_boxplot.tsv}\as\position{
+				\fill[SlateBlue4] ($(TF pos1) + (\position/170*\templength, -.025)$) -- ++(-.075, -.15) -- ++(.15, 0) node[pos = .5, anchor = east, rotate = 90, node font = \figsmall, alias = last pos] (pos\position) {\pgfmathparse{\position - 166}\pgfmathprintnumber[print sign = true, precision = 0]{\pgfmathresult}} -- cycle;
+			}
+			
+			\node[anchor = east, SlateBlue4, align = right, node font = \figsmall, xshift = \plotylabelwidth] at (NACscanPos2 |- pos10) {NAC\\[-.25\baselineskip]position};
+			
+			
+			%%% NAC position scan (protoplasts)
+			\coordinate (NACscanProto) at (NACscanPos2 |- NACscanLeaf);
+			
+			\protosymbol[(.35, -.15)]{NACscanProto};
+			
+			\begin{axis}[%
+				anchor = north west,
+				at = {(NACscanProto)},
+				xshift = \plotylabelwidth,
+				width = \twocolumnwidth - \plotylabelwidth,
+				xlabel = NAC binding site position (rel. to TSS),
+				xlabel style = {name = plot xlabel},
+				ylabel = $\log_2$(rel. promoter strength),
+				ylabel style = {xshift = -\baselineskip},
+				xmin = 0,
+				xmax = 170,
+				xtick = {10, 30, ..., 150, 166},
+				xticklabel = {$\pgfmathparse{\tick < 166 ? \tick - 166 : \tick -165}\pgfmathprintnumber[print sign]{\pgfmathresult}$},
+				ymin = -3.2,
+				ymax = 4,
+				ytick = {-10, -9, ..., 10},
+				zero line,
+				x grids = false
+			]
+			
+				% TATA-box
+				\fill[35S enhancer, fill opacity = .1] (132.5, \ymin) rectangle (140.5, \ymax) node[pos = .5, opacity = 1, node font = \figsmall] {TATA};
+			
+				% boxplots
+				\pgfplotstableforeachcolumnelement{sample}\of{rawData/enrichment_TFscan_NAC_proto_boxplot.tsv}\as\sample{
+					\ifthenelse{\pgfplotstablerow<0}{}{
+						\pgfmathparse{50 + (50 * \sample / 170)}
+						\edef\colpct{\pgfmathresult}
+						\pgfmathparse{int(\pgfplotstablerow + 1)}
+						\edef\thisboxplot{
+							\noexpand\boxplot[boxplot/draw position = \sample, box color = protoCol, fill opacity = .5, fill = boxcol!\colpct!boxshade, boxplot/box extend = 4]{rawData/enrichment_TFscan_NAC_proto_boxplot.tsv}{\pgfmathresult};
+							\noexpand\addplot [black, only marks, mark = solido] table [x expr = \sample, y = outlier.\pgfmathresult] {rawData/enrichment_TFscan_NAC_proto_boxplot_outliers.tsv};
+						}
+						\thisboxplot
+					}
+				}
+				
+				% add sample size
+				\samplesize[nodes near coords style = {anchor = west, rotate = 90}]{rawData/enrichment_TFscan_NAC_proto_boxplot.tsv}{sample}{n}
+					
+			\end{axis}
+			
+			
+			%%% HSF positions
+			\coordinate[yshift = -\columnsep] (HSFscanPos) at (NACscanPos |- plot xlabel.south);
+			
+			\setlength{\templength}{\twocolumnwidth - \plotylabelwidth}
+			
+			\draw[very thick, gray] (HSFscanPos) ++(\plotylabelwidth, -.5\columnsep) coordinate (TF pos1) -- ++(\templength, 0) coordinate (TF pos4end);
+			
+			\draw[line width = .1cm, 35S enhancer] ($(TF pos1) + (.78\templength, 0)$) -- ++(.05\templength, 0) node[anchor = south, pos = .5, node font = \figsmall] {TATA};
+			
+			\draw[-{Stealth[round]}] ($(TF pos1) + (.97\templength, 0)$) coordinate (TSS) |- ++(.2, .15);
+			\draw[gray] (TSS) -- ++(0, -.15) node[anchor = east, rotate = 90, node font = \figsmall] {\pgfmathprintnumber[print sign = true, precision = 0]{1}};
+			
+			\pgfplotstableforeachcolumnelement{sample}\of{rawData/enrichment_TFscan_HSF_leaf_boxplot.tsv}\as\position{
+				\fill[SlateBlue4] ($(TF pos1) + (\position/170*\templength, -.025)$) -- ++(-.075, -.15) -- ++(.15, 0) node[pos = .5, anchor = east, rotate = 90, node font = \figsmall] (pos\position) {\pgfmathparse{\position - 166}\pgfmathprintnumber[print sign = true, precision = 0]{\pgfmathresult}} -- cycle;
+			}
+			
+			\node[anchor = east, SlateBlue4, align = right, node font = \figsmall, xshift = \plotylabelwidth] at (HSFscanPos |- pos10) {HSF\\[-.25\baselineskip]position};
 	
-	\node[anchor = south west] (legend) at (group c1r1.above north west) {\textbf{Y patch} element:\vphantom{g} $-$};
-	\coordinate (legend symbol) at ($(legend.south east) + (.25em, .2em)$);
-	\node[anchor = base west] at ($(legend.base east) + (.6em, 0)$) {$+$};
 	
-	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolleft, fill opacity = .5, x = .25em, y = .1em, rotate = 90, shift = {(legend symbol)}] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
-	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolright, fill opacity = .5, x = .25em, y = -.1em, rotate = 90, shift = {(legend symbol)}, yshift = -.1em] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
+			%%% HSF position scan (tobacco)
+			\coordinate[yshift = -.5\columnsep] (HSFscanLeaf) at (HSFscanPos |- pos10.west);
+			
+			\leafsymbol[(.35, -.15)]{HSFscanLeaf};
+			
+			\begin{axis}[%
+				anchor = north west,
+				at = {(HSFscanLeaf)},
+				xshift = \plotylabelwidth,
+				width = \twocolumnwidth - \plotylabelwidth,
+				xlabel = HSF binding site position  (rel. to TSS),
+				ylabel = $\log_2$(rel. promoter strength),
+				ylabel style = {xshift = -\baselineskip},
+				xmin = 0,
+				xmax = 170,
+				xtick = {10, 30, ..., 150, 166},
+				xticklabel = {$\pgfmathparse{\tick < 166 ? \tick - 166 : \tick -165}\pgfmathprintnumber[print sign]{\pgfmathresult}$},
+				ymin = -3.2,
+				ymax = 4,
+				ytick = {-10, -9, ..., 10},
+				zero line,
+				x grids = false
+			]
+			
+				% TATA-box
+				\fill[35S enhancer, fill opacity = .1] (132.5, \ymin) rectangle (140.5, \ymax) node[pos = .5, opacity = 1, node font = \figsmall] {TATA};
+			
+				% boxplots
+				\pgfplotstableforeachcolumnelement{sample}\of{rawData/enrichment_TFscan_HSF_leaf_boxplot.tsv}\as\sample{
+					\ifthenelse{\pgfplotstablerow<0}{}{
+						\pgfmathparse{50 + (50 * \sample / 170)}
+						\edef\colpct{\pgfmathresult}
+						\pgfmathparse{int(\pgfplotstablerow + 1)}
+						\edef\thisboxplot{
+							\noexpand\boxplot[%
+								boxplot/draw position = \sample,
+								box color = leafCol,
+								fill opacity = .5,
+								fill = boxcol!\colpct!boxshade,
+								boxplot/box extend = 4%
+							]{rawData/enrichment_TFscan_HSF_leaf_boxplot.tsv}{\pgfmathresult};
+							\noexpand\addplot [black, only marks, mark = solido] table [x expr = \sample, y = outlier.\pgfmathresult] {rawData/enrichment_TFscan_HSF_leaf_boxplot_outliers.tsv};
+						}
+						\thisboxplot
+					}
+				}
+				
+				% add sample size
+				\samplesize[nodes near coords style = {anchor = west, rotate = 90}]{rawData/enrichment_TFscan_HSF_leaf_boxplot.tsv}{sample}{n}
+					
+			\end{axis}
+			
+			
+			%%% TCP positions
+			\coordinate (TCPscanPos) at (HSFscanPos -| NACscanPos2);
+			
+			\setlength{\templength}{\twocolumnwidth - \plotylabelwidth}
+			
+			\draw[very thick, gray] (TCPscanPos) ++(\plotylabelwidth, -.5\columnsep) coordinate (TF pos1) -- ++(\templength, 0) coordinate (TF pos4end);
+			
+			\draw[line width = .1cm, 35S enhancer] ($(TF pos1) + (.78\templength, 0)$) -- ++(.05\templength, 0) node[anchor = south, pos = .5, node font = \figsmall] {TATA};
+			
+			\draw[-{Stealth[round]}] ($(TF pos1) + (.97\templength, 0)$) coordinate (TSS) |- ++(.2, .15);
+			\draw[gray] (TSS) -- ++(0, -.15) node[anchor = east, rotate = 90, node font = \figsmall] {\pgfmathprintnumber[print sign = true, precision = 0]{1}};
+			
+			\pgfplotstableforeachcolumnelement{sample}\of{rawData/enrichment_TFscan_TCP_proto_boxplot.tsv}\as\position{
+				\fill[SlateBlue4] ($(TF pos1) + (\position/170*\templength, -.025)$) -- ++(-.075, -.15) -- ++(.15, 0) node[pos = .5, anchor = east, rotate = 90, node font = \figsmall, alias = last pos] (pos\position) {\pgfmathparse{\position - 166}\pgfmathprintnumber[print sign = true, precision = 0]{\pgfmathresult}} -- cycle;
+			}
+			
+			\node[anchor = east, SlateBlue4, align = right, node font = \figsmall, xshift = \plotylabelwidth] at (TCPscanPos |- pos10) {TCP\\[-.25\baselineskip]position};
+			
+			
+			%%% TCP position scan (protoplasts)
+			\coordinate (TCPscanProto) at (TCPscanPos |- HSFscanLeaf);
+			
+			\protosymbol[(.35, -.15)]{TCPscanProto};
+			
+			\begin{axis}[%
+				anchor = north west,
+				at = {(TCPscanProto)},
+				xshift = \plotylabelwidth,
+				width = \twocolumnwidth - \plotylabelwidth,
+				xlabel = TCP binding site position (rel. to TSS),
+				xlabel style = {name = plot xlabel},
+				ylabel = $\log_2$(rel. promoter strength),
+				ylabel style = {xshift = -\baselineskip},
+				xmin = 0,
+				xmax = 170,
+				xtick = {10, 30, ..., 150, 166},
+				xticklabel = {$\pgfmathparse{\tick < 166 ? \tick - 166 : \tick -165}\pgfmathprintnumber[print sign]{\pgfmathresult}$},
+				ymin = -3.2,
+				ymax = 4,
+				ytick = {-10, -9, ..., 10},
+				zero line,
+				x grids = false
+			]
+			
+				% TATA-box
+				\fill[35S enhancer, fill opacity = .1] (132.5, \ymin) rectangle (140.5, \ymax) node[pos = .5, opacity = 1, node font = \figsmall] {TATA};
+			
+				% boxplots
+				\pgfplotstableforeachcolumnelement{sample}\of{rawData/enrichment_TFscan_TCP_proto_boxplot.tsv}\as\sample{
+					\ifthenelse{\pgfplotstablerow<0}{}{
+						\pgfmathparse{50 + (50 * \sample / 170)}
+						\edef\colpct{\pgfmathresult}
+						\pgfmathparse{int(\pgfplotstablerow + 1)}
+						\edef\thisboxplot{
+							\noexpand\boxplot[boxplot/draw position = \sample, box color = protoCol, fill opacity = .5, fill = boxcol!\colpct!boxshade, boxplot/box extend = 4]{rawData/enrichment_TFscan_TCP_proto_boxplot.tsv}{\pgfmathresult};
+							\noexpand\addplot [black, only marks, mark = solido] table [x expr = \sample, y = outlier.\pgfmathresult] {rawData/enrichment_TFscan_TCP_proto_boxplot_outliers.tsv};
+						}
+						\thisboxplot
+					}
+				}
+				
+				% add sample size
+				\samplesize[nodes near coords style = {anchor = west, rotate = 90}]{rawData/enrichment_TFscan_TCP_proto_boxplot.tsv}{sample}{n}
+					
+			\end{axis}
+			
+			
+			%%% subfigure labels
+			\subfiglabel[yshift = .5\columnsep]{NACscanPos}
+			\subfiglabel[yshift = .5\columnsep]{NACscanPos2}
+			\subfiglabel[yshift = .5\columnsep]{HSFscanPos}
+			\subfiglabel[yshift = .5\columnsep]{TCPscanPos}
+			
+	\end{pgfinterruptboundingbox}
 	
-
-	
-	%%% subfigure labels
-	\subfiglabel[yshift = .5\columnsep]{YpatchPos}
-	\subfiglabel[yshift = .5\columnsep]{enrYpatchLeaf}
-	\subfiglabel[yshift = .5\columnsep]{enrYpatchProto}
+	% manually add the correct bounding box
+	\path (NACscanPos) ++(.2pt, .5\columnsep) rectangle (\textwidth + .2pt, 0 |- plot xlabel.south);
 
 \end{tikzpicture}

@@ -1,0 +1,133 @@
+%\tikzset{external/export next = false}
+
+\begin{tikzpicture}
+
+	%%% correlation expression and promoter strength
+	\coordinate (correlation) at (0, 0);
+	
+	\begin{hgroupplot}[%
+		ylabel = {Pearson's $r$},
+		ymin = -0.2,
+		ymax = 0.2,
+		group position = {anchor = above north west, at = {(correlation)}, xshift = \plotylabelwidth},
+		group/every plot/.append style = {
+			x grids = false,
+			x limits = 3,
+			xtick = {1, ..., 3},
+			xticklabels = {At, Zm, Sb},
+			zero line
+		}
+	]{\threecolumnwidth}{2}{species}
+
+			
+		\nextgroupplot[
+			title = {\phantom{tobacco}\\\phantom{leaves}}
+		]
+		
+			% boxplots
+			\foreach \sample/\col in {%
+				At/arabidopsis,
+				Zm/maize,
+				Sb/sorghum,
+			} {
+				\edef\thisplot{
+					\noexpand\addplot[boxplot, fill = \col, fill opacity = 0.5, mark = solido, mark options = {black, opacity = 1}] table[y = \sample] {rawData/expression_correlation_leaf.tsv};
+				}
+				\thisplot
+			}
+		
+			% add sample size
+			\samplesize{rawData/expression_sample_size_leaf.tsv}{id}{n}
+				
+		
+		\nextgroupplot[
+			title = {\phantom{maize}\\\phantom{protoplasts}}
+		]
+		
+			% boxplots
+			\foreach \sample/\col in {%
+				At/arabidopsis,
+				Zm/maize,
+				Sb/sorghum,
+			} {
+				\edef\thisplot{
+					\noexpand\addplot[boxplot, fill = \col, fill opacity = 0.5, mark = solido, mark options = {black, opacity = 1}] table[y = \sample] {rawData/expression_correlation_proto.tsv};
+				}
+				\thisplot
+			}
+			
+			% add sample size
+			\samplesize{rawData/expression_sample_size_proto.tsv}{id}{n}
+			
+	\end{hgroupplot}
+	
+	\distance{title.south}{title.north}
+	
+	\leafsymbol[(.5\ydistance, -.5\ydistance)]{group c1r1.west |- title.north}
+	\node[anchor = east, node font = \fignormal, text depth = .15\baselineskip, align = right] at (group c1r1.east |- title) {tobacco\\leaves};
+	\protosymbol[(-.5\ydistance, -.5\ydistance)]{group c2r1.east |- title.north}
+	\node[anchor = west, node font = \fignormal, text depth = .15\baselineskip, align = left] at (group c2r1.west |- title) {maize\\protoplasts};
+	
+	
+	%%% example Arabidopsis (adult cotyledon)
+	\coordinate (At) at (correlation -| \twothirdcolumnwidth - \threecolumnwidth, 0);
+	
+	\leafsymbol{At}
+	
+	\distance{group c1r1.south}{group c1r1.above north}
+	
+	\begin{axis}[
+		width = \threecolumnwidth - \plotylabelwidth,
+		height = \ydistance,
+		at = {(At)},
+		anchor = north west,
+		xshift = \plotylabelwidth,
+		xytick = {-20, -18, ..., 20},
+		xlabel = {$\log_2$(promoter strength)},
+		ylabel = {expression [$\log_2$(FPKM)]}
+	]
+	
+		\addplot [
+			only marks,
+			mark = solido,
+			mark size = 0.5,
+			fill opacity = 0.2
+		] table[x = enrichment,y = expression] {rawData/expression_enrichment_At_leaf.tsv};
+		
+	\end{axis}
+	
+	
+	%%% example maize (root cortex)
+	\coordinate (Zm) at (correlation -| \textwidth - \threecolumnwidth, 0);
+	
+	\protosymbol{Zm}
+	
+	\distance{group c1r1.south}{group c1r1.above north}
+	
+	\begin{axis}[
+		width = \threecolumnwidth - \plotylabelwidth,
+		height = \ydistance,
+		at = {(Zm)},
+		anchor = north west,
+		xshift = \plotylabelwidth,
+		xytick = {-20, -18, ..., 20},
+		xlabel = {$\log_2$(promoter strength)},
+		ylabel = {expression [$\log_2$(FPKM)]}
+	]
+	
+		\addplot [
+			only marks,
+			mark = solido,
+			mark size = 0.5,
+			fill opacity = 0.2
+		] table[x = enrichment,y = expression] {rawData/expression_enrichment_Zm_proto.tsv};
+		
+	\end{axis}
+	
+	
+	%%% subfigure labels
+	\subfiglabel[yshift = .5\columnsep]{correlation}
+	\subfiglabel[yshift = .5\columnsep]{At}
+	\subfiglabel[yshift = .5\columnsep]{Zm}
+
+\end{tikzpicture}

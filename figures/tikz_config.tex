@@ -25,15 +25,16 @@
 \tikzset{
 	% Defines a custom style which generates BOTH, .pdf and .png export
 	% but prefers the .png on inclusion.
-	png export/.style = {
+	jpeg export/.style = {
 		external/system call/.add = {}{%
-			&& pdftocairo -png -r 300 -transp -singlefile "\image.pdf" "\image" %
+			&& pdftocairo -jpeg -r #1 -singlefile "\image.pdf" "\image" %
 		},
 		/pgf/images/external info,
 		/pgf/images/include external/.code = {%
-			\includegraphics[width=\pgfexternalwidth,height=\pgfexternalheight]{##1.png}%
+			\includegraphics[width=\pgfexternalwidth,height=\pgfexternalheight]{##1.jpg}%
 		},
-	}
+	},
+	png export/.default = 300
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%

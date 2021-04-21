@@ -1,219 +1,327 @@
 %\tikzset{external/export next = false}
 
 \begin{tikzpicture}
-
-	%%% GC density
-	\coordinate (density) at (0, 0);
 	
-	\begin{axis}[
-		anchor = north west,
-		at = {(density)},
-		xshift = \plotylabelwidth,
-		width = \twocolumnwidth - \plotylabelwidth,
-		enlarge x limits = false,
-		ymin = 0,
-		ytick = {0, ..., 10},
-		xlabel = GC content,
-		ylabel = density,
-		xlabel style = {name = plot xlabel},
-		density legend
-	]
+	%%% enrichment by enhancer (tobacco)
+	\coordinate (enrEnhLeaf) at (0, 0);
 	
-	\addplot [arabidopsis, fill, fill opacity = .5] table[x = x.At ,y = y.At] {rawData/GC_density.tsv};
-	\addplot [maize, fill, fill opacity = .5] table[x = x.Zm ,y = y.Zm] {rawData/GC_density.tsv};
-	\addplot [sorghum, fill, fill opacity = .5] table[x = x.Sb ,y = y.Sb] {rawData/GC_density.tsv};
-	
-	\addplot [sharp plot, update limits = false, arabidopsis] table[x = promoters.At, y = y] {rawData/GC_average.tsv};
-	\addplot [sharp plot, update limits = false, arabidopsis, dashed] table[x = genome.At, y = y] {rawData/GC_average.tsv};
-	\addplot [sharp plot, update limits = false, maize] table[x = promoters.Zm, y = y] {rawData/GC_average.tsv};
-	\addplot [sharp plot, update limits = false, maize, dashed] table[x = genome.Zm, y = y] {rawData/GC_average.tsv};
-	\addplot [sharp plot, update limits = false, sorghum] table[x = promoters.Sb, y = y] {rawData/GC_average.tsv};
-	\addplot [sharp plot, update limits = false, sorghum, dashed] table[x = genome.Sb, y = y] {rawData/GC_average.tsv};
-	
-	\legend{Arabidopsis, Maize, Sorghum}
-	
-	\end{axis}
-	
-	
-	%%% enrichment by GC (tobacco)
-	\coordinate[yshift = -\columnsep] (enrGCleaf) at (density |- plot xlabel.south);
-	
-	\leafsymbol{enrGCleaf};
+	\leafsymbol{enrEnhLeaf};
 	
 	\begin{hgroupplot}[%
 		ylabel = $\log_2$(promoter strength),
 		ymin = -9,
-		ymax = 8,
+		ymax = 6,
 		ytick = {-10, -8, ..., 10},
-		group position = {anchor = above north west, at = {(enrGCleaf)}, xshift = \plotylabelwidth},
-		group/every plot/.append style = {x grids = false}
-	]{\twocolumnwidth}{3}{GC content}
+		group position = {anchor = above north west, at = {(enrEnhLeaf)}, xshift = \plotylabelwidth},
+		group/every plot/.append style = {x grids = false, typeset ticklabels with strut},
+		xticklabel style = {inner sep = .1em}
+	]{\threecolumnwidth}{3}{35S enhancer}
 
 			
 		\nextgroupplot[
 			title = Arabidopsis,
-			x tick table = {rawData/enrichment_GC_At_leaf_boxplot.tsv}{LaTeX.label}
+			x tick table = {rawData/enrichment_enh_At_leaf_boxplot.tsv}{LaTeX.label}
 		]
 			
 		% violin and box plot
-		\violinbox[violin color = arabidopsis]{rawData/enrichment_GC_At_leaf_boxplot.tsv}{rawData/enrichment_GC_At_leaf_violin.tsv}
+		\violinbox[violin color = arabidopsis]{rawData/enrichment_enh_At_leaf_boxplot.tsv}{rawData/enrichment_enh_At_leaf_violin.tsv}
 			
 		% add sample size
-		\samplesize{rawData/enrichment_GC_At_leaf_boxplot.tsv}{id}{n}
-		
-		% add significance level
-		\signif*{rawData/enrichment_GC_At_leaf_pvalues.tsv}{1}{2}
-		\signif*{rawData/enrichment_GC_At_leaf_pvalues.tsv}{2}{3}
-		\signif*{rawData/enrichment_GC_At_leaf_pvalues.tsv}{3}{4}
-		\signif*{rawData/enrichment_GC_At_leaf_pvalues.tsv}{4}{5}
+		\samplesize{rawData/enrichment_enh_At_leaf_boxplot.tsv}{id}{n}
 		
 		
 		\nextgroupplot[
 			title = Maize,
-			x tick table = {rawData/enrichment_GC_Zm_leaf_boxplot.tsv}{LaTeX.label}
+			x tick table = {rawData/enrichment_enh_Zm_leaf_boxplot.tsv}{LaTeX.label}
 		]
 		
 		% violin and box plot
-		\violinbox[violin color = maize]{rawData/enrichment_GC_Zm_leaf_boxplot.tsv}{rawData/enrichment_GC_Zm_leaf_violin.tsv}
+		\violinbox[violin color = maize]{rawData/enrichment_enh_Zm_leaf_boxplot.tsv}{rawData/enrichment_enh_Zm_leaf_violin.tsv}
 			
 		% add sample size
-		\samplesize{rawData/enrichment_GC_Zm_leaf_boxplot.tsv}{id}{n}
-		
-		% add significance level
-		\signif*{rawData/enrichment_GC_Zm_leaf_pvalues.tsv}{1}{2}
-		\signif*{rawData/enrichment_GC_Zm_leaf_pvalues.tsv}{2}{3}
-		\signif*{rawData/enrichment_GC_Zm_leaf_pvalues.tsv}{3}{4}
-		\signif*{rawData/enrichment_GC_Zm_leaf_pvalues.tsv}{4}{5}
+		\samplesize{rawData/enrichment_enh_Zm_leaf_boxplot.tsv}{id}{n}
 		
 		
 		\nextgroupplot[
 			title = Sorghum,
-			x tick table = {rawData/enrichment_GC_Sb_leaf_boxplot.tsv}{LaTeX.label}
+			x tick table = {rawData/enrichment_enh_Sb_leaf_boxplot.tsv}{LaTeX.label}
 		]
 			
 		% violin and box plot
-		\violinbox[violin color = sorghum]{rawData/enrichment_GC_Sb_leaf_boxplot.tsv}{rawData/enrichment_GC_Sb_leaf_violin.tsv}
+		\violinbox[violin color = sorghum]{rawData/enrichment_enh_Sb_leaf_boxplot.tsv}{rawData/enrichment_enh_Sb_leaf_violin.tsv}
 		
 		% add sample size
-		\samplesize{rawData/enrichment_GC_Sb_leaf_boxplot.tsv}{id}{n}
+		\samplesize{rawData/enrichment_enh_Sb_leaf_boxplot.tsv}{id}{n}
+			
+	\end{hgroupplot}
+	
+	
+	%%% enrichment by enhancer (protoplasts)
+	\coordinate (enrEnhProto) at (\twothirdcolumnwidth - \threecolumnwidth, 0 |- enrEnhLeaf);
+	
+	\protosymbol{enrEnhProto};
+	
+	\begin{hgroupplot}[%
+		ylabel = $\log_2$(promoter strength),
+		ymin = -9,
+		ymax = 6,
+		ytick = {-10, -8, ..., 10},
+		group position = {anchor = above north west, at = {(enrEnhProto)}, xshift = \plotylabelwidth},
+		group/every plot/.append style = {x grids = false, typeset ticklabels with strut},
+		xticklabel style = {inner sep = .1em}
+	]{\threecolumnwidth}{3}{35S enhancer}
+
+			
+		\nextgroupplot[
+			title = Arabidopsis,
+			x tick table = {rawData/enrichment_enh_At_proto_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% violin and box plot
+		\violinbox[violin color = arabidopsis]{rawData/enrichment_enh_At_proto_boxplot.tsv}{rawData/enrichment_enh_At_proto_violin.tsv}
+			
+		% add sample size
+		\samplesize{rawData/enrichment_enh_At_proto_boxplot.tsv}{id}{n}
 		
-		% add significance level
-		\signif*{rawData/enrichment_GC_Sb_leaf_pvalues.tsv}{1}{2}
-		\signif*{rawData/enrichment_GC_Sb_leaf_pvalues.tsv}{2}{3}
-		\signif*{rawData/enrichment_GC_Sb_leaf_pvalues.tsv}{3}{4}
-		\signif*{rawData/enrichment_GC_Sb_leaf_pvalues.tsv}{4}{5}
+		
+		\nextgroupplot[
+			title = Maize,
+			x tick table = {rawData/enrichment_enh_Zm_proto_boxplot.tsv}{LaTeX.label}
+		]
+		
+		% violin and box plot
+		\violinbox[violin color = maize]{rawData/enrichment_enh_Zm_proto_boxplot.tsv}{rawData/enrichment_enh_Zm_proto_violin.tsv}
+			
+		% add sample size
+		\samplesize{rawData/enrichment_enh_Zm_proto_boxplot.tsv}{id}{n}
+		
+		
+		\nextgroupplot[
+			title = Sorghum,
+			x tick table = {rawData/enrichment_enh_Sb_proto_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% violin and box plot
+		\violinbox[violin color = sorghum]{rawData/enrichment_enh_Sb_proto_boxplot.tsv}{rawData/enrichment_enh_Sb_proto_violin.tsv}
+		
+		% add sample size
+		\samplesize{rawData/enrichment_enh_Sb_proto_boxplot.tsv}{id}{n}
 			
 	\end{hgroupplot}
 
 
-	%%% GC by position (tobacco)
-	\coordinate (GCpos) at (density -| \textwidth - \twocolumnwidth, 0);
+	%%% GO-terms
+	\coordinate (GOterms) at (\textwidth - \threecolumnwidth, 0 |- enrEnhLeaf);
 	
-	\leafsymbol{GCpos};
+	\distance{plot xlabel.base}{group c1r1.above north}
+
+	\pgfmathsetlength{\templength}{\ydistance + \plotxlabelheight}
 	
-	\begin{axis}[
-		anchor = north west,
-		at = {(GCpos)},
-		xshift = \plotylabelwidth,
-		width = \twocolumnwidth - \plotylabelwidth,
-		ytick = {-1, -.9, ..., 1},
-		xtick = {6, 26, ..., 166},
-		xticklabel = {$\pgfmathparse{\tick < 166 ? \tick - 166 : \tick -165}\pgfmathprintnumber[print sign]{\pgfmathresult}$},
+	\node[anchor = north west, node font = \figsmall] (pxlab) at (GOterms) {\phantom{\pgfmathprintnumber{20}}};
+	
+	\distance{pxlab.north}{pxlab.south}
+	
+	\pgfmathsetlength{\templength}{\templength - 0.15cm + \ydistance + \groupplotsep}
+
+	\begin{vgroupplot}[%
+		width = \fourcolumnwidth - \plotylabelwidth,
 		xmin = 0,
-		xmax = 170,
-		ymax = 0,
-		y decimals = 1,
-		xlabel = position (rel. to TSS),
-		ylabel = Pearson's $r$,
-		xlabel style = {name = plot xlabel},
+		xmax = 27.5,
+		group position = {at = {(GOterms)}, anchor = north east, xshift = \threecolumnwidth},
+		xbar = 0pt,
+		y dir = reverse,
+		legend columns = 3,
 		legend pos = south east,
-		legend columns = 3
-	]
+		group/every plot/.append style = {y grids = false, bar width = 0.25}
+	]{\templength}{2}{}
 	
-	\addplot [sharp plot, arabidopsis] table[x = pos, y = At_leaf] {rawData/GC_by_pos.tsv};
-	\addplot [sharp plot, maize] table[x = pos, y = Zm_leaf] {rawData/GC_by_pos.tsv};
-	\addplot [sharp plot, sorghum] table[x = pos, y = Sb_leaf] {rawData/GC_by_pos.tsv};
+		\nextgroupplot[
+			y tick table = {rawData/GO_enrichment_leaf.tsv}{term_name},
+			xmajorticks = true,
+			xminorticks = true
+		]
+			
+			\addlegendimage{xbar legend 1, fill = arabidopsis, fill opacity = .5}
+			\addlegendimage{xbar legend 2, fill = maize, fill opacity = .5}
+			\addlegendimage{xbar legend 3, fill = sorghum, fill opacity = .5}
+			
+			\legend{At\phantom{A}, Zm\phantom{A}, Sb}
+			
+			\addplot [draw = black, fill = gray, fill opacity = .5, forget plot] table [x = ns_At, y expr = \lineno] {rawData/GO_enrichment_leaf.tsv};
+			\addplot [draw = black, fill = arabidopsis, fill opacity = .5] table [x = p_At, y expr = \lineno] {rawData/GO_enrichment_leaf.tsv};
+			
+			\addplot [draw = black, fill = gray, fill opacity = .5, forget plot] table [x = ns_Zm, y expr = \lineno] {rawData/GO_enrichment_leaf.tsv};
+			\addplot [draw = black, fill = maize, fill opacity = .5] table [x = p_Zm, y expr = \lineno] {rawData/GO_enrichment_leaf.tsv};
+			
+			\addplot [draw = black, fill = gray, fill opacity = .5, forget plot] table [x = ns_Sb, y expr = \lineno] {rawData/GO_enrichment_leaf.tsv};
+			\addplot [draw = black, fill = sorghum, fill opacity = .5] table [x = p_Sb, y expr = \lineno] {rawData/GO_enrichment_leaf.tsv};
+			
+			\addplot [sharp plot, red, update limits = false] coordinates {(1.3, 0) (1.3, 6)};
+			
+			
+		\nextgroupplot[
+			y tick table = {rawData/GO_enrichment_proto.tsv}{term_name},
+			yshift = -0.15cm + \ydistance + \groupplotsep,
+			xtick pos = upper,
+			xticklabel pos = upper,
+			xticklabel style = {name = xticklabel},
+			yticklabel style = {name = yticklabel}
+		]
+			
+			\addplot [draw = black, fill = gray, fill opacity = .5, forget plot] table [x = ns_At, y expr = \lineno] {rawData/GO_enrichment_proto.tsv};
+			\addplot [draw = black, fill = arabidopsis, fill opacity = .5] table [x = p_At, y expr = \lineno] {rawData/GO_enrichment_proto.tsv};
+			
+			\addplot [draw = black, fill = gray, fill opacity = .5, forget plot] table [x = ns_Zm, y expr = \lineno] {rawData/GO_enrichment_proto.tsv};
+			\addplot [draw = black, fill = maize, fill opacity = .5] table [x = p_Zm, y expr = \lineno] {rawData/GO_enrichment_proto.tsv};
+			
+			\addplot [draw = black, fill = gray, fill opacity = .5, forget plot] table [x = ns_Zm, y expr = \lineno] {rawData/GO_enrichment_proto.tsv};
+			\addplot [draw = black, fill = sorghum, fill opacity = .5] table [x = p_Sb, y expr = \lineno] {rawData/GO_enrichment_proto.tsv};
+			
+			\addplot [sharp plot, red, update limits = false] coordinates {(1.3, 0) (1.3, 6)};
 	
-	\legend{Arabidopsis\phantom{A}, Maize\phantom{A}, Sorghum}
+	\end{vgroupplot}
 	
-	\end{axis}
-
-
-	%%% enrichment by GC (protoplasts)
-	\coordinate[yshift = -\columnsep] (enrGCproto) at (GCpos |- plot xlabel.south);
+	\node[anchor = base east, node font = \figsmall] at (xticklabel.base -| yticklabel.east) {$-\log_{10}(p\ \textsf{value})$};
 	
-	\protosymbol{enrGCproto};
+	\leafsymbol[(-.35, -.35)]{group c1r1.north east};
+	\protosymbol[(-.35, .35)]{group c1r2.south east};
+	
+	
+	%%% enrichment by type (leaf)
+	\coordinate[yshift = -\columnsep] (enrTypeLeaf) at (enrEnhLeaf |- plot xlabel.south);
+	
+	\leafsymbol{enrTypeLeaf};
 	
 	\begin{hgroupplot}[%
 		ylabel = $\log_2$(promoter strength),
 		ymin = -9,
 		ymax = 8,
 		ytick = {-10, -8, ..., 10},
-		group position = {anchor = above north west, at = {(enrGCproto)}, xshift = \plotylabelwidth},
+		xticklabel style = {rotate = 45, align = right, anchor = north east},
+		group position = {anchor = above north west, at = {(enrTypeLeaf)}, xshift = \plotylabelwidth},
 		group/every plot/.append style = {x grids = false}
-	]{\twocolumnwidth}{3}{GC content}
+	]{\twocolumnwidth}{3}{}
 
-			
 		\nextgroupplot[
 			title = Arabidopsis,
-			x tick table = {rawData/enrichment_GC_At_proto_boxplot.tsv}{LaTeX.label}
+			x tick table = {rawData/enrichment_type_At_leaf_boxplot.tsv}{LaTeX.label}
 		]
 			
 		% violin and box plot
-		\violinbox[violin color = arabidopsis]{rawData/enrichment_GC_At_proto_boxplot.tsv}{rawData/enrichment_GC_At_proto_violin.tsv}
+		\violinbox[violin color = arabidopsis]{rawData/enrichment_type_At_leaf_boxplot.tsv}{rawData/enrichment_type_At_leaf_violin.tsv}
 			
 		% add sample size
-		\samplesize{rawData/enrichment_GC_At_proto_boxplot.tsv}{id}{n}
+		\samplesize{rawData/enrichment_type_At_leaf_boxplot.tsv}{id}{n}
 		
 		% add significance level
-		\signif*{rawData/enrichment_GC_At_proto_pvalues.tsv}{1}{2}
-		\signif*{rawData/enrichment_GC_At_proto_pvalues.tsv}{2}{3}
-		\signif*{rawData/enrichment_GC_At_proto_pvalues.tsv}{3}{4}
-		\signif*{rawData/enrichment_GC_At_proto_pvalues.tsv}{4}{5}
+		\signif*{rawData/enrichment_type_At_leaf_pvalues.tsv}{1}{2}
+		\signif*{rawData/enrichment_type_At_leaf_pvalues.tsv}{2}{3}
 		
 		
 		\nextgroupplot[
 			title = Maize,
-			x tick table = {rawData/enrichment_GC_Zm_proto_boxplot.tsv}{LaTeX.label}
+			x tick table = {rawData/enrichment_type_Zm_leaf_boxplot.tsv}{LaTeX.label}
 		]
 		
 		% violin and box plot
-		\violinbox[violin color = maize]{rawData/enrichment_GC_Zm_proto_boxplot.tsv}{rawData/enrichment_GC_Zm_proto_violin.tsv}
+		\violinbox[violin color = maize]{rawData/enrichment_type_Zm_leaf_boxplot.tsv}{rawData/enrichment_type_Zm_leaf_violin.tsv}
 			
 		% add sample size
-		\samplesize{rawData/enrichment_GC_Zm_proto_boxplot.tsv}{id}{n}
+		\samplesize{rawData/enrichment_type_Zm_leaf_boxplot.tsv}{id}{n}
 		
 		% add significance level
-		\signif*{rawData/enrichment_GC_Zm_proto_pvalues.tsv}{1}{2}
-		\signif*{rawData/enrichment_GC_Zm_proto_pvalues.tsv}{2}{3}
-		\signif*{rawData/enrichment_GC_Zm_proto_pvalues.tsv}{3}{4}
-		\signif*{rawData/enrichment_GC_Zm_proto_pvalues.tsv}{4}{5}
+		\signif*{rawData/enrichment_type_Zm_leaf_pvalues.tsv}{1}{2}
+		\signif*{rawData/enrichment_type_Zm_leaf_pvalues.tsv}{2}{3}
 		
 		
 		\nextgroupplot[
 			title = Sorghum,
-			x tick table = {rawData/enrichment_GC_Sb_proto_boxplot.tsv}{LaTeX.label}
+			x tick table = {rawData/enrichment_type_Sb_leaf_boxplot.tsv}{LaTeX.label}
 		]
 			
 		% violin and box plot
-		\violinbox[violin color = sorghum]{rawData/enrichment_GC_Sb_proto_boxplot.tsv}{rawData/enrichment_GC_Sb_proto_violin.tsv}
+		\violinbox[violin color = sorghum]{rawData/enrichment_type_Sb_leaf_boxplot.tsv}{rawData/enrichment_type_Sb_leaf_violin.tsv}
 		
 		% add sample size
-		\samplesize{rawData/enrichment_GC_Sb_proto_boxplot.tsv}{id}{n}
+		\samplesize{rawData/enrichment_type_Sb_leaf_boxplot.tsv}{id}{n}
 		
 		% add significance level
-		\signif*{rawData/enrichment_GC_Sb_proto_pvalues.tsv}{1}{2}
-		\signif*{rawData/enrichment_GC_Sb_proto_pvalues.tsv}{2}{3}
-		\signif*{rawData/enrichment_GC_Sb_proto_pvalues.tsv}{3}{4}
-		\signif*{rawData/enrichment_GC_Sb_proto_pvalues.tsv}{4}{5}
+		\signif*{rawData/enrichment_type_Sb_leaf_pvalues.tsv}{1}{2}
+		\signif*{rawData/enrichment_type_Sb_leaf_pvalues.tsv}{2}{3}
+			
+	\end{hgroupplot}
+	
+	
+	%%% enrichment by type (proto)
+	\coordinate (enrTypeProto) at (enrTypeLeaf -| \textwidth - \twocolumnwidth, 0);
+	
+	\protosymbol{enrTypeProto}; 
+	
+	\begin{hgroupplot}[%
+		ylabel = $\log_2$(promoter strength),
+		ymin = -9,
+		ymax = 8,
+		ytick = {-10, -8, ..., 10},
+		xticklabel style = {rotate = 45, align = right, anchor = north east},
+		group position = {anchor = above north west, at = {(enrTypeProto)}, xshift = \plotylabelwidth},
+		group/every plot/.append style = {x grids = false}
+	]{\twocolumnwidth}{3}{}
+
+		\nextgroupplot[
+			title = Arabidopsis,
+			x tick table = {rawData/enrichment_type_At_proto_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% violin and box plot
+		\violinbox[violin color = arabidopsis]{rawData/enrichment_type_At_proto_boxplot.tsv}{rawData/enrichment_type_At_proto_violin.tsv}
+			
+		% add sample size
+		\samplesize{rawData/enrichment_type_At_proto_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enrichment_type_At_proto_pvalues.tsv}{1}{2}
+		\signif*{rawData/enrichment_type_At_proto_pvalues.tsv}{2}{3}
+		
+		
+		\nextgroupplot[
+			title = Maize,
+			x tick table = {rawData/enrichment_type_Zm_proto_boxplot.tsv}{LaTeX.label}
+		]
+		
+		% violin and box plot
+		\violinbox[violin color = maize]{rawData/enrichment_type_Zm_proto_boxplot.tsv}{rawData/enrichment_type_Zm_proto_violin.tsv}
+			
+		% add sample size
+		\samplesize{rawData/enrichment_type_Zm_proto_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enrichment_type_Zm_proto_pvalues.tsv}{1}{2}
+		\signif*{rawData/enrichment_type_Zm_proto_pvalues.tsv}{2}{3}
+		
+		
+		\nextgroupplot[
+			title = Sorghum,
+			x tick table = {rawData/enrichment_type_Sb_proto_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% violin and box plot
+		\violinbox[violin color = sorghum]{rawData/enrichment_type_Sb_proto_boxplot.tsv}{rawData/enrichment_type_Sb_proto_violin.tsv}
+		
+		% add sample size
+		\samplesize{rawData/enrichment_type_Sb_proto_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enrichment_type_Sb_proto_pvalues.tsv}{1}{2}
+		\signif*{rawData/enrichment_type_Sb_proto_pvalues.tsv}{2}{3}
 			
 	\end{hgroupplot}
 	
 	
 	%%% subfigure labels
-	\subfiglabel[yshift = .5\columnsep]{density}
-	\subfiglabel[yshift = .5\columnsep]{enrGCleaf}
-	\subfiglabel[yshift = .5\columnsep]{GCpos}
-	\subfiglabel[yshift = .5\columnsep]{enrGCproto}
+	\subfiglabel[yshift = .5\columnsep]{enrEnhLeaf}
+	\subfiglabel[yshift = .5\columnsep]{enrEnhProto}
+	\subfiglabel[yshift = .5\columnsep]{GOterms}
+	\subfiglabel[yshift = .5\columnsep]{enrTypeLeaf}
+	\subfiglabel[yshift = .5\columnsep]{enrTypeProto}
 
 \end{tikzpicture}

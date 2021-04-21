@@ -1,365 +1,461 @@
 %\tikzset{external/export next = false}
 
 \begin{tikzpicture}
-	
-	%%% scheme
-	\coordinate (scheme) at (0, 0);
-	
-	\coordinate (construct1) at ($(scheme) + (.25, -.25)$);
-	\coordinate (construct2) at ($(scheme) + (.1, -.75)$);
-	
-	\STARRconstructShort[barcode = Orchid1, promoter = Aquamarine2!80!black, promoter strength = weak, enhancer = {draw = none}]{construct1};
-	\STARRconstructShort[barcode = MediumPurple2, promoter = RoyalBlue2!75!black, promoter strength = strong, enhancer = {draw = none}]{construct2};
-	
-	\coordinate (leaves) at ($(scheme |- construct2) + (.5\fourcolumnwidth, -1.5)$);
-	
-	\begin{pgfinterruptboundingbox}
-		\leaf[0.35]{$(leaves) + (-.25\fourcolumnwidth + .125cm, 0)$};
-		\leaf[0.35]{$(leaves) + (.25\fourcolumnwidth + .275cm, 0)$};
-	\end{pgfinterruptboundingbox}
-	
-	\coordinate (lightBar) at ($(leaves) + (-.5\fourcolumnwidth + .1cm, .75)$);
-	\fill[Gold1] (lightBar) rectangle ++(.25, -1.5);
-	\fill[Gold1, fill opacity = .2] (lightBar) ++(.25, .5\pgflinewidth) rectangle ++(.5\fourcolumnwidth - .5cm + .5\pgflinewidth, -.375cm - .5\pgflinewidth);
-	\fill[Gold1, fill opacity = .2] (lightBar) ++(.25, -.625) rectangle ++(.5\fourcolumnwidth - .5cm + .5\pgflinewidth, -.5);
-	\fill[Gold1, fill opacity = .2] (lightBar) ++(.25, -1.375) rectangle ++(.5\fourcolumnwidth - .5cm + .5\pgflinewidth, -.125cm - .5\pgflinewidth);
-	\fill[black] (lightBar) ++(0, -.375) rectangle ++(.25, -.25);
-	\fill[black, fill opacity = .2] (lightBar) ++(.25, -.375) rectangle ++(.5\fourcolumnwidth - .5cm + .5\pgflinewidth, -.25);
-	\fill[black] (lightBar) ++(0, -1.125) rectangle ++(.25, -.25);
-	\fill[black, fill opacity = .2] (lightBar) ++(.25, -1.125) rectangle ++(.5\fourcolumnwidth - .5cm + .5\pgflinewidth, -.25);
-	\draw[black, thin] (lightBar) rectangle ++(.25, -1.5);
-	
-	\coordinate (darkBar) at ($(lightBar) + (.5\fourcolumnwidth + .15cm, 0)$);
-	\fill[black, opacity = .2, thin] (darkBar) ++(.25, .5\pgflinewidth) rectangle ++(.5\fourcolumnwidth - .5cm + .5\pgflinewidth, -1.5cm - \pgflinewidth);
-	\draw[black, fill, thin] (darkBar) rectangle ++(.25, -1.5);
-	
-	\node[anchor = south west, text depth = 0pt] at (lightBar) {light};
-	\node[anchor = south east, text depth = 0pt, xshift = .5\fourcolumnwidth - .25cm] at (darkBar) {dark};
-	
-	\draw[arrow] (ORF.south -| leaves) ++(-.1\fourcolumnwidth, -.1) -- ++(-.4, -.5) coordinate (a1);
-	\draw[arrow] (ORF.south -| leaves) ++(.1\fourcolumnwidth + .15cm, -.1) -- ++(.4, -.5) coordinate (a2);
-	
-	
-	%%% GO-terms
-	\coordinate[yshift = -\columnsep - 1.5cm] (GOterms) at (lightBar -| scheme);
-	
-	\lightsymbol{GOterms};
 
-	\begin{axis}[%
-		width = .5\fourcolumnwidth - 16pt,
-		height = 32pt,
-		at = {(GOterms)},
-		xshift = \fourcolumnwidth,
-		anchor = right of north east,
-		xlabel = {$-\log_{10}(p\ \textsf{value})$},
-		xmin = 0,
-		xbar = 0pt,
-		bar width = 0.25,
-		y dir = reverse,
-		legend style = {name = legend, draw = none, anchor = west, at = {(1, .5)}},
-		y grids = false,
-		y tick table = {rawData/GO_light-dep.tsv}{term_name},
-		xticklabel style = {name = xticklabel}
-	]
+	%%% enhancer responsiveness by tissue specificity (leaf)
+	\coordinate (enhSpecLeaf) at (0, 0);
 	
-		\addlegendimage{xbar legend 1, fill = arabidopsis, fill opacity = .5}
-		\addlegendimage{xbar legend 2, fill = maize, fill opacity = .5}
-		\addlegendimage{xbar legend 3, fill = sorghum, fill opacity = .5}
-		
-		\legend{At, Zm, Sb}
-		
-		\addplot [draw = black, fill = gray, fill opacity = .5, forget plot] table [x = ns_At, y expr = \lineno] {rawData/GO_light-dep.tsv};
-		\addplot [draw = black, fill = arabidopsis, fill opacity = .5] table [x = p_At, y expr = \lineno] {rawData/GO_light-dep.tsv};
-		
-		\addplot [draw = black, fill = gray, fill opacity = .5, forget plot] table [x = ns_Zm, y expr = \lineno] {rawData/GO_light-dep.tsv};
-		\addplot [draw = black, fill = maize, fill opacity = .5] table [x = p_Zm, y expr = \lineno] {rawData/GO_light-dep.tsv};
-		
-		\addplot [draw = black, fill = gray, fill opacity = .5, forget plot] table [x = ns_Sb, y expr = \lineno] {rawData/GO_light-dep.tsv};
-		\addplot [draw = black, fill = sorghum, fill opacity = .5] table [x = p_Sb, y expr = \lineno] {rawData/GO_light-dep.tsv};
-		
-		\addplot [sharp plot, red, update limits = false] coordinates {(1.3, 0) (1.3, 6)};
-	
-	\end{axis}
-	
-	\draw[thin] (last plot.north -| legend.west) rectangle (last plot.south -| legend.east) coordinate (c1);
-	
-	
-	%%% light-dependency by enhancer
-	\coordinate (lightDepEnh) at (scheme -| \twocolumnwidth - \fourcolumnwidth, 0);
-	
-	\lightsymbol{lightDepEnh};
+	\leafsymbol[(.5, -.2)]{enhSpecLeaf};
 	
 	\begin{hgroupplot}[%
-		ylabel = $\log_2$(light-dependency),
-		height = 3.5cm + 1.25\baselineskip + 8.08pt,
-		ymin = -6.75,
-		ymax = 7.5,
+		ylabel = $\log_2$(enhancer responsiveness),
+		ymin = -4,
+		ymax = 11,
 		ytick = {-10, -8, ..., 10},
-		group position = {anchor = above north west, at = {(lightDepEnh)}, xshift = \plotylabelwidth},
+		group position = {anchor = above north west, at = {(enhSpecLeaf)}, xshift = \plotylabelwidth},
+		group/every plot/.append style = {x grids = false},
+		zero line,
+	]{\twocolumnwidth}{3}{tissue specificity}
+
+		\nextgroupplot[
+			title = Arabidopsis,
+			x tick table = {rawData/enh-effect_specificity_At_leaf_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% violin and box plot
+		\violinbox[violin color = arabidopsis]{rawData/enh-effect_specificity_At_leaf_boxplot.tsv}{rawData/enh-effect_specificity_At_leaf_violin.tsv}
+			
+		% add sample size
+		\samplesize{rawData/enh-effect_specificity_At_leaf_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enh-effect_specificity_At_leaf_pvalues.tsv}{1}{2}
+		\signif*{rawData/enh-effect_specificity_At_leaf_pvalues.tsv}{2}{3}
+		
+		
+		\nextgroupplot[
+			title = Maize,
+			x tick table = {rawData/enh-effect_specificity_Zm_leaf_boxplot.tsv}{LaTeX.label}
+		]
+		
+		% violin and box plot
+		\violinbox[violin color = maize]{rawData/enh-effect_specificity_Zm_leaf_boxplot.tsv}{rawData/enh-effect_specificity_Zm_leaf_violin.tsv}
+			
+		% add sample size
+		\samplesize{rawData/enh-effect_specificity_Zm_leaf_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enh-effect_specificity_Zm_leaf_pvalues.tsv}{1}{2}
+		\signif*{rawData/enh-effect_specificity_Zm_leaf_pvalues.tsv}{2}{3}
+		
+		
+		\nextgroupplot[
+			title = Sorghum,
+			x tick table = {rawData/enh-effect_specificity_Sb_leaf_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% violin and box plot
+		\violinbox[violin color = sorghum]{rawData/enh-effect_specificity_Sb_leaf_boxplot.tsv}{rawData/enh-effect_specificity_Sb_leaf_violin.tsv}
+		
+		% add sample size
+		\samplesize{rawData/enh-effect_specificity_Sb_leaf_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enh-effect_specificity_Sb_leaf_pvalues.tsv}{1}{2}
+		\signif*{rawData/enh-effect_specificity_Sb_leaf_pvalues.tsv}{2}{3}
+			
+	\end{hgroupplot}
+	
+	
+	%%% enhancer responsiveness by type (proto)
+	\coordinate (enhSpecProto) at (enhSpecLeaf -| \textwidth - \twocolumnwidth, 0);
+	
+	\protosymbol[(.5, -.2)]{enhSpecProto};
+	
+	\begin{hgroupplot}[%
+		ylabel = $\log_2$(enhancer responsiveness),
+		ymin = -4,
+		ymax = 9.25,
+		ytick = {-10, -8, ..., 10},
+		group position = {anchor = above north west, at = {(enhSpecProto)}, xshift = \plotylabelwidth},
+		group/every plot/.append style = {x grids = false},
+		zero line,
+	]{\twocolumnwidth}{3}{tissue specificity}
+
+		\nextgroupplot[
+			title = Arabidopsis,
+			x tick table = {rawData/enh-effect_specificity_At_proto_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% violin and box plot
+		\violinbox[violin color = arabidopsis]{rawData/enh-effect_specificity_At_proto_boxplot.tsv}{rawData/enh-effect_specificity_At_proto_violin.tsv}
+			
+		% add sample size
+		\samplesize{rawData/enh-effect_specificity_At_proto_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enh-effect_specificity_At_proto_pvalues.tsv}{1}{2}
+		\signif*{rawData/enh-effect_specificity_At_proto_pvalues.tsv}{2}{3}
+		
+		
+		\nextgroupplot[
+			title = Maize,
+			x tick table = {rawData/enh-effect_specificity_Zm_proto_boxplot.tsv}{LaTeX.label}
+		]
+		
+		% violin and box plot
+		\violinbox[violin color = maize]{rawData/enh-effect_specificity_Zm_proto_boxplot.tsv}{rawData/enh-effect_specificity_Zm_proto_violin.tsv}
+			
+		% add sample size
+		\samplesize{rawData/enh-effect_specificity_Zm_proto_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enh-effect_specificity_Zm_proto_pvalues.tsv}{1}{2}
+		\signif*{rawData/enh-effect_specificity_Zm_proto_pvalues.tsv}{2}{3}
+		
+		
+		\nextgroupplot[
+			title = Sorghum,
+			x tick table = {rawData/enh-effect_specificity_Sb_proto_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% violin and box plot
+		\violinbox[violin color = sorghum]{rawData/enh-effect_specificity_Sb_proto_boxplot.tsv}{rawData/enh-effect_specificity_Sb_proto_violin.tsv}
+		
+		% add sample size
+		\samplesize{rawData/enh-effect_specificity_Sb_proto_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enh-effect_specificity_Sb_proto_pvalues.tsv}{1}{2}
+		\signif*{rawData/enh-effect_specificity_Sb_proto_pvalues.tsv}{2}{3}
+			
+	\end{hgroupplot}
+
+
+	%%% enhancer responsiveness by TATA position (tobacco)
+	\coordinate[yshift = -\columnsep] (enhTATAposLeaf) at (enhSpecLeaf |- plot xlabel.south);
+
+	\leafsymbol[(.5, -.2)]{enhTATAposLeaf};
+	
+	\begin{hgroupplot}[%
+		ylabel = $\log_2$(enhancer responsiveness),
+		ymin = -4,
+		ymax = 11,
+		ytick = {-10, -8, ..., 10},
+		xticklabel style = {name = xticklabel, inner sep = .1em},
+		group position = {anchor = above north west, at = {(enhTATAposLeaf)}, xshift = \plotylabelwidth},
 		group/every plot/.append style = {x grids = false, typeset ticklabels with strut},
-		xticklabel style = {inner sep = .1em},
 		zero line,
-	]{\fourcolumnwidth}{3}{35S enhancer}
+	]{\twocolumnwidth}{3}{}
 
-			
-		\nextgroupplot[
-			title = At,
-			x tick table = {rawData/light-dep_enh_At_boxplot.tsv}{LaTeX.label}
-		]
-			
-		% violin and box plot
-		\violinbox[violin color = arabidopsis]{rawData/light-dep_enh_At_boxplot.tsv}{rawData/light-dep_enh_At_violin.tsv}
-			
-		% add sample size
-		\samplesize[scatter, no marks, visualization depends on = {mod(x, 2) * .5\baselineskip \as \shift}, scatter/@pre marker code/.append style = {/tikz/yshift = \shift}]{rawData/light-dep_enh_At_boxplot.tsv}{id}{n}
-		
-		
-		\nextgroupplot[
-			title = Zm,
-			x tick table = {rawData/light-dep_enh_Zm_boxplot.tsv}{LaTeX.label}
-		]
-		
-		% violin and box plot
-		\violinbox[violin color = maize]{rawData/light-dep_enh_Zm_boxplot.tsv}{rawData/light-dep_enh_Zm_violin.tsv}
-			
-		% add sample size
-		\samplesize[scatter, no marks, visualization depends on = {mod(x, 2) * .5\baselineskip \as \shift}, scatter/@pre marker code/.append style = {/tikz/yshift = \shift}]{rawData/light-dep_enh_Zm_boxplot.tsv}{id}{n}
-		
-		
-		\nextgroupplot[
-			title = Sb,
-			x tick table = {rawData/light-dep_enh_Sb_boxplot.tsv}{LaTeX.label}
-		]
-			
-		% violin and box plot
-		\violinbox[violin color = sorghum]{rawData/light-dep_enh_Sb_boxplot.tsv}{rawData/light-dep_enh_Sb_violin.tsv}
-		
-		% add sample size
-		\samplesize[scatter, no marks, visualization depends on = {mod(x, 2) * .5\baselineskip \as \shift}, scatter/@pre marker code/.append style = {/tikz/yshift = \shift}]{rawData/light-dep_enh_Sb_boxplot.tsv}{id}{n}
-			
-	\end{hgroupplot}
-	
-%	\distance{group c1r1.south}{c1}
-%	\node[anchor = north east] at (last plot.outer south) {\convertto{cm}{\ydistance}; \the\ydistance};
-	
-		
-	%%% light-dependency by TATA and GC
-	\coordinate (lightDepTATAGC) at (\textwidth - \twocolumnwidth, 0 |- lightDepEnh);
-	
-	\lightsymbol{lightDepTATAGC}; 
-	
-	\begin{hgroupplot}[%
-		ylabel = $\log_2$(light-dependency),
-		ymin = -6.75,
-		ymax = 9,
-		ytick = {-10, -8, ..., 10},
-		group position = {anchor = above north west, at = {(lightDepTATAGC)}, xshift = \plotylabelwidth, yshift = -1.25\baselineskip},
-		group/every plot/.append style = {x grids = false},
-		zero line,
-	]{\twocolumnwidth}{3}{GC content}
-	
-			
 		\nextgroupplot[
 			title = Arabidopsis,
-			x tick table half = {rawData/light-dep_TATA+GC_At_boxplot.tsv}{LaTeX.label}
+			x tick table = {rawData/enh-effect_TATA-pos_At_leaf_boxplot.tsv}{LaTeX.label}
 		]
 			
-		% half violin and box plot
-		\halfviolinbox[violin color half = arabidopsis]{rawData/light-dep_TATA+GC_At_boxplot.tsv}{rawData/light-dep_TATA+GC_At_violin.tsv}
+		% violin and box plot
+		\violinbox[violin color = arabidopsis]{rawData/enh-effect_TATA-pos_At_leaf_boxplot.tsv}{rawData/enh-effect_TATA-pos_At_leaf_violin.tsv}
 			
 		% add sample size
-		\samplesizehalf[violin color half = arabidopsis]{rawData/light-dep_TATA+GC_At_boxplot.tsv}{id}{n}
+		\samplesize{rawData/enh-effect_TATA-pos_At_leaf_boxplot.tsv}{id}{n}
 		
-		% add pvalues
-		\signifall*{rawData/light-dep_TATA+GC_At_pvalues.tsv}	
+		% add significance level
+		\signif*{rawData/enh-effect_TATA-pos_At_leaf_pvalues.tsv}{1}{2}
+		\signif*{rawData/enh-effect_TATA-pos_At_leaf_pvalues.tsv}{2}{3}
+		
+		\pgfplotsinvokeforeach{1, ..., 6}{
+			\coordinate (A#1) at (#1, 0);
+		}
 		
 		
 		\nextgroupplot[
 			title = Maize,
-			x tick table half = {rawData/light-dep_TATA+GC_Zm_boxplot.tsv}{LaTeX.label}
+			x tick table = {rawData/enh-effect_TATA-pos_Zm_leaf_boxplot.tsv}{LaTeX.label}
 		]
-			
-		% half violin and box plot
-		\halfviolinbox[violin color half = maize]{rawData/light-dep_TATA+GC_Zm_boxplot.tsv}{rawData/light-dep_TATA+GC_Zm_violin.tsv}
+		
+		% violin and box plot
+		\violinbox[violin color = maize]{rawData/enh-effect_TATA-pos_Zm_leaf_boxplot.tsv}{rawData/enh-effect_TATA-pos_Zm_leaf_violin.tsv}
 			
 		% add sample size
-		\samplesizehalf[violin color half = maize]{rawData/light-dep_TATA+GC_Zm_boxplot.tsv}{id}{n}
+		\samplesize{rawData/enh-effect_TATA-pos_Zm_leaf_boxplot.tsv}{id}{n}
 		
-		% add pvalues
-		\signifall*{rawData/light-dep_TATA+GC_Zm_pvalues.tsv}
+		% add significance level
+		\signif*{rawData/enh-effect_TATA-pos_Zm_leaf_pvalues.tsv}{1}{2}
+		\signif*{rawData/enh-effect_TATA-pos_Zm_leaf_pvalues.tsv}{2}{3}
+		
+		\pgfplotsinvokeforeach{1, ..., 6}{
+			\coordinate (Z#1) at (#1, 0);
+		}
 		
 		
 		\nextgroupplot[
 			title = Sorghum,
-			x tick table half = {rawData/light-dep_TATA+GC_Sb_boxplot.tsv}{LaTeX.label}
+			x tick table = {rawData/enh-effect_TATA-pos_Sb_leaf_boxplot.tsv}{LaTeX.label}
 		]
 			
-		% half violin and box plot
-		\halfviolinbox[violin color half = sorghum]{rawData/light-dep_TATA+GC_Sb_boxplot.tsv}{rawData/light-dep_TATA+GC_Sb_violin.tsv}
-			
-		% add sample size
-		\samplesizehalf[violin color half = sorghum]{rawData/light-dep_TATA+GC_Sb_boxplot.tsv}{id}{n}
+		% violin and box plot
+		\violinbox[violin color = sorghum]{rawData/enh-effect_TATA-pos_Sb_leaf_boxplot.tsv}{rawData/enh-effect_TATA-pos_Sb_leaf_violin.tsv}
 		
-		% add pvalues
-		\signifall*{rawData/light-dep_TATA+GC_Sb_pvalues.tsv}	
-
+		% add sample size
+		\samplesize{rawData/enh-effect_TATA-pos_Sb_leaf_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enh-effect_TATA-pos_Sb_leaf_pvalues.tsv}{1}{2}
+		\signif*{rawData/enh-effect_TATA-pos_Sb_leaf_pvalues.tsv}{2}{3}
+		
+		\pgfplotsinvokeforeach{1, ..., 6}{
+			\coordinate (S#1) at (#1, 0);
+		}
+			
 	\end{hgroupplot}
 	
-	\node[anchor = south west] (legend) at (group c1r1.above north west) {\textbf{TATA-box} motif:\vphantom{g} $-$};
-	\coordinate (legend symbol) at ($(legend.south east) + (.25em, .2em)$);
-	\node[anchor = base west] at ($(legend.base east) + (.6em, 0)$) {$+$};
+	\node[anchor = base east, inner xsep = 0pt, node font = \figsmall] (lTATA) at (group c1r1.west |- xticklabel.base) {TATA-box};
+	\node[anchor = north west, inner xsep = 0pt, node font = \figsmall] (lpos) at (lTATA.base west) {at $-59$ to $-23$};
+	\node[anchor = base, node font = \figsmall] at (lpos.base -| A2) {$-$};
+	\node[anchor = base, node font = \figsmall] at (lpos.base -| A3) {$+$};
+	\node[anchor = base, node font = \figsmall] at (lpos.base -| Z2) {$-$};
+	\node[anchor = base, node font = \figsmall] at (lpos.base -| Z3) {$+$};
+	\node[anchor = base, node font = \figsmall] at (lpos.base -| S2) {$-$};
+	\node[anchor = base, node font = \figsmall] at (lpos.base -| S3) {$+$};
 	
-	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolleft, fill opacity = .5, x = .25em, y = .1em, rotate = 90, shift = {(legend symbol)}] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
-	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolright, fill opacity = .5, x = .25em, y = -.1em, rotate = 90, shift = {(legend symbol)}, yshift = -.1em] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
 	
+	%%% enh-effect by TATA pos (protoplasts)
+	\coordinate (enhTATAposProto) at (enhTATAposLeaf -| enhSpecProto);
 	
-	%%% light-dependency by TCP binding site
-	\coordinate[yshift = -\columnsep] (lightDepTCP) at (scheme |- plot xlabel.south);
-	
-	\lightsymbol{lightDepTCP}; 
+	\protosymbol[(.5, -.2)]{enhTATAposProto};
 	
 	\begin{hgroupplot}[%
-		ylabel = $\log_2$(light-dependency),
-		ymin = -6.75,
-		ymax = 9,
+		ylabel = $\log_2$(enhancer responsiveness),
+		ymin = -4,
+		ymax = 9.25,
 		ytick = {-10, -8, ..., 10},
-		group position = {anchor = above north west, at = {(lightDepTCP)}, xshift = \plotylabelwidth, yshift = -1.25\baselineskip},
-		group/every plot/.append style = {x grids = false},
+		xticklabel style = {name = xticklabel, inner sep = .1em},
+		group position = {anchor = above north west, at = {(enhTATAposProto)}, xshift = \plotylabelwidth},
+		group/every plot/.append style = {x grids = false, typeset ticklabels with strut},
 		zero line,
-	]{\twocolumnwidth}{3}{GC content}
-	
-			
+	]{\twocolumnwidth}{3}{}
+
 		\nextgroupplot[
 			title = Arabidopsis,
-			x tick table half = {rawData/light-dep_TCP_At_boxplot.tsv}{LaTeX.label}
+			x tick table = {rawData/enh-effect_TATA-pos_At_proto_boxplot.tsv}{LaTeX.label}
 		]
 			
-		% half violin and box plot
-		\halfviolinbox[violin color half = arabidopsis]{rawData/light-dep_TCP_At_boxplot.tsv}{rawData/light-dep_TCP_At_violin.tsv}
+		% violin and box plot
+		\violinbox[violin color = arabidopsis]{rawData/enh-effect_TATA-pos_At_proto_boxplot.tsv}{rawData/enh-effect_TATA-pos_At_proto_violin.tsv}
 			
 		% add sample size
-		\samplesizehalf[violin color half = arabidopsis]{rawData/light-dep_TCP_At_boxplot.tsv}{id}{n}
+		\samplesize{rawData/enh-effect_TATA-pos_At_proto_boxplot.tsv}{id}{n}
 		
-		% add pvalues
-		\signifall*{rawData/light-dep_TCP_At_pvalues.tsv}	
+		% add significance level
+		\signif*{rawData/enh-effect_TATA-pos_At_proto_pvalues.tsv}{1}{2}
+		\signif*{rawData/enh-effect_TATA-pos_At_proto_pvalues.tsv}{2}{3}
+		
+		\pgfplotsinvokeforeach{1, ..., 6}{
+			\coordinate (A#1) at (#1, 0);
+		}
 		
 		
 		\nextgroupplot[
 			title = Maize,
-			x tick table half = {rawData/light-dep_TCP_Zm_boxplot.tsv}{LaTeX.label}
+			x tick table = {rawData/enh-effect_TATA-pos_Zm_proto_boxplot.tsv}{LaTeX.label}
 		]
-			
-		% half violin and box plot
-		\halfviolinbox[violin color half = maize]{rawData/light-dep_TCP_Zm_boxplot.tsv}{rawData/light-dep_TCP_Zm_violin.tsv}
+		
+		% violin and box plot
+		\violinbox[violin color = maize]{rawData/enh-effect_TATA-pos_Zm_proto_boxplot.tsv}{rawData/enh-effect_TATA-pos_Zm_proto_violin.tsv}
 			
 		% add sample size
-		\samplesizehalf[violin color half = maize]{rawData/light-dep_TCP_Zm_boxplot.tsv}{id}{n}
+		\samplesize{rawData/enh-effect_TATA-pos_Zm_proto_boxplot.tsv}{id}{n}
 		
-		% add pvalues
-		\signifall*{rawData/light-dep_TCP_Zm_pvalues.tsv}
+		% add significance level
+		\signif*{rawData/enh-effect_TATA-pos_Zm_proto_pvalues.tsv}{1}{2}
+		\signif*{rawData/enh-effect_TATA-pos_Zm_proto_pvalues.tsv}{2}{3}
+		
+		\pgfplotsinvokeforeach{1, ..., 6}{
+			\coordinate (Z#1) at (#1, 0);
+		}
 		
 		
 		\nextgroupplot[
 			title = Sorghum,
-			x tick table half = {rawData/light-dep_TCP_Sb_boxplot.tsv}{LaTeX.label}
+			x tick table = {rawData/enh-effect_TATA-pos_Sb_proto_boxplot.tsv}{LaTeX.label}
 		]
 			
-		% half violin and box plot
-		\halfviolinbox[violin color half = sorghum]{rawData/light-dep_TCP_Sb_boxplot.tsv}{rawData/light-dep_TCP_Sb_violin.tsv}
-			
-		% add sample size
-		\samplesizehalf[violin color half = sorghum]{rawData/light-dep_TCP_Sb_boxplot.tsv}{id}{n}
+		% violin and box plot
+		\violinbox[violin color = sorghum]{rawData/enh-effect_TATA-pos_Sb_proto_boxplot.tsv}{rawData/enh-effect_TATA-pos_Sb_proto_violin.tsv}
 		
-		% add pvalues
-		\signifall*{rawData/light-dep_TCP_Sb_pvalues.tsv}	
-
+		% add sample size
+		\samplesize{rawData/enh-effect_TATA-pos_Sb_proto_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enh-effect_TATA-pos_Sb_proto_pvalues.tsv}{1}{2}
+		\signif*{rawData/enh-effect_TATA-pos_Sb_proto_pvalues.tsv}{2}{3}
+		
+		\pgfplotsinvokeforeach{1, ..., 6}{
+			\coordinate (S#1) at (#1, 0);
+		}
+			
 	\end{hgroupplot}
-
-	\node[anchor = south west] (legend) at (group c1r1.above north west) {\textbf{TCP} transcripition factor binding site: $-$};
-	\coordinate (legend symbol) at ($(legend.south east) + (.25em, .2em)$);
-	\node[anchor = base west] at ($(legend.base east) + (.6em, 0)$) {$+$};
 	
-	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolleft, fill opacity = .5, x = .25em, y = .1em, rotate = 90, shift = {(legend symbol)}] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
-	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolright, fill opacity = .5, x = .25em, y = -.1em, rotate = 90, shift = {(legend symbol)}, yshift = -.1em] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
+	\node[anchor = base east, inner xsep = 0pt, node font = \figsmall] (lTATA) at (group c1r1.west |- xticklabel.base) {TATA-box};
+	\node[anchor = north west, inner xsep = 0pt, node font = \figsmall] (lpos) at (lTATA.base west) {at $-59$ to $-23$};
+	\node[anchor = base, node font = \figsmall] at (lpos.base -| A2) {$-$};
+	\node[anchor = base, node font = \figsmall] at (lpos.base -| A3) {$+$};
+	\node[anchor = base, node font = \figsmall] at (lpos.base -| Z2) {$-$};
+	\node[anchor = base, node font = \figsmall] at (lpos.base -| Z3) {$+$};
+	\node[anchor = base, node font = \figsmall] at (lpos.base -| S2) {$-$};
+	\node[anchor = base, node font = \figsmall] at (lpos.base -| S3) {$+$};
 	
 	
-	%%% light-dependency by WRKY binding site
-	\coordinate (lightDepWRKY) at (lightDepTATAGC |- lightDepTCP);
+	%%% enhancer responsiveness by GC (tobacco)
+	\coordinate[yshift = -\columnsep] (enhGCleaf) at (enhSpecLeaf |- lpos.south);
 	
-	\lightsymbol{lightDepWRKY}; 
+	\leafsymbol[(.5, -.2)]{enhGCleaf};
 	
 	\begin{hgroupplot}[%
-		ylabel = $\log_2$(light-dependency),
-		ymin = -6.75,
-		ymax = 9,
+		ylabel = $\log_2$(enhancer responsiveness),
+		ymin = -4,
+		ymax = 11,
 		ytick = {-10, -8, ..., 10},
-		group position = {anchor = above north west, at = {(lightDepWRKY)}, xshift = \plotylabelwidth, yshift = -1.25\baselineskip},
+		group position = {anchor = above north west, at = {(enhGCleaf)}, xshift = \plotylabelwidth},
 		group/every plot/.append style = {x grids = false},
 		zero line,
 	]{\twocolumnwidth}{3}{GC content}
-	
+
 			
 		\nextgroupplot[
 			title = Arabidopsis,
-			x tick table half = {rawData/light-dep_WRKY_At_boxplot.tsv}{LaTeX.label}
+			x tick table = {rawData/enh-effect_GC_At_leaf_boxplot.tsv}{LaTeX.label}
 		]
 			
-		% half violin and box plot
-		\halfviolinbox[violin color half = arabidopsis]{rawData/light-dep_WRKY_At_boxplot.tsv}{rawData/light-dep_WRKY_At_violin.tsv}
+		% violin and box plot
+		\violinbox[violin color = arabidopsis]{rawData/enh-effect_GC_At_leaf_boxplot.tsv}{rawData/enh-effect_GC_At_leaf_violin.tsv}
 			
 		% add sample size
-		\samplesizehalf[violin color half = arabidopsis]{rawData/light-dep_WRKY_At_boxplot.tsv}{id}{n}
+		\samplesize{rawData/enh-effect_GC_At_leaf_boxplot.tsv}{id}{n}
 		
-		% add pvalues
-		\signifall*{rawData/light-dep_WRKY_At_pvalues.tsv}	
+		% add significance level
+		\signif*{rawData/enh-effect_GC_At_leaf_pvalues.tsv}{1}{2}
+		\signif*{rawData/enh-effect_GC_At_leaf_pvalues.tsv}{2}{3}
+		\signif*{rawData/enh-effect_GC_At_leaf_pvalues.tsv}{3}{4}
+		\signif*{rawData/enh-effect_GC_At_leaf_pvalues.tsv}{4}{5}
 		
 		
 		\nextgroupplot[
 			title = Maize,
-			x tick table half = {rawData/light-dep_WRKY_Zm_boxplot.tsv}{LaTeX.label}
+			x tick table = {rawData/enh-effect_GC_Zm_leaf_boxplot.tsv}{LaTeX.label}
 		]
-			
-		% half violin and box plot
-		\halfviolinbox[violin color half = maize]{rawData/light-dep_WRKY_Zm_boxplot.tsv}{rawData/light-dep_WRKY_Zm_violin.tsv}
+		
+		% violin and box plot
+		\violinbox[violin color = maize]{rawData/enh-effect_GC_Zm_leaf_boxplot.tsv}{rawData/enh-effect_GC_Zm_leaf_violin.tsv}
 			
 		% add sample size
-		\samplesizehalf[violin color half = maize]{rawData/light-dep_WRKY_Zm_boxplot.tsv}{id}{n}
+		\samplesize{rawData/enh-effect_GC_Zm_leaf_boxplot.tsv}{id}{n}
 		
-		% add pvalues
-		\signifall*{rawData/light-dep_WRKY_Zm_pvalues.tsv}
+		% add significance level
+		\signif*{rawData/enh-effect_GC_Zm_leaf_pvalues.tsv}{1}{2}
+		\signif*{rawData/enh-effect_GC_Zm_leaf_pvalues.tsv}{2}{3}
+		\signif*{rawData/enh-effect_GC_Zm_leaf_pvalues.tsv}{3}{4}
+		\signif*{rawData/enh-effect_GC_Zm_leaf_pvalues.tsv}{4}{5}
 		
 		
 		\nextgroupplot[
 			title = Sorghum,
-			x tick table half = {rawData/light-dep_WRKY_Sb_boxplot.tsv}{LaTeX.label}
+			x tick table = {rawData/enh-effect_GC_Sb_leaf_boxplot.tsv}{LaTeX.label}
 		]
 			
-		% half violin and box plot
-		\halfviolinbox[violin color half = sorghum]{rawData/light-dep_WRKY_Sb_boxplot.tsv}{rawData/light-dep_WRKY_Sb_violin.tsv}
+		% violin and box plot
+		\violinbox[violin color = sorghum]{rawData/enh-effect_GC_Sb_leaf_boxplot.tsv}{rawData/enh-effect_GC_Sb_leaf_violin.tsv}
+		
+		% add sample size
+		\samplesize{rawData/enh-effect_GC_Sb_leaf_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enh-effect_GC_Sb_leaf_pvalues.tsv}{1}{2}
+		\signif*{rawData/enh-effect_GC_Sb_leaf_pvalues.tsv}{2}{3}
+		\signif*{rawData/enh-effect_GC_Sb_leaf_pvalues.tsv}{3}{4}
+		\signif*{rawData/enh-effect_GC_Sb_leaf_pvalues.tsv}{4}{5}
+			
+	\end{hgroupplot}
+
+
+	%%% enhancer responsiveness by GC (protoplasts)
+	\coordinate (enhGCproto) at (enhSpecProto |- enhGCleaf);
+	
+	\protosymbol[(.5, -.2)]{enhGCproto};
+	
+	\begin{hgroupplot}[%
+		ylabel = $\log_2$(enhancer responsiveness),
+		ymin = -4,
+		ymax = 9.25,
+		ytick = {-10, -8, ..., 10},
+		group position = {anchor = above north west, at = {(enhGCproto)}, xshift = \plotylabelwidth},
+		group/every plot/.append style = {x grids = false},
+		zero line,
+	]{\twocolumnwidth}{3}{GC content}
+
+			
+		\nextgroupplot[
+			title = Arabidopsis,
+			x tick table = {rawData/enh-effect_GC_At_proto_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% violin and box plot
+		\violinbox[violin color = arabidopsis]{rawData/enh-effect_GC_At_proto_boxplot.tsv}{rawData/enh-effect_GC_At_proto_violin.tsv}
 			
 		% add sample size
-		\samplesizehalf[violin color half = sorghum]{rawData/light-dep_WRKY_Sb_boxplot.tsv}{id}{n}
+		\samplesize{rawData/enh-effect_GC_At_proto_boxplot.tsv}{id}{n}
 		
-		% add pvalues
-		\signifall*{rawData/light-dep_WRKY_Sb_pvalues.tsv}	
-
+		% add significance level
+		\signif*{rawData/enh-effect_GC_At_proto_pvalues.tsv}{1}{2}
+		\signif*{rawData/enh-effect_GC_At_proto_pvalues.tsv}{2}{3}
+		\signif*{rawData/enh-effect_GC_At_proto_pvalues.tsv}{3}{4}
+		\signif*{rawData/enh-effect_GC_At_proto_pvalues.tsv}{4}{5}
+		
+		
+		\nextgroupplot[
+			title = Maize,
+			x tick table = {rawData/enh-effect_GC_Zm_proto_boxplot.tsv}{LaTeX.label}
+		]
+		
+		% violin and box plot
+		\violinbox[violin color = maize]{rawData/enh-effect_GC_Zm_proto_boxplot.tsv}{rawData/enh-effect_GC_Zm_proto_violin.tsv}
+			
+		% add sample size
+		\samplesize{rawData/enh-effect_GC_Zm_proto_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enh-effect_GC_Zm_proto_pvalues.tsv}{1}{2}
+		\signif*{rawData/enh-effect_GC_Zm_proto_pvalues.tsv}{2}{3}
+		\signif*{rawData/enh-effect_GC_Zm_proto_pvalues.tsv}{3}{4}
+		\signif*{rawData/enh-effect_GC_Zm_proto_pvalues.tsv}{4}{5}
+		
+		
+		\nextgroupplot[
+			title = Sorghum,
+			x tick table = {rawData/enh-effect_GC_Sb_proto_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% violin and box plot
+		\violinbox[violin color = sorghum]{rawData/enh-effect_GC_Sb_proto_boxplot.tsv}{rawData/enh-effect_GC_Sb_proto_violin.tsv}
+		
+		% add sample size
+		\samplesize{rawData/enh-effect_GC_Sb_proto_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enh-effect_GC_Sb_proto_pvalues.tsv}{1}{2}
+		\signif*{rawData/enh-effect_GC_Sb_proto_pvalues.tsv}{2}{3}
+		\signif*{rawData/enh-effect_GC_Sb_proto_pvalues.tsv}{3}{4}
+		\signif*{rawData/enh-effect_GC_Sb_proto_pvalues.tsv}{4}{5}
+			
 	\end{hgroupplot}
-	
-	\node[anchor = south west] (legend) at (group c1r1.above north west) {\textbf{WRKY/C3H} transcripition factor binding site: $-$};
-	\coordinate (legend symbol) at ($(legend.south east) + (.25em, .2em)$);
-	\node[anchor = base west] at ($(legend.base east) + (.6em, 0)$) {$+$};
-	
-	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolleft, fill opacity = .5, x = .25em, y = .1em, rotate = 90, shift = {(legend symbol)}] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
-	\fill[thin, draw = black, /pgfplots/violin color half = arabidopsis, fill = viocolright, fill opacity = .5, x = .25em, y = -.1em, rotate = 90, shift = {(legend symbol)}, yshift = -.1em] plot[domain = 0:6] (\x,{4*1/exp(((\x-3)^2)/2)}) -- cycle;
 	
 	
 	%%% subfigure labels
-	\subfiglabel[yshift = .5\columnsep]{scheme}
-	\subfiglabel[yshift = .5\columnsep]{lightDepEnh}
-	\subfiglabel[yshift = .5\columnsep]{GOterms}
-	\subfiglabel[yshift = .5\columnsep]{lightDepTATAGC}
-	\subfiglabel[yshift = .5\columnsep]{lightDepTCP}
-	\subfiglabel[yshift = .5\columnsep]{lightDepWRKY}
-
+	\subfiglabel[yshift = .5\columnsep]{enhSpecLeaf}
+	\subfiglabel[yshift = .5\columnsep]{enhSpecProto}
+	\subfiglabel[yshift = .5\columnsep]{enhTATAposLeaf}
+	\subfiglabel[yshift = .5\columnsep]{enhTATAposProto}
+	\subfiglabel[yshift = .5\columnsep]{enhGCleaf}
+	\subfiglabel[yshift = .5\columnsep]{enhGCproto}
 
 \end{tikzpicture}

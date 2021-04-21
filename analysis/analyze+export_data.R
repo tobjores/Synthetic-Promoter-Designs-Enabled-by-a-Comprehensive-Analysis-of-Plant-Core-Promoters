@@ -2417,55 +2417,53 @@ wrap <- createStyle(wrapText = TRUE)
 two.digit <- createStyle(numFmt = '0.00')
 seq.font <- createStyle(fontName = 'Courier New')
 
-for (species in all.species$common) {
-  addWorksheet(wb, sheetName = species)
-}
+addWorksheet(wb, sheetName = 'plant promoters')
 
-for (species in all.species$short) {
-  writeData(
-    wb,
-    sheet = short.common[species],
-    'Supplementary Table 1 | Promoters analyzed in this study.',
-    startCol = 1,
-    startRow = 1
-  )
-  
-  mergeCells(wb, sheet = short.common[species], rows = 1, cols = 1:11)
-  addStyle(wb, sheet = short.common[species], style = bold, rows = 1, cols = 1:11)
-  
-  writeData(
-    wb,
-    sheet = short.common[species],
-    "Promoters for the genes listed in this table were present in our library and linked to the indicated number of barcodes. The type of the gene and whether it contains an annotated 5' UTR is indicated. The chromosomal coordinates, orientation, and GC content of the promoters is listed. To remove recognition sites for the restriction enzymes used in library creation, the indicated mutations were introduced and the resulting sequences were array-synthesized. The promoter sequences for some genes were identical and the corresponding annotations were merged (separated by ';' for genes in the same orientation, or '/' for genes in opposite orientation).",
-    startCol = 1,
-    startRow = 2
-  )
-  
-  mergeCells(wb, sheet = short.common[species], rows = 2, cols = 1:11)
-  setRowHeights(wb, sheet = short.common[species], rows = 2, heights = 65)
-  addStyle(wb, sheet = short.common[species], style = wrap, rows = 2, cols = 1:11)
+writeData(
+  wb,
+  sheet = 1,
+  'Supplementary Table 1 | Promoters analyzed in this study.',
+  startCol = 1,
+  startRow = 1
+)
 
-  df <- subassemblies.mod %>%
-    filter(sp == species) %>%
-    select(-sp)
-  
-  writeData(
-    wb,
-    sheet = short.common[species],
-    df,
-    startCol = 1,
-    startRow = 4,
-    headerStyle = bold
-  )
-  
-  addStyle(wb, sheet = short.common[species], style = two.digit, cols = 8, rows = 5:(dim(df)[1] + 4))
-  addStyle(wb, sheet = short.common[species], style = seq.font, cols = 11, rows = 5:(dim(df)[1] + 4))
-  
-  setColWidths(wb, sheet = short.common[species], cols = 1, widths = 24)
-  setColWidths(wb, sheet = short.common[species], cols = c(3, 5, 6, 10, 11), widths = 12)
+mergeCells(wb, sheet = 1, rows = 1, cols = 1:12)
+addStyle(wb, sheet = 1, style = bold, rows = 1, cols = 1:12)
 
-  freezePane(wb, sheet = short.common[species], firstActiveRow = 5, firstActiveCol = 2)
-}
+writeData(
+  wb,
+  sheet = 1,
+  "Promoters for the genes listed in this table were present in our library and linked to the indicated number of barcodes. The type of the gene and whether it contains an annotated 5' UTR is indicated. The chromosomal coordinates, orientation, and GC content of the promoters is listed. To remove recognition sites for the restriction enzymes used in library creation, the indicated mutations were introduced and the resulting sequences were array-synthesized. The promoter sequences for some genes were identical and the corresponding annotations were merged (separated by ';' for genes in the same orientation, or '/' for genes in opposite orientation).",
+  startCol = 1,
+  startRow = 2
+)
+
+mergeCells(wb, sheet = 1, rows = 2, cols = 1:12)
+setRowHeights(wb, sheet = 1, rows = 2, heights = 52)
+addStyle(wb, sheet = 1, style = wrap, rows = 2, cols = 1:12)
+
+df <- subassemblies.mod %>%
+  select(gene, 'species' = sp, barcodes, type, 'chromosome' = chr, start, end, strand, GC, UTR, mutations, sequence) %>%
+  mutate(
+    species = short.common[species]
+  )
+
+writeData(
+  wb,
+  sheet = 1,
+  df,
+  startCol = 1,
+  startRow = 4,
+  headerStyle = bold
+)
+
+addStyle(wb, sheet = 1, style = two.digit, cols = 9, rows = 5:(dim(df)[1] + 4))
+addStyle(wb, sheet = 1, style = seq.font, cols = 12, rows = 5:(dim(df)[1] + 4))
+
+setColWidths(wb, sheet = 1, cols = 1, widths = 24)
+setColWidths(wb, sheet = 1, cols = c(4, 5, 6, 7, 11, 12), widths = 12)
+
+freezePane(wb, sheet = 1, firstActiveRow = 5, firstActiveCol = 2)
 
 saveWorkbook(wb, '../data/supp_tables/Supplementary Table 1.xlsx', overwrite = TRUE)
 
@@ -2493,72 +2491,70 @@ bold <- createStyle(textDecoration = 'bold')
 wrap <- createStyle(wrapText = TRUE)
 boldwrap <- createStyle(textDecoration = 'bold', wrapText = TRUE, halign = 'center')
 
-for (species in all.species$common) {
-  addWorksheet(wb, sheetName = species)
-}
+addWorksheet(wb, sheetName = 'promoter strength')
 
-for (species in all.species$short) {
-  writeData(
-    wb,
-    sheet = short.common[species],
-    'Supplementary Table 2 | Strength of plant promoters.',
-    startCol = 1,
-    startRow = 1
-  )
-  
-  mergeCells(wb, sheet = short.common[species], rows = 1, cols = 1:7)
-  addStyle(wb, sheet = short.common[species], style = bold, rows = 1, cols = 1:7)
-  
-  writeData(
-    wb,
-    sheet = short.common[species],
-    "Promoter strength (log2; normalized to the 35S minimal promoter) was determined by STARR-seq in the indicated condition and assay system. #N/A indicates missing data.",
-    startCol = 1,
-    startRow = 2
-  )
-  
-  mergeCells(wb, sheet = short.common[species], rows = 2, cols = 1:7)
-  setRowHeights(wb, sheet = short.common[species], rows = 2, heights = 26)
-  addStyle(wb, sheet = short.common[species], style = wrap, rows = 2, cols = 1:7)
-  
-  writeData(
-    wb,
-    sheet = short.common[species],
-    list(
-      'promoter',
-      'no enhancer, dark,\ntobacco leaves',
-      'no enhancer, dark,\nmaize protoplasts',
-      'with enhancer, dark,\ntobacco leaves',
-      'with enhancer, dark,\nmaize protoplasts',
-      'no enhancer, light,\ntobacco leaves',
-      'with enhancer, light,\ntobacco leaves'
-    ),
-    startCol = 1,
-    startRow = 4
-  )
-  
-  addStyle(wb, sheet = short.common[species], style = boldwrap, rows = 4, cols = 1:7)
-  setRowHeights(wb, sheet = short.common[species], rows = 4, heights = 26)  
+writeData(
+  wb,
+  sheet = 1,
+  'Supplementary Table 2 | Strength of plant promoters.',
+  startCol = 1,
+  startRow = 1
+)
 
-  df <- promoter.strength.mod %>%
-    filter(sp == species) %>%
-    select(gene, leaf_noENH_dark, proto_noENH_dark, leaf_withENH_dark, proto_withENH_dark, leaf_noENH_light, leaf_withENH_light)
-  
-  writeData(
-    wb,
-    sheet = short.common[species],
-    df,
-    startCol = 1,
-    startRow = 5,
-    colNames = FALSE,
-    keepNA = TRUE
+mergeCells(wb, sheet = 1, rows = 1, cols = 1:8)
+addStyle(wb, sheet = 1, style = bold, rows = 1, cols = 1:8)
+
+writeData(
+  wb,
+  sheet = 1,
+  "Promoter strength (log2; normalized to the 35S minimal promoter) was determined by STARR-seq in the indicated condition and assay system. #N/A indicates missing data.",
+  startCol = 1,
+  startRow = 2
+)
+
+mergeCells(wb, sheet = 1, rows = 2, cols = 1:8)
+addStyle(wb, sheet = 1, style = wrap, rows = 2, cols = 1:8)
+
+writeData(
+  wb,
+  sheet = 1,
+  list(
+    'promoter',
+    'species',
+    'no enhancer, dark,\ntobacco leaves',
+    'no enhancer, dark,\nmaize protoplasts',
+    'with enhancer, dark,\ntobacco leaves',
+    'with enhancer, dark,\nmaize protoplasts',
+    'no enhancer, light,\ntobacco leaves',
+    'with enhancer, light,\ntobacco leaves'
+  ),
+  startCol = 1,
+  startRow = 4
+)
+
+addStyle(wb, sheet = 1, style = boldwrap, rows = 4, cols = 1:8)
+setRowHeights(wb, sheet = 1, rows = 4, heights = 26)  
+
+df <- promoter.strength.mod %>%
+  select(gene, 'species' = sp, leaf_noENH_dark, proto_noENH_dark, leaf_withENH_dark, proto_withENH_dark, leaf_noENH_light, leaf_withENH_light) %>%
+  mutate(
+    species = short.common[species]
   )
-  
-  setColWidths(wb, sheet = short.common[species], cols = 1, widths = 24)
-  setColWidths(wb, sheet = short.common[species], cols = 2:7, widths = 18)
-  
-  freezePane(wb, sheet = short.common[species], firstActiveRow = 5, firstActiveCol = 2)
-}
+
+writeData(
+  wb,
+  sheet = 1,
+  df,
+  startCol = 1,
+  startRow = 5,
+  colNames = FALSE,
+  keepNA = TRUE
+)
+
+setColWidths(wb, sheet = 1, cols = 1, widths = 24)
+setColWidths(wb, sheet = 1, cols = 3:8, widths = 18)
+
+freezePane(wb, sheet = 1, firstActiveRow = 5, firstActiveCol = 2)
 
 saveWorkbook(wb, '../data/supp_tables/Supplementary Table 2.xlsx', overwrite = TRUE)
 
@@ -2638,7 +2634,7 @@ addStyle(wb, sheet = 1, style = bold, rows = 1, cols = 1:19)
 writeData(
   wb,
   sheet = 1,
-  'For each species, the promoters were grouped by GC content to yield 5 groups of approximately similar size each. The difference in promoter strength between promotors with and without the indicated core promoter element or TF binding site was calculated for each library and assay system and the mean difference (mean) and its standard deviation (sd) across all 15 groups (3 species x 5 GC content groups) are listed here. The Wilcoxon rank-sum test was used to compare the differences to a null distribution and the corresponding p-value is indicated. Significant (p-value < 0.0005) effects are highlighted in green. TF_x, binding site for TFs from cluster x.',
+  'For each species, the promoters were grouped by GC content to yield 5 groups of approximately similar size each. The difference in promoter strength between promotors with and without the indicated core promoter element or TF binding site was calculated for each library and assay system and the mean difference (mean) and its standard deviation (sd) across all 15 groups (3 species x 5 GC content groups) are listed here. The two-sided Wilcoxon rank-sum test was used to compare the differences to a null distribution and the corresponding p-value is indicated. Significant (p-value < 0.0005) effects are highlighted in green. TF_x, binding site for TFs from cluster x.',
   startCol = 1,
   startRow = 2
 )

@@ -1,0 +1,482 @@
+%\tikzset{external/export next = false}
+
+\begin{tikzpicture}
+
+	\pgfmathsetlength{\basewidth}{(\threequartercolumnwidth - 2\columnsep - 3\plotylabelwidth) / 25}
+
+	%%% mutate TCP(15) motif (logo plots)
+	\coordinate (variantsTCP15) at (0, 0);
+	
+	\node[anchor = north, xshift = .5\plotylabelwidth + 5\basewidth] (TCP15) at (variantsTCP15) {\textbf{TCP} (cluster 15)};
+	
+	% foward orientation
+	\begin{axis}[
+		at = {(TCP15.south -| variantsTCP15)},
+		anchor = above north west,
+		xshift = \plotylabelwidth,
+		width = 10\basewidth,
+		height = 0.5cm,
+		logo axis = IC,
+		logo y axis/.append style = {ylabel = IC},
+		title = {forward orientation},
+		title style = {draw = none, fill = none},
+		logo plot
+	]
+	
+		\addlogoplot{rawData/motif_mutTCP(15)_WT-fwd.tsv};
+		
+		\coordinate (base1) at (3, 0);
+		\coordinate (base2) at (4, 0);
+		
+	\end{axis}
+	
+	\draw[arrow, semithick, shorten both = .05cm] (base1) -- ++(-120:.5cm) coordinate (mut1);
+	\draw[arrow, semithick, shorten both = .05cm] (base2) -- ++(-60:.5cm) coordinate (mut2);
+	
+	\begin{axis}[
+		at = {(mut1)},
+		anchor = north,
+		width = \basewidth,
+		height = 0.5cm,
+		logo axis = none,
+		logo plot
+	]
+	
+		\addplot[%
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark size = \pgfkeysvalueof{/pgfplots/width} / (\xmax - 0.5) * \pgfkeysvalueof{/pgfplots/letter width},
+			visualization depends on = \thisrow{IC} * \pgfkeysvalueof{/pgfplots/height} / \ymax \as\baseht
+		] table[x = pos,y = IC, meta = base, row sep = \\, col sep = comma] {
+			pos,IC,base\\
+			1,2,T\\
+		};
+		
+	\end{axis}
+	
+	\begin{axis}[
+		at = {(mut2)},
+		anchor = north,
+		width = \basewidth,
+		height = 0.5cm,
+		logo axis = none,
+		logo plot
+	]
+	
+		\addplot[%
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark size = \pgfkeysvalueof{/pgfplots/width} / (\xmax - 0.5) * \pgfkeysvalueof{/pgfplots/letter width},
+			visualization depends on = \thisrow{IC} * \pgfkeysvalueof{/pgfplots/height} / \ymax \as\baseht
+		] table[x = pos,y = IC, meta = base, row sep = \\, col sep = comma] {
+			pos,IC,base\\
+			1,2,T\\
+		};
+		
+	\end{axis}
+	
+	
+	% reverse orientation
+	\begin{axis}[
+		at = {(last plot.south -| variantsTCP15)},
+		anchor = above north west,
+		xshift = \plotylabelwidth,
+		yshift = -.5\columnsep,
+		width = 10\basewidth,
+		height = 0.5cm,
+		logo axis = IC,
+		logo y axis/.append style = {ylabel = IC},
+		title = {reverse orientation},
+		title style = {draw = none, fill = none},
+		logo plot
+	]
+	
+		\addlogoplot{rawData/motif_mutTCP(15)_WT-rev.tsv};
+		
+		\coordinate (base1) at (3, 0);
+		\coordinate (base2) at (4, 0);
+		
+	\end{axis}
+	
+	\draw[arrow, semithick, shorten both = .05cm] (base1) -- ++(-120:.5cm) coordinate (mut1);
+	\draw[arrow, semithick, shorten both = .05cm] (base2) -- ++(-60:.5cm) coordinate (mut2);
+	
+	\begin{axis}[
+		at = {(mut1)},
+		anchor = north,
+		width = \basewidth,
+		height = 0.5cm,
+		logo axis = none,
+		logo plot
+	]
+	
+		\addplot[%
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark size = \pgfkeysvalueof{/pgfplots/width} / (\xmax - 0.5) * \pgfkeysvalueof{/pgfplots/letter width},
+			visualization depends on = \thisrow{IC} * \pgfkeysvalueof{/pgfplots/height} / \ymax \as\baseht
+		] table[x = pos,y = IC, meta = base, row sep = \\, col sep = comma] {
+			pos,IC,base\\
+			1,2,T\\
+		};
+		
+	\end{axis}
+	
+	\begin{axis}[
+		at = {(mut2)},
+		anchor = north,
+		width = \basewidth,
+		height = 0.5cm,
+		logo axis = none,
+		logo plot
+	]
+	
+		\addplot[%
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark size = \pgfkeysvalueof{/pgfplots/width} / (\xmax - 0.5) * \pgfkeysvalueof{/pgfplots/letter width},
+			visualization depends on = \thisrow{IC} * \pgfkeysvalueof{/pgfplots/height} / \ymax \as\baseht
+		] table[x = pos,y = IC, meta = base, row sep = \\, col sep = comma] {
+			pos,IC,base\\
+			1,2,T\\
+		};
+		
+	\end{axis}
+	
+	%%% mutate TCP(22) motif (logo plots)
+	\coordinate (variantsTCP22) at (variantsTCP15 -| \plotylabelwidth + 10\basewidth + \columnsep, 0);
+	
+	\node[anchor = north, xshift = .5\plotylabelwidth + 4\basewidth] (TCP22) at (variantsTCP22) {\textbf{TCP} (cluster 22)};
+	
+	% foward orientation
+	\begin{axis}[
+		at = {(TCP22.south -| variantsTCP22)},
+		anchor = above north west,
+		xshift = \plotylabelwidth,
+		width = 8\basewidth,
+		height = 0.5cm,
+		logo axis = IC,
+		logo y axis/.append style = {ylabel = IC},
+		title = {forward orientation},
+		title style = {draw = none, fill = none},
+		logo plot
+	]
+	
+		\addlogoplot{rawData/motif_mutTCP(22)_WT-fwd.tsv};
+		
+		\coordinate (base1) at (2, 0);
+		\coordinate (base2) at (3, 0);
+		
+	\end{axis}
+	
+	\draw[arrow, semithick, shorten both = .05cm] (base1) -- ++(-120:.5cm) coordinate (mut1);
+	\draw[arrow, semithick, shorten both = .05cm] (base2) -- ++(-60:.5cm) coordinate (mut2);
+	
+	\begin{axis}[
+		at = {(mut1)},
+		anchor = north,
+		width = \basewidth,
+		height = 0.5cm,
+		logo axis = none,
+		logo plot
+	]
+	
+		\addplot[%
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark size = \pgfkeysvalueof{/pgfplots/width} / (\xmax - 0.5) * \pgfkeysvalueof{/pgfplots/letter width},
+			visualization depends on = \thisrow{IC} * \pgfkeysvalueof{/pgfplots/height} / \ymax \as\baseht
+		] table[x = pos,y = IC, meta = base, row sep = \\, col sep = comma] {
+			pos,IC,base\\
+			1,2,T\\
+		};
+		
+	\end{axis}
+	
+	\begin{axis}[
+		at = {(mut2)},
+		anchor = north,
+		width = \basewidth,
+		height = 0.5cm,
+		logo axis = none,
+		logo plot
+	]
+	
+		\addplot[%
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark size = \pgfkeysvalueof{/pgfplots/width} / (\xmax - 0.5) * \pgfkeysvalueof{/pgfplots/letter width},
+			visualization depends on = \thisrow{IC} * \pgfkeysvalueof{/pgfplots/height} / \ymax \as\baseht
+		] table[x = pos,y = IC, meta = base, row sep = \\, col sep = comma] {
+			pos,IC,base\\
+			1,2,T\\
+		};
+		
+	\end{axis}
+	
+	
+	% reverse orientation
+	\begin{axis}[
+		at = {(last plot.south -| variantsTCP22)},
+		anchor = above north west,
+		xshift = \plotylabelwidth,
+		yshift = -.5\columnsep,
+		width = 8\basewidth,
+		height = 0.5cm,
+		logo axis = IC,
+		logo y axis/.append style = {ylabel = IC},
+		title = {reverse orientation},
+		title style = {draw = none, fill = none},
+		logo plot
+	]
+	
+		\addlogoplot{rawData/motif_mutTCP(22)_WT-rev.tsv};
+		
+		\coordinate (base1) at (3, 0);
+		\coordinate (base2) at (4, 0);
+		
+	\end{axis}
+	
+	\draw[arrow, semithick, shorten both = .05cm] (base1) -- ++(-120:.5cm) coordinate (mut1);
+	\draw[arrow, semithick, shorten both = .05cm] (base2) -- ++(-60:.5cm) coordinate (mut2);
+	
+	\begin{axis}[
+		at = {(mut1)},
+		anchor = north,
+		width = \basewidth,
+		height = 0.5cm,
+		logo axis = none,
+		logo plot
+	]
+	
+		\addplot[%
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark size = \pgfkeysvalueof{/pgfplots/width} / (\xmax - 0.5) * \pgfkeysvalueof{/pgfplots/letter width},
+			visualization depends on = \thisrow{IC} * \pgfkeysvalueof{/pgfplots/height} / \ymax \as\baseht
+		] table[x = pos,y = IC, meta = base, row sep = \\, col sep = comma] {
+			pos,IC,base\\
+			1,2,T\\
+		};
+		
+	\end{axis}
+	
+	\begin{axis}[
+		at = {(mut2)},
+		anchor = north,
+		width = \basewidth,
+		height = 0.5cm,
+		logo axis = none,
+		logo plot
+	]
+	
+		\addplot[%
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark size = \pgfkeysvalueof{/pgfplots/width} / (\xmax - 0.5) * \pgfkeysvalueof{/pgfplots/letter width},
+			visualization depends on = \thisrow{IC} * \pgfkeysvalueof{/pgfplots/height} / \ymax \as\baseht
+		] table[x = pos,y = IC, meta = base, row sep = \\, col sep = comma] {
+			pos,IC,base\\
+			1,2,T\\
+		};
+		
+	\end{axis}
+	
+	
+	%%% mutata WRKY motif (logog plots)
+	\coordinate (variantsWRKY) at (variantsTCP15 -| \threequartercolumnwidth -\plotylabelwidth - 7\basewidth, 0);
+	
+	\node[anchor = north, xshift = .5\plotylabelwidth + 3.5\basewidth] (WRKY) at (variantsWRKY) {\textbf{WRKY/C3H} (cluster 2)};
+	
+	% foward orientation
+	\begin{axis}[
+		at = {(WRKY.south -| variantsWRKY)},
+		anchor = above north west,
+		xshift = \plotylabelwidth,
+		width = 7\basewidth,
+		height = 0.5cm,
+		logo axis = IC,
+		logo y axis/.append style = {ylabel = IC},
+		title = {forward orientation},
+		title style = {draw = none, fill = none},
+		logo plot
+	]
+	
+		\addlogoplot{rawData/motif_mutWRKY_WT-fwd.tsv};
+		
+		\coordinate (base1) at (2, 0);
+		\coordinate (base2) at (3, 0);
+		
+	\end{axis}
+	
+	\draw[arrow, semithick, shorten both = .05cm] (base1) -- ++(-120:.5cm) coordinate (mut1);
+	\draw[arrow, semithick, shorten both = .05cm] (base2) -- ++(-60:.5cm) coordinate (mut2);
+	
+	\begin{axis}[
+		at = {(mut1)},
+		anchor = north,
+		width = \basewidth,
+		height = 0.5cm,
+		logo axis = none,
+		logo plot
+	]
+	
+		\addplot[%
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark size = \pgfkeysvalueof{/pgfplots/width} / (\xmax - 0.5) * \pgfkeysvalueof{/pgfplots/letter width},
+			visualization depends on = \thisrow{IC} * \pgfkeysvalueof{/pgfplots/height} / \ymax \as\baseht
+		] table[x = pos,y = IC, meta = base, row sep = \\, col sep = comma] {
+			pos,IC,base\\
+			1,2,T\\
+		};
+		
+	\end{axis}
+	
+	\begin{axis}[
+		at = {(mut2)},
+		anchor = north,
+		width = \basewidth,
+		height = 0.5cm,
+		logo axis = none,
+		logo plot
+	]
+	
+		\addplot[%
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark size = \pgfkeysvalueof{/pgfplots/width} / (\xmax - 0.5) * \pgfkeysvalueof{/pgfplots/letter width},
+			visualization depends on = \thisrow{IC} * \pgfkeysvalueof{/pgfplots/height} / \ymax \as\baseht
+		] table[x = pos,y = IC, meta = base, row sep = \\, col sep = comma] {
+			pos,IC,base\\
+			1,2,G\\
+		};
+		
+	\end{axis}
+	
+	
+	% reverse orientation
+	\begin{axis}[
+		at = {(last plot.south -| variantsWRKY)},
+		anchor = above north west,
+		xshift = \plotylabelwidth,
+		yshift = -.5\columnsep,
+		width = 7\basewidth,
+		height = 0.5cm,
+		logo axis = IC,
+		logo y axis/.append style = {ylabel = IC},
+		title = {reverse orientation},
+		title style = {draw = none, fill = none},
+		logo plot
+	]
+	
+		\addlogoplot{rawData/motif_mutWRKY_WT-rev.tsv};
+		
+		\coordinate (base1) at (2, 0);
+		\coordinate (base2) at (4, 0);
+		
+	\end{axis}
+	
+	\draw[arrow, semithick, shorten both = .05cm] (base1) -- ++(-120:.5cm) coordinate (mut1);
+	\draw[arrow, semithick, shorten both = .05cm] (base2) -- ++(-60:.5cm) coordinate (mut2);
+	
+	\begin{axis}[
+		at = {(mut1)},
+		anchor = north,
+		width = \basewidth,
+		height = 0.5cm,
+		logo axis = none,
+		logo plot
+	]
+	
+		\addplot[%
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark size = \pgfkeysvalueof{/pgfplots/width} / (\xmax - 0.5) * \pgfkeysvalueof{/pgfplots/letter width},
+			visualization depends on = \thisrow{IC} * \pgfkeysvalueof{/pgfplots/height} / \ymax \as\baseht
+		] table[x = pos,y = IC, meta = base, row sep = \\, col sep = comma] {
+			pos,IC,base\\
+			1,2,G\\
+		};
+		
+	\end{axis}
+	
+	\begin{axis}[
+		at = {(mut2)},
+		anchor = north,
+		width = \basewidth,
+		height = 0.5cm,
+		logo axis = none,
+		logo plot
+	]
+	
+		\addplot[%
+			scatter,
+			scatter src = explicit symbolic,
+			only marks,
+			mark size = \pgfkeysvalueof{/pgfplots/width} / (\xmax - 0.5) * \pgfkeysvalueof{/pgfplots/letter width},
+			visualization depends on = \thisrow{IC} * \pgfkeysvalueof{/pgfplots/height} / \ymax \as\baseht
+		] table[x = pos,y = IC, meta = base, row sep = \\, col sep = comma] {
+			pos,IC,base\\
+			1,2,T\\
+		};
+		
+	\end{axis}
+	
+	
+	%%% plot
+	\coordinate (plot) at (variantsTCP15 -| \textwidth - \fourcolumnwidth, 0);
+	
+	\begin{axis}[
+		at = {(plot)},
+		xshift = \plotylabelwidth,
+		anchor = north west,
+		width = \fourcolumnwidth - \plotylabelwidth,
+		boxplot/draw direction = y,
+		x grids = false,
+		ylabel = $\log_2$(rel. light-dependency),
+		xlabel = mutated TF binding site,
+		x tick table = {rawData/light-dep_mutTF_boxplot.tsv}{sample},
+		ymin = -1.75,
+		ymax = 1.9,
+		ytick = {-3, ..., 3},
+		typeset ticklabels with strut,
+		zero line
+	]
+		
+			% boxplot
+			\boxplots{%
+				box color = leafCol,
+				box shade,
+				fill opacity = 0.5%
+			}{rawData/light-dep_mutTF_boxplot.tsv}{rawData/light-dep_mutTF_boxplot_outliers.tsv}
+			
+			% add sample size
+			\samplesize{rawData/light-dep_mutTF_boxplot.tsv}{id}{n}
+			
+			% add significance
+			\signifallsimple*{rawData/light-dep_mutTF_boxplot.tsv}{id}{p.value}
+	
+	\end{axis}
+	
+	\lightsymbol[(-.4, -.4)]{last plot.south west}
+	
+	
+	%%% subfigure labels
+	\subfiglabel[yshift = .5\columnsep]{variantsTCP15}
+	\subfiglabel[yshift = .5\columnsep]{variantsTCP22}
+	\subfiglabel[yshift = .5\columnsep]{variantsWRKY}
+	\subfiglabel[yshift = .5\columnsep]{plot}
+
+\end{tikzpicture}

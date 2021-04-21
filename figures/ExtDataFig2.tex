@@ -1,0 +1,128 @@
+%\tikzset{external/export next = false}
+
+\begin{tikzpicture}
+
+	%%% TATA position plot
+	
+	\coordinate (TATApos) at (0, 0);
+
+	% will be drawn later
+
+	%%% enrichment by TATA pos
+	\coordinate (enrTATApos) at (TATApos -| \textwidth - \twocolumnwidth, 0);
+	
+	\begin{hgroupplot}[%
+		ylabel = $\log_2$(promoter strength),
+		ymin = -9,
+		ymax = 7.5,
+		ytick = {-10, -8, ..., 10},
+		xticklabel style = {name = xticklabel, inner sep = .1em},
+		group position = {anchor = above north west, at = {(enrTATApos)}, xshift = \plotylabelwidth},
+		group/every plot/.append style = {x grids = false, typeset ticklabels with strut}
+	]{\twocolumnwidth}{2}{}
+
+		\nextgroupplot[
+			title = tobacco\\leaves,
+			x tick table = {rawData/enrichment_TATA-pos_subpeaks_Zm_leaf_boxplot.tsv}{LaTeX.label}
+		]
+			
+		% violin and box plot
+		\violinbox[violin color = leafCol]{rawData/enrichment_TATA-pos_subpeaks_Zm_leaf_boxplot.tsv}{rawData/enrichment_TATA-pos_subpeaks_Zm_leaf_violin.tsv}
+			
+		% add sample size
+		\samplesize{rawData/enrichment_TATA-pos_subpeaks_Zm_leaf_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enrichment_TATA-pos_subpeaks_Zm_leaf_pvalues.tsv}{1}{2}
+		\signif*{rawData/enrichment_TATA-pos_subpeaks_Zm_leaf_pvalues.tsv}{2}{3}
+		\signif*{rawData/enrichment_TATA-pos_subpeaks_Zm_leaf_pvalues.tsv}{3}{4}
+		\signif*{rawData/enrichment_TATA-pos_subpeaks_Zm_leaf_pvalues.tsv}{4}{5}
+		
+		\pgfplotsinvokeforeach{1, ..., 5}{
+			\coordinate (T#1) at (#1, 0);
+		}
+		
+		
+		\nextgroupplot[
+			title = maize\\protoplasts,
+			x tick table = {rawData/enrichment_TATA-pos_subpeaks_Zm_proto_boxplot.tsv}{LaTeX.label}
+		]
+		
+		% violin and box plot
+		\violinbox[violin color = protoCol]{rawData/enrichment_TATA-pos_subpeaks_Zm_proto_boxplot.tsv}{rawData/enrichment_TATA-pos_subpeaks_Zm_proto_violin.tsv}
+			
+		% add sample size
+		\samplesize{rawData/enrichment_TATA-pos_subpeaks_Zm_proto_boxplot.tsv}{id}{n}
+		
+		% add significance level
+		\signif*{rawData/enrichment_TATA-pos_subpeaks_Zm_proto_pvalues.tsv}{1}{2}
+		\signif*{rawData/enrichment_TATA-pos_subpeaks_Zm_proto_pvalues.tsv}{2}{3}
+		\signif*{rawData/enrichment_TATA-pos_subpeaks_Zm_proto_pvalues.tsv}{3}{4}
+		\signif*{rawData/enrichment_TATA-pos_subpeaks_Zm_proto_pvalues.tsv}{4}{5}
+		
+		\pgfplotsinvokeforeach{1, ..., 5}{
+			\coordinate (M#1) at (#1, 0);
+		}
+			
+	\end{hgroupplot}
+	
+	\node[anchor = base east, node font = \figsmall] (lTATA) at (group c1r1.west |- xticklabel.base) {\strut TATA-box};
+	\node[anchor = north east, node font = \figsmall] (lpeak) at (lTATA.base east) {\strut peak};
+	
+	\pgfplotstableforeachcolumnelement{peak}\of{rawData/enrichment_TATA-pos_subpeaks_Zm_leaf_boxplot.tsv}\as\xticklabel{
+		\pgfmathsetmacro{\i}{\pgfplotstablerow + 1}
+		\node[anchor = base, node font = \figsmall] at (lpeak.base -| T\i) {\strut\xticklabel};
+	}
+	
+	\pgfplotstableforeachcolumnelement{peak}\of{rawData/enrichment_TATA-pos_subpeaks_Zm_proto_boxplot.tsv}\as\xticklabel{
+		\pgfmathsetmacro{\i}{\pgfplotstablerow + 1}
+		\node[anchor = base, node font = \figsmall] at (lpeak.base -| M\i) {\strut\xticklabel};
+	}
+	
+	\distance{title.south}{title.north}
+	
+	\leafsymbol[(.5\ydistance, -.5\ydistance)]{group c1r1.west |- title.north}
+	\protosymbol[(-.5\ydistance, -.5\ydistance)]{group c2r1.east |- title.north}
+	
+	%%% TATA position plot
+	
+	\distance{group c1r1.south}{group c1r1.above north}
+	
+	\begin{axis}[%
+		at = {(TATApos)},
+		anchor = north west,
+		xshift = \plotylabelwidth,
+		width = \twocolumnwidth - \plotylabelwidth,
+		height = \ydistance,
+		ylabel = promoters (\%),
+		xlabel = {TATA-box position (rel. to TSS)},
+		xlabel style = {name = plot xlabel},
+		xmin = 0,
+		xmax = 170,
+		ymin = 0,
+		ymax = 1.1,
+		y decimals = 1,
+		xtick = {6, 26, ..., 166},
+		xticklabel = {$\pgfmathparse{\tick < 166 ? \tick - 166 : \tick -165}\pgfmathprintnumber[print sign]{\pgfmathresult}$},
+		ytick = {0, 0.2, ..., 2},
+		ybar = 0pt,
+		bar width = 1,
+		legend pos = north west
+	]
+	
+			\filldraw[gray, opacity = .2] (94, \ymin) rectangle (101, \ymax);
+			\node[anchor = north] at (97.5, \ymax) {1};
+			\filldraw[gray, opacity = .2] (107, \ymin) rectangle (116, \ymax);
+			\node[anchor = north] at (111.5, \ymax) {2};
+			\filldraw[gray, opacity = .2] (132, \ymin) rectangle (142, \ymax);
+			\node[anchor = north] at (137, \ymax) {3};
+			
+			\addplot [maize, fill, fill opacity = .5] table [x = pos, y = Zm] {rawData/TATA_position.tsv};
+	
+	\end{axis}
+	
+	%%% subfigure labels
+	\subfiglabel[yshift = .5\columnsep]{TATApos}
+	\subfiglabel[yshift = .5\columnsep]{enrTATApos}
+
+\end{tikzpicture}
